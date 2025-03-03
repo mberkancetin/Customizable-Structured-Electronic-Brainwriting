@@ -1,12 +1,19 @@
 // @ts-nocheck
 
 /*
+MIT License
+
+Copyright (c) 2025 Mahmut Berkan Çetin & Selim Gündüz
+
+This software is licensed under the MIT License. 
+See the LICENSE file or visit https://opensource.org/licenses/MIT for details.
+*/
+
+/*
 Creator: Mahmut Berkan Çetin and Selim Gündüz
-Title: Online 6-3-5 Brainwriting Script
+Title: Online 6-3-5 Brainwriting Session: Utilizing Google Sheets with Google Apps Script
 Description: This script automates the 6-3-5 brainwriting method in Google Sheets.
-How to Cite: Cetin, M.B. & Gunduz, S. (2025). Online 6-3-5 Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io
-https://protocols.io/view/online-6-3-5-brainwriting-session-utilizing-google-dwwn7fde
-Note: This script was prepared under the supervision of Assoc. Prof. Dr. Selim Gündüz, based on the doctoral thesis currently being conducted in the Department of Business Administration at Adana Alparslan Türkeş Science and Technology University.
+How to Cite: Cetin, Mahmut Berkan & Gunduz, Selim (2025). Online 6-3-5 Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
 */
 
 const GLOBAL_VARIABLES = {
