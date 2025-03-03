@@ -25,5 +25,4 @@ Make sure everyone has a stable internet connection and can access Google Sheets
 https://protocols.io/view/online-6-3-5-brainwriting-session-utilizing-google-dwwn7fde
 
 ## Reference
-Cetin, M.B. & Gunduz, S. (2025). Online 6-3-5 Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io
-10.17504/protocols.io.x54v9r3xzv3e/v1
+Çetin, Mahmut Berkan & Gündüz, Selim (2025). Online 6-3-5 Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
