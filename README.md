@@ -1,9 +1,9 @@
-# Online 6-3-5 Brainwriting Session: Utilizing Google Sheets with Google Apps Script
+# Customizable Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script
 
 ## Abstract
 This protocol outlines the process and structure to use Google Sheets along with Google Apps Script to set up and manage an online 6-3-5 brainwriting session, which enables remote collaborative sessions for idea generation. This technique creates a structured online platform by automating traditional brainwriting sessions, which involve six participants each coming up with three ideas per round and passing their paper round-robin to the next participant, building new ideas upon previous contributions over the course of six rounds. 
 
-Google Sheets functions as a versatile platform for real-time input collection and documentation while enabling participants to effortlessly browse on the spreadsheet and contribute to the idea development process.  With this approach, moderators can efficiently guide and document brainstorming sessions, whether they’re in-person or virtual. The online 6-3-5 brainwriting system is designed to automatically track progress, organize participant contributions, and gather a total of 108 ideas—thanks to 6 participants collaborating through 6 rounds, with each of them sharing 3 ideas per round—all neatly organized in a structured worksheet.
+Google Sheets functions as a versatile platform for real-time input collection and documentation while enabling participants to effortlessly browse on the spreadsheet and contribute to the idea development process. With this approach, moderators can efficiently guide and document brainstorming sessions, whether they’re in-person or virtual. The online 6-3-5 brainwriting system is designed to automatically track progress, organize participant contributions, and gather a total of 108 ideas—thanks to 6 participants collaborating through 6 rounds, with each of them sharing 3 ideas per round—all neatly organized in a structured worksheet.
 
 
 ## Before starting
@@ -25,4 +25,4 @@ Make sure everyone has a stable internet connection and can access Google Sheets
 https://protocols.io/view/online-6-3-5-brainwriting-session-utilizing-google-dwwn7fde
 
 ## Reference
-Çetin, Mahmut Berkan & Gündüz, Selim (2025). Online 6-3-5 Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
+Çetin, Mahmut Berkan & Gündüz, Selim (2025). Conducting (6-)6-3-5 Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
