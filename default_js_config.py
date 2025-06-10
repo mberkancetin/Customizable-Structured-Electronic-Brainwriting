@@ -124,7 +124,7 @@ DEFAULT_ANALYSIS_VARIABLES_TEXT_KEYS = {
 
 # Non-translatable defaults
 DEFAULT_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/f/f3/Adana_Alparslan_T%C3%BCrke%C5%9F_%C3%9Cniversitesi_logo.png"
-DEFAULT_COLAB_GITHUB_URL = "https://colab.research.google.com/github/mberkancetin/startup_success_predictor/blob/main/notebooks/berkan-encoder.ipynb"
+DEFAULT_COLAB_GITHUB_URL = "https://colab.research.google.com/github/mberkancetin/Customizable-Structured-Electronic-Brainwriting/blob/main/DataAnalysis.ipynb"
 
 # Number of default participants, rounds, ideas
 DEFAULT_NUM_PARTICIPANTS = 6
