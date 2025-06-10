@@ -88,7 +88,7 @@
   "default_landing_sheet_name": "Hoşgeldiniz",
   "default_participant_prefix": "Katılımcı{no}",
   "default_moderator_sheet_name": "İlerlemeTakibi",
-  "default_time_left": "Tur Zamanlayıcısı",
+  "default_time_left": "Zamanlayıcı",
   "default_session_language": "tr",
   "default_time_is_up": "Süre doldu!",
   "default_focus_item_1": "Odak",
