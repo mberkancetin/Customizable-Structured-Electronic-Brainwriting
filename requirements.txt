@@ -1,0 +1,6 @@
+pandas
+streamlit
+json
+os
+re
+copy
