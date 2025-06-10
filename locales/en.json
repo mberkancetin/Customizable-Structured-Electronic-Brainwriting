@@ -89,7 +89,7 @@
   "default_participant_prefix": "Participant{no}",
   "default_moderator_sheet_name": "ProgressTracking",
   "default_session_language": "en",
-  "default_time_left": "Round Timer",
+  "default_time_left": "Timer",
   "default_time_is_up": "Time's up!",
   "default_focus_item_1": "Focus",
   "default_focus_item_2": "Session Started",
