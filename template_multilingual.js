@@ -1,4 +1,6 @@
 /*
+EXPERIMENTAL
+
 MIT License
 
 Copyright (c) 2025 Mahmut Berkan Çetin & Selim Gündüz
@@ -22,7 +24,9 @@ const GLOBAL_VARIABLES = {
   SESSION_FOCUS: {{SESSION_FOCUS_JS_STRING}},
   LANDING_SHEET: {{LANDING_SHEET_JS_STRING}},
   PARTICIPANT: {{PARTICIPANT_LIST_AS_JS_ARRAY}},
+  PARTICIPANT_SHEET_LANGUAGE: {{PARTICIPANT_SHEET_LANGUAGE_LIST_AS_JS_ARRAY}},
   MODERATOR_SHEET: {{MODERATOR_SHEET_JS_STRING}},
+  SESSION_LANGUAGE: {{SESSION_LANGUAGE_JS_STRING}},
   TIME_LEFT: {{TIME_LEFT_JS_STRING}},
   TIME_IS_UP: {{TIME_IS_UP_JS_STRING}},
   MINUTES: {{MINUTES_INT}},
@@ -104,6 +108,10 @@ The code begins here.
 Feel free to modify, but please review carefully to maintain functionality.
 */
 
+/*
+----- FUNCTION TO CREATE LANDING PAGE -----
+*/
+
 function createBrainwritingLandingPage() {
   const allSheets = spreadsheet.getSheets();
 
@@ -179,9 +187,30 @@ function createBrainwritingLandingPage() {
   SpreadsheetApp.flush(); // Apply all changes
 }
 
+function getFormulaSeparatorFromSheet() {
+  // Reads if seperator is comma: min(1,0) returns 1
+  // or if seperator is semicolon: min(1;0) returns 0
+  // in the sheet to detect the separator
+  const ss = spreadsheet.getActiveSheet();
+  const range = ss.getRange(25, 1);
+
+  range.setFormula('=MIN(1,0)');
+  SpreadsheetApp.flush();
+
+  const formula = range.getFormula();
+
+  range.clearContent();
+
+  // Detect which separator is used
+  return formula.includes(1) ? ';' : ',';
+}
+
+const sep = getFormulaSeparatorFromSheet();
+
 /*
 ----- FUNCTION TO CREATE PROGRESS TRACKING AND PARTICIPANT SHEETS -----
 */
+
 
 function createMultipleWorksheets() {
   // Try to get existing tracking sheet or create new one
@@ -202,7 +231,7 @@ function createMultipleWorksheets() {
   headerRange.setFontWeight("bold");
 
   // Set up progress tracking table
-  const roundsRange = trackingSheet.getRange((roundCount + 4), 6, 1, roundCount);
+  const roundsRange = trackingSheet.getRange((roundCount + 4), 7, 1, roundCount);
   roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS]);
 
   // Add participants
@@ -210,17 +239,18 @@ function createMultipleWorksheets() {
   const participantValues = GLOBAL_VARIABLES.PARTICIPANT.map(name => [name]);
   participantRange.setValues(participantValues);
 
+
   // Create checkboxes for each round
-  const checkboxRange = trackingSheet.getRange((roundCount + 5), 6, participantCount, roundCount);
+  const checkboxRange = trackingSheet.getRange((roundCount + 5), 7, participantCount, roundCount);
   checkboxRange.insertCheckboxes();
 
   // Format tracking table
-  const headerRow = trackingSheet.getRange((roundCount + 4), 6, 1, roundCount);
+  const headerRow = trackingSheet.getRange((roundCount + 4), 6, 1, roundCount+1);
   headerRow.setBackground(MODERATOR_VARIABLES.COLORS.Gold);
   headerRow.setFontWeight("bold");
 
   // Add borders to the tracking table
-  const tableRange = trackingSheet.getRange((roundCount + 4), 6, (participantCount+1), roundCount);
+  const tableRange = trackingSheet.getRange((roundCount + 4), 6, (participantCount+1), roundCount+1);
   tableRange.setBorder(true, true, true, true, true, true);
 
   trackingSheet.getRange((roundCount + 4), 1, 1, 1).setValue(MODERATOR_VARIABLES.CURRENT_ROUND);
@@ -239,7 +269,7 @@ function createMultipleWorksheets() {
   trackingSheet.getRange((roundCount + 10), 2, 1, 1).setValue("0" + GLOBAL_VARIABLES.MINUTES + ":00")
   trackingSheet.getRange((roundCount + 12), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
 
-  // Create 6 sheets
+  // Create participant sheets
   for (let i = 0; i < participantCount; i++) {
 
     // Create new sheet
@@ -284,23 +314,39 @@ function createMultipleWorksheets() {
     sheet.getRange(2, 2, (ideasCount + 6), (roundCount + 1)).setHorizontalAlignment("center");
     sheet.getRange(2, 2, (ideasCount + 6), (roundCount + 1)).setVerticalAlignment("middle");
 
+    // Set sheet language
+    var languages = [
+    'af', 'sq', 'am', 'ar', 'hy', 'as', 'ay', 'az', 'bm', 'eu', 'be', 'bn', 'bho', 'bs', 'bg', 'ca', 'ceb', 'ny', 'zh', 'zh-TW', 'co', 'hr', 'cs', 'da', 'dv', 'doi', 'nl', 'en', 'eo', 'et', 'ee', 'tl', 'fi', 'fr', 'fy', 'gl', 'lg', 'ka', 'de', 'el', 'gn', 'gu', 'ht', 'ha', 'haw', 'iw', 'hi', 'hmn', 'hu', 'is', 'ig', 'ilo', 'id', 'ga', 'it', 'ja', 'jw', 'kn', 'kk', 'km', 'rw', 'gom', 'ko', 'kri', 'ku', 'ckb', 'ky', 'lo', 'la', 'lv', 'ln', 'lt', 'lb', 'mk', 'mg', 'ms', 'ml', 'mt', 'mi', 'mr', 'mni-Mtei', 'lus', 'mn', 'my', 'ne', 'no', 'or', 'om', 'ps', 'fa', 'pl', 'pt', 'pa', 'qu', 'ro', 'ru', 'sm', 'sa', 'gd', 'nso', 'sr', 'st', 'sn', 'sd', 'si', 'sk', 'sl', 'so', 'es', 'su', 'sw', 'sv', 'tg', 'ta', 'tt', 'te', 'th', 'ti', 'ts', 'tr', 'tk', 'ak', 'uk', 'ur', 'ug', 'uz', 'vi', 'cy', 'xh', 'yi', 'yo', 'zu'
+    ];
+    var rule = SpreadsheetApp.newDataValidation()
+        .requireValueInList(languages)
+        .setAllowInvalid(false) // This prevents typing a language not in the list
+        .build();
+    var lan_cell = sheet.getRange(2, (roundCount + 3), 1, 1)
+    const participantLanguageValue = GLOBAL_VARIABLES.PARTICIPANT_SHEET_LANGUAGE[i];
+    lan_cell.setValue(participantLanguageValue);
+    lan_cell.setDataValidation(rule);
+
     // Set headers
-    sheet.getRange("B2").setFormula(`=${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 10}`);
-    sheet.getRange("C2").setFormula(`=${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 12}`);
+    const languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
+    sheet.getRange("B2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 10}${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
+    sheet.getRange("C2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 12}${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
 
     // Set round timer and focus question
     sheet.getRange("B3").setFormula(`=${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 10}`);
-    sheet.getRange("C3").setFormula(`=${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}`);
+    sheet.getRange("C3").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
+
+
 
     // Set round headers
     const roundsRange = sheet.getRange(5, 3, 1, roundCount);
-    roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS]);
+    roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS.map(round => `=GOOGLETRANSLATE("${round}"${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`)]);
 
     // Set idea labels
-    sheet.getRange(6, 2, ideasCount, 1).setValues(GLOBAL_VARIABLES.IDEAS.map(idea => [idea]));
+    sheet.getRange(6, 2, ideasCount, 1).setValues(GLOBAL_VARIABLES.IDEAS.map(idea => [`=GOOGLETRANSLATE("${idea}"${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`]));
 
     // Add submission text and checkbox
-    sheet.getRange((ideasCount + 6), 3, 1, 1).setValue(GLOBAL_VARIABLES.CHECK_IDEAS);
+    sheet.getRange((ideasCount + 6), 3, 1, 1).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
     sheet.getRange((ideasCount + 7), 3, 1, 1).insertCheckboxes();
 
     // Header styling
@@ -365,7 +411,11 @@ function createMultipleWorksheets() {
       // Columns C to H in participant sheet → columns 6 to 6+roundCount-1 in tracking sheet
       let participantColumnLetter = String.fromCharCode(67 + j); // 'C' is 67 in ASCII
       let formula = `=${sheetName}!${participantColumnLetter}${ideasCount+7}`;
-      trackingSheet.getRange(row, 6 + j).setFormula(formula);
+      trackingSheet.getRange(row, 7 + j).setFormula(formula);
+
+      let languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
+      let participantLangugageRange = trackingSheet.getRange((roundCount + 5 + i), 6, 1, 1);
+      participantLangugageRange.setFormula(`=${sheetName}!${languageColumnLetter}2`);
     }
   }
   // Get the total number of sheets
@@ -398,26 +448,6 @@ function calculateRoundLength() {
   minutesAdded.setMinutes(minutesAdded.getMinutes() + GLOBAL_VARIABLES.MINUTES);
   return minutesAdded;
 }
-
-function getFormulaSeparatorFromSheet() {
-  // Reads if seperator is comma: min(1,0) returns 1
-  // or if seperator is semicolon: min(1;0) returns 0
-  // in the sheet to detect the separator
-  const ss = spreadsheet.getActiveSheet();
-  const range = ss.getRange(25, 1);
-
-  range.setFormula('=MIN(1,0)');
-  SpreadsheetApp.flush();
-
-  const formula = range.getFormula();
-
-  range.clearContent();
-
-  // Detect which separator is used
-  return formula.includes(1) ? ';' : ',';
-}
-
-const sep = getFormulaSeparatorFromSheet();
 
 function getRoundMinutes() {
   const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
