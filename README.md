@@ -1,11 +1,5 @@
 # Customizable Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script
 
-## Abstract
-This protocol outlines the process and structure to use Google Sheets along with Google Apps Script to set up and manage an online 6-3-5 brainwriting session, which enables remote collaborative sessions for idea generation. This technique creates a structured online platform by automating traditional brainwriting sessions, which involve six participants each coming up with three ideas per round and passing their paper round-robin to the next participant, building new ideas upon previous contributions over the course of six rounds. 
-
-Google Sheets functions as a versatile platform for real-time input collection and documentation while enabling participants to effortlessly browse on the spreadsheet and contribute to the idea development process. With this approach, moderators can efficiently guide and document brainstorming sessions, whether they’re in-person or virtual. The online 6-3-5 brainwriting system is designed to automatically track progress, organize participant contributions, and gather a total of 108 ideas—thanks to 6 participants collaborating through 6 rounds, with each of them sharing 3 ideas per round—all neatly organized in a structured worksheet.
-
-
 ## Before starting
 ### Research the Focus Area:
 
@@ -24,14 +18,6 @@ Make sure to tackle any bugs or limitations you find before you work with your a
 
 Let participants know what to expect from the session ahead of time. 
 Make sure everyone has a stable internet connection and can access Google Sheets without any issues.
-
-## Step-by-step implementation is in protocols.io:
-
-https://protocols.io/view/online-6-3-5-brainwriting-session-utilizing-google-dwwn7fde
-
-## Reference
-
-Çetin, Mahmut Berkan & Gündüz, Selim (2025). Protocol for Conducting Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
 
 # Structured Electronic Brainwriting Session Configuration Generator
 
@@ -134,3 +120,15 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Inspired by collaborative brainstorming techniques
 - Special thanks to contributors of the brainwriting methodology
 
+## Step-by-step implementation is in protocols.io:
+
+https://protocols.io/view/online-6-3-5-brainwriting-session-utilizing-google-dwwn7fde
+
+## Abstract
+This protocol outlines the process and structure to use Google Sheets along with Google Apps Script to set up and manage an online 6-3-5 brainwriting session, which enables remote collaborative sessions for idea generation. This technique creates a structured online platform by automating traditional brainwriting sessions, which involve six participants each coming up with three ideas per round and passing their paper round-robin to the next participant, building new ideas upon previous contributions over the course of six rounds. 
+
+Google Sheets functions as a versatile platform for real-time input collection and documentation while enabling participants to effortlessly browse on the spreadsheet and contribute to the idea development process. With this approach, moderators can efficiently guide and document brainstorming sessions, whether they’re in-person or virtual. The online 6-3-5 brainwriting system is designed to automatically track progress, organize participant contributions, and gather a total of 108 ideas—thanks to 6 participants collaborating through 6 rounds, with each of them sharing 3 ideas per round—all neatly organized in a structured worksheet.
+
+## Reference
+
+Çetin, Mahmut Berkan & Gündüz, Selim (2025). Protocol for Conducting Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
