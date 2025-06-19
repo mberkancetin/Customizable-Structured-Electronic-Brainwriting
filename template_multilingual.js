@@ -43,6 +43,8 @@ const ideasCount = GLOBAL_VARIABLES.IDEAS.length;
 const participantCount = GLOBAL_VARIABLES.PARTICIPANT.length;
 const totalIdeas = participantCount * ideasCount * roundCount;
 const totalTime = roundCount * GLOBAL_VARIABLES.MINUTES;
+const languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
+
 
 const MODERATOR_VARIABLES = {
   MENU: {{MENU_OBJECT_AS_JS_OBJECT}},
@@ -329,24 +331,24 @@ function createMultipleWorksheets() {
 
     // Set headers
     const languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
-    sheet.getRange("B2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 10}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
-    sheet.getRange("C2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 12}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+    sheet.getRange("B2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 10}${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
+    sheet.getRange("C2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 12}${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
 
     // Set round timer and focus question
     sheet.getRange("B3").setFormula(`=${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 10}`);
-    sheet.getRange("C3").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+    sheet.getRange("C3").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
 
 
 
     // Set round headers
     const roundsRange = sheet.getRange(5, 3, 1, roundCount);
-    roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS.map(round => `=GOOGLETRANSLATE("${round}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`)]);
+    roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS.map(round => `=GOOGLETRANSLATE("${round}"${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`)]);
 
     // Set idea labels
-    sheet.getRange(6, 2, ideasCount, 1).setValues(GLOBAL_VARIABLES.IDEAS.map(idea => [`=GOOGLETRANSLATE("${idea}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`]));
+    sheet.getRange(6, 2, ideasCount, 1).setValues(GLOBAL_VARIABLES.IDEAS.map(idea => [`=GOOGLETRANSLATE("${idea}"${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`]));
 
     // Add submission text and checkbox
-    sheet.getRange((ideasCount + 6), 3, 1, 1).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+    sheet.getRange((ideasCount + 6), 3, 1, 1).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} ${GLOBAL_VARIABLES.SESSION_LANGUAGE}${sep} ${languageColumnLetter}2)`);
     sheet.getRange((ideasCount + 7), 3, 1, 1).insertCheckboxes();
 
     // Header styling
@@ -521,7 +523,7 @@ function SubmitData() {
     var sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
     for (var j = 0; j < round_num; j++) {
       var sourceRange = trackingSheet.getRange(2 + j, round_robin[i + j], 1, ideasCount).getValues(); // Calculate the source range dynamically
-      var columnValues = sourceRange[0].map(v => [v]);
+      var columnValues = sourceRange[0].map(v => [`=GOOGLETRANSLATE("${v}"${sep} "auto"${sep} ${languageColumnLetter}2)`]);
 
       // Set the values in the corresponding target column
       sheet.getRange(6, 3 + j, ideasCount, 1).setValues(columnValues);
