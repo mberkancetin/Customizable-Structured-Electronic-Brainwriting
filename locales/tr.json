@@ -142,6 +142,6 @@
 
   "instructions_and_tips": "### Bu Uygulamayı Nasıl Kullanırsınız \n\n**Temel Oturum Ayarları**: \n- Yalnızca bir oturum için gereken temel değişkenleri gösterir. \n- Katılımcı sayfa adlarını manuel olarak yapılandırmak için Katılımcı İsimleri Özelleştirilsin mi? geçiş düğmesini kullanın. \n- Varsayılan olarak Tur ve Fikir adları Tur N şeklindedir. Değiştirmek için Değişken Yerelleştirme bölümüne gidin. \n\n**Oturum Değişkenleri Ayarlandıktan Sonra**: \n- \"Script Oluştur\" butonuna tıklayın. \n- Kopyalamak için \"Panoya Kopyala\" seçeneğine tıklayın \n- Kodu Google Apps Script'e yapıştırın. \n\n**Değişken Yerelleştirme**: \n- Temel Oturum Ayarları ile birlikte bu bölüm, katılımcıların oturum süresince göreceği metinleri içerir. \n- Herhangi bir dil seçeneği yoksa bu iki alandaki metinleri hedef dile çevirin. \n\n**Gelişmiş Özelleştirme**: \n- Gelişmiş Özelleştirme geriye kalan değişkenlere erişim sağlar. \n- Renkler ad olarak (örneğin \"red\") veya hex kodu olarak (örneğin \"#ff0000\") girilebilir.",
 
-  "advanced_settings": "(Experimental) multilingual session?",
-  "help_advanced_settings": "This experimental feature allows sessions to be conducted concurrently in multiple languages, powered by GOOGLETRANSLATE function."
+  "advanced_settings": "(Deneysel) çok dilli oturum?",
+  "help_advanced_settings": "Bu deneysel özellik, GOOGLETRANSLATE fonksiyonu sayesinde oturumların aynı anda birden fazla dilde yürütülmesini sağlar."
 }
