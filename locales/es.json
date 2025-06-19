@@ -142,6 +142,6 @@
 
   "instructions_and_tips": "### Cómo utilizar esta herramienta \n\n**Configuración Rápida**: \n- Muestra solo las variables esenciales que necesita configurar. \n- Use el interruptor para personalizar los nombres de las hojas de participantes. \n- Por defecto, los nombres de rondas e ideas se asignan como Ronda N. Para cambiarlos, vaya a Traducción de Variables. \n\n**Después de configurar**: \n- Haga clic en « Generar script ». \n- Haga clic en « Copiar al portapapeles » para copiar. \n- Pegue el código en su proyecto de Google Apps Script. \n\n**Traducción de Variables**: \n- Junto con la Configuración Rápida, esta sección contiene los textos visibles para los participantes. \n- Tradúzcalos si no existe una opción de idioma específica. \n\n**Personalización Avanzada**: \n- Esta opción le da acceso al resto de variables de configuración. \n- Los colores pueden escribirse como nombres (por ejemplo, \"rojo\") o en formato hexadecimal (por ejemplo, \"#ff0000\").",
 
-  "advanced_settings": "(Experimental) multilingual session?",
-  "help_advanced_settings": "This experimental feature allows sessions to be conducted concurrently in multiple languages, powered by GOOGLETRANSLATE function."
+  "advanced_settings": "(Experimental) sesión multilingüe?",
+  "help_advanced_settings": "Esta función experimental permite realizar sesiones simultáneamente en varios idiomas, gracias a la función GOOGLETRANSLATE."
 }
