@@ -233,7 +233,7 @@ function createMultipleWorksheets() {
   headerRange.setFontWeight("bold");
 
   // Set up progress tracking table
-  const roundsRange = trackingSheet.getRange((roundCount + 4), 7, 1, roundCount);
+  const roundsRange = trackingSheet.getRange((roundCount + 4), 8, 1, roundCount);
   roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS]);
 
   // Add participants
@@ -243,16 +243,16 @@ function createMultipleWorksheets() {
 
 
   // Create checkboxes for each round
-  const checkboxRange = trackingSheet.getRange((roundCount + 5), 7, participantCount, roundCount);
+  const checkboxRange = trackingSheet.getRange((roundCount + 5), 8, participantCount, roundCount);
   checkboxRange.insertCheckboxes();
 
   // Format tracking table
-  const headerRow = trackingSheet.getRange((roundCount + 4), 6, 1, roundCount+1);
+  const headerRow = trackingSheet.getRange((roundCount + 4), 6, 1, roundCount+2);
   headerRow.setBackground(MODERATOR_VARIABLES.COLORS.Gold);
   headerRow.setFontWeight("bold");
 
   // Add borders to the tracking table
-  const tableRange = trackingSheet.getRange((roundCount + 4), 6, (participantCount+1), roundCount+1);
+  const tableRange = trackingSheet.getRange((roundCount + 4), 6, (participantCount+1), roundCount+2);
   tableRange.setBorder(true, true, true, true, true, true);
 
   trackingSheet.getRange((roundCount + 4), 1, 1, 1).setValue(MODERATOR_VARIABLES.CURRENT_ROUND);
@@ -267,6 +267,15 @@ function createMultipleWorksheets() {
   trackingSheet.getRange((roundCount + 10), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
   trackingSheet.getRange((roundCount + 12), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
   trackingSheet.getRange((roundCount + 12), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
+
+  trackingSheet.getRange((roundCount + 14), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
+  trackingSheet.getRange((roundCount + 14), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
+  trackingSheet.getRange((roundCount + 14), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
+  trackingSheet.getRange((roundCount + 15), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[1]);
+  trackingSheet.getRange((roundCount + 15), 2, 1, 1).setValue(MODERATOR_VARIABLES.SESSION_START);
+  trackingSheet.getRange((roundCount + 16), 1, 1, 2).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[0]);
+  trackingSheet.getRange((roundCount + 17), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
+  trackingSheet.getRange((roundCount + 17), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
 
   trackingSheet.getRange((roundCount + 10), 2, 1, 1).setValue("0" + GLOBAL_VARIABLES.MINUTES + ":00")
   trackingSheet.getRange((roundCount + 12), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
@@ -376,22 +385,24 @@ function createMultipleWorksheets() {
       // Define the cell to apply conditional formatting
       var range = sheet.getRange(2, 3, 1, roundCount);
       var rules = sheet.getConditionalFormatRules();
+      const blue_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 14}")`;
+      const green_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 17}")`;
+      const otherwiseFormula = '=TRUE';
 
       // Define the conditional formatting rules
       var newRules = [
         SpreadsheetApp.newConditionalFormatRule()
-          .whenTextEqualTo(GLOBAL_VARIABLES.FOCUS[0]) // Apply rule when the text is "Blue"
+          .whenFormulaSatisfied(blue_formula) // Apply rule when the text is "Blue"
           .setBackground(MODERATOR_VARIABLES.COLORS.LightBlue)
           .setRanges([range])
           .build(),
         SpreadsheetApp.newConditionalFormatRule()
-          .whenTextEqualTo(GLOBAL_VARIABLES.FOCUS[2]) // Apply rule when the text is "Green"
+          .whenFormulaSatisfied(green_formula) // Apply rule when the text is "Green"
           .setBackground(MODERATOR_VARIABLES.COLORS.Green)
           .setRanges([range])
           .build(),
         SpreadsheetApp.newConditionalFormatRule()
-          .whenTextDoesNotContain(GLOBAL_VARIABLES.FOCUS[0]) // Apply rule otherwise
-          .whenTextDoesNotContain(GLOBAL_VARIABLES.FOCUS[2])
+          .whenFormulaSatisfied(otherwiseFormula)
           .setBackground(MODERATOR_VARIABLES.COLORS.Yellow)
           .setRanges([range])
           .build(),
@@ -414,8 +425,10 @@ function createMultipleWorksheets() {
       trackingSheet.getRange(row, 7 + j).setFormula(formula);
 
       let languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
-      let participantLangugageRange = trackingSheet.getRange((roundCount + 5 + i), 6, 1, 1);
+      let participantLangugageRange = trackingSheet.getRange(row, 6, 1, 1);
       participantLangugageRange.setFormula(`=${sheetName}!${languageColumnLetter}2`);
+
+      trackingSheet.getRange(row, 7).setFormula(`=GOOGLETRANSLATE(B${roundCount + 12}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} F${row})`);
     }
   }
   // Get the total number of sheets
@@ -475,6 +488,7 @@ function StartSession() {
   // wait 10 seconds for participants to read the text
   Utilities.sleep(10000); // 10 seconds waiting time
   trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.FOCUS[0], GLOBAL_VARIABLES.SESSION_FOCUS]]);
+  SpreadsheetApp.flush();
   getRoundMinutes();
 }
 
@@ -530,7 +544,7 @@ function SubmitData() {
       trackingSheet.getRange((roundCount+4), 2, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
       SessionEnd();
     } else {
-      sheet.getRange((ideasCount+6), col_num+1).setValue(GLOBAL_VARIABLES.CHECK_IDEAS);
+      sheet.getRange((ideasCount+6), col_num+1).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
       sheet.getRange((ideasCount+7), col_num+1).insertCheckboxes();
       sheet.getRange(6, col_num+1, (ideasCount+1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
     }
