@@ -142,6 +142,6 @@
 
   "instructions_and_tips": "### Anleitung zur Nutzung dieses Tools \n\n**Schnelle Einrichtung**: \n- Zeigt nur die wichtigsten Variablen, die konfiguriert werden müssen. \n- Verwenden Sie den Umschalter, um Teilnahmetabellen-Namen manuell anzupassen. \n- Standardmäßig werden Rundennamen und Ideen als Runde N benannt. Um dies zu ändern, gehen Sie zum Bereich Variablenübersetzung. \n\n**Nach der Konfiguration**: \n- Klicken Sie auf „Skript generieren“. \n- Klicken Sie auf „In die Zwischenablage kopieren“, um zu kopieren \n- Fügen Sie den Code in Ihr Google Apps Script ein. \n\n**Variablenübersetzung**: \n- Zusammen mit der Schnelleinrichtung enthält dieser Bereich alle Textelemente, die für Teilnehmende sichtbar sind. \n- Übersetzen Sie diese, falls keine Sprachoption dafür existiert.\n\n**Erweiterte Anpassung**: \n- Ermöglicht Zugriff auf alle weiteren Konfigurationsoptionen. \n- Farben können als Farbname (z. B. \"rot\") oder als Hex-Code (z. B. \"#ff0000\") eingegeben werden.",
 
-  "advanced_settings": "(Experimental) multilingual session?",
-  "help_advanced_settings": "This experimental feature allows sessions to be conducted concurrently in multiple languages, powered by GOOGLETRANSLATE function."
+  "advanced_settings": "(Experimentell) mehrsprachige Sitzung?",
+  "help_advanced_settings": "Diese experimentelle Funktion ermöglicht es, Sitzungen gleichzeitig in mehreren Sprachen durchzuführen, unterstützt durch die GOOGLETRANSLATE-Funktion."
 }
