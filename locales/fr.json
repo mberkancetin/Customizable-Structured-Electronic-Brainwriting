@@ -142,6 +142,6 @@
 
   "instructions_and_tips": "### Comment utiliser cet outil \n\n**Configuration rapide** : \n- Affiche uniquement les variables essentielles à configurer. \n- Utilisez le bouton pour personnaliser manuellement les noms des feuilles des participants. \n- Par défaut, les noms des tours et des idées sont \"Tour N\". Pour les modifier, rendez-vous dans Traduction des variables. \n\n**Après la configuration** : \n- Cliquez sur « Générer le script ». \n- Cliquez sur « Copier dans le presse-papiers » pour copier \n- Collez le code dans votre projet Google Apps Script. \n\n**Traduction des variables** : \n- Cette section, avec la configuration rapide, contient tous les textes visibles par les participants. \n- Traduisez-les si aucune option de langue n’est disponible. \n\n**Personnalisation avancée** : \n- Donne accès aux options restantes de configuration. \n- Les couleurs peuvent être saisies comme noms (ex. \"rouge\") ou en codes hexadécimaux (ex. \"#ff0000\").",
 
-  "advanced_settings": "(Experimental) multilingual session?",
-  "help_advanced_settings": "This experimental feature allows sessions to be conducted concurrently in multiple languages, powered by GOOGLETRANSLATE function."
+  "advanced_settings": "(Expérimental) session multilingue ?",
+  "help_advanced_settings": "Cette fonctionnalité expérimentale permet de mener des sessions simultanément en plusieurs langues, grâce à la fonction GOOGLETRANSLATE."
 }
