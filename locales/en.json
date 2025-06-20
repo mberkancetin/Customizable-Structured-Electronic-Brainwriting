@@ -143,5 +143,7 @@
   "instructions_and_tips": "### How to Use This Tool \n\n**Quick Setup**: \n- Shows only the essential variables you need to configure. \n- Use toggle to configure participant sheet names manually. \n- By default, Round and Idea names are given Round N. To change, go to Variable Localization. \n\n**After Configuration**: \n- Click \"Generate Script\". \n- Click \"Copy to Clipboad\" to copy \n- Paste the code into your Google Apps Script. \n\n**Variable Localization**: \n- Together with Quick Setup, this section consists of text elements visible to participants. \n- Translate them if there is no language option given. \n\n**Advanced Customization**: \n- Advanced Customization gives you access to the remaining configuration options. \n- Colors can be entered as named colors (e.g., \"red\") or hex codes (e.g., \"#ff0000\").",
 
   "advanced_settings": "(Experimental) multilingual session?",
-  "help_advanced_settings": "This experimental feature allows sessions to be conducted concurrently in multiple languages, powered by GOOGLETRANSLATE function."
+  "help_advanced_settings": "This experimental feature allows sessions to be conducted concurrently in multiple languages, powered by GOOGLETRANSLATE function.",
+  "participant_sheet_names": "Participant Sheet Names",
+  "multilingual_sheet_language": "Language"
 }
