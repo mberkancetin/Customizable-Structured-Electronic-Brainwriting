@@ -29,6 +29,40 @@ SUPPORTED_LANGUAGES = {
     "fr": "Français"
 }
 
+GOOGLE_TRANSLATE_LANGUAGES = {
+    'af': 'Afrikaans', 'ak': 'Akan', 'am': 'Amharic', 'ar': 'Arabic', 'as': 'Assamese',
+    'ay': 'Aymara', 'az': 'Azerbaijani', 'be': 'Belarusian', 'bg': 'Bulgarian',
+    'bho': 'Bhojpuri', 'bm': 'Bambara', 'bn': 'Bengali', 'bs': 'Bosnian', 'ca': 'Catalan',
+    'ceb': 'Cebuano', 'ckb': 'Kurdish (Sorani)', 'co': 'Corsican', 'cs': 'Czech',
+    'cy': 'Welsh', 'da': 'Danish', 'de': 'German', 'doi': 'Dogri', 'dv': 'Dhivehi',
+    'ee': 'Ewe', 'el': 'Greek', 'en': 'English', 'eo': 'Esperanto', 'es': 'Spanish',
+    'et': 'Estonian', 'eu': 'Basque', 'fa': 'Persian', 'fi': 'Finnish', 'fr': 'French',
+    'fy': 'Frisian', 'ga': 'Irish', 'gd': 'Scots Gaelic', 'gl': 'Galician', 'gn': 'Guarani',
+    'gom': 'Goan Konkani', 'gu': 'Gujarati', 'ha': 'Hausa', 'haw': 'Hawaiian', 'he': 'Hebrew',
+    'hi': 'Hindi', 'hmn': 'Hmong', 'hr': 'Croatian', 'ht': 'Haitian Creole', 'hu': 'Hungarian',
+    'hy': 'Armenian', 'id': 'Indonesian', 'ig': 'Igbo', 'ilo': 'Ilocano', 'is': 'Icelandic',
+    'it': 'Italian', 'iw': 'Hebrew (Legacy)', 'ja': 'Japanese', 'jw': 'Javanese', 'ka': 'Georgian',
+    'kk': 'Kazakh', 'km': 'Khmer', 'kn': 'Kannada', 'ko': 'Korean', 'kri': 'Krio',
+    'ku': 'Kurdish (Kurmanji)', 'ky': 'Kyrgyz', 'la': 'Latin', 'lb': 'Luxembourgish', 'lg': 'Ganda',
+    'ln': 'Lingala', 'lo': 'Lao', 'lt': 'Lithuanian', 'lus': 'Mizo (Lushai)', 'lv': 'Latvian',
+    'mg': 'Malagasy', 'mi': 'Maori', 'mk': 'Macedonian', 'ml': 'Malayalam', 'mn': 'Mongolian',
+    'mni-Mtei': 'Meiteilon (Manipuri)', 'mr': 'Marathi', 'ms': 'Malay', 'mt': 'Maltese',
+    'my': 'Myanmar (Burmese)', 'ne': 'Nepali', 'nl': 'Dutch', 'no': 'Norwegian',
+    'nso': 'Northern Sotho', 'ny': 'Nyanja (Chichewa)', 'om': 'Oromo', 'or': 'Oriya (Odia)',
+    'pa': 'Punjabi', 'pl': 'Polish', 'ps': 'Pashto', 'pt': 'Portuguese', 'qu': 'Quechua',
+    'ro': 'Romanian', 'ru': 'Russian', 'rw': 'Kinyarwanda', 'sa': 'Sanskrit', 'sd': 'Sindhi',
+    'si': 'Sinhala', 'sk': 'Slovak', 'sl': 'Slovenian', 'sm': 'Samoan', 'sn': 'Shona',
+    'so': 'Somali', 'sq': 'Albanian', 'sr': 'Serbian (Cyrillic)', 'sr-Latn': 'Serbian (Latin)',
+    'st': 'Southern Sotho', 'su': 'Sundanese', 'sv': 'Swedish', 'sw': 'Swahili', 'ta': 'Tamil',
+    'te': 'Telugu', 'tg': 'Tajik', 'th': 'Thai', 'ti': 'Tigrinya', 'tk': 'Turkmen',
+    'tl': 'Filipino (Tagalog)', 'tr': 'Turkish', 'ts': 'Tsonga', 'tt': 'Tatar', 'ug': 'Uyghur',
+    'uk': 'Ukrainian', 'ur': 'Urdu', 'uz': 'Uzbek', 'vi': 'Vietnamese', 'xh': 'Xhosa',
+    'yi': 'Yiddish', 'yo': 'Yoruba', 'zh': 'Chinese', 'zh-CN': 'Chinese (Simplified)',
+    'zh-TW': 'Chinese (Traditional)', 'zu': 'Zulu'
+}
+
+LANG_NAME_TO_CODE = {v: k for k, v in GOOGLE_TRANSLATE_LANGUAGES.items()}
+
 # --- Translation Loading Function ---
 @st.cache_data # Cache the loaded translations
 def load_translations(lang_code):
@@ -75,6 +109,29 @@ def sanitize_sheet_name(name_str):
     name_str = name_str.replace(" ", "_")
     name_str = re.sub(r'[^\w_]+', '', name_str)
     return name_str if name_str else "Sheet1"
+
+def apply_participant_edits():
+    """
+    This is the CORRECT callback. It takes the dictionary of edits
+    from st.session_state.participant_editor and applies them to the
+    master DataFrame in st.session_state.participants_df.
+    """
+    # Get the dictionary of edits from the session state
+    edits = st.session_state.participant_editor
+
+    # Make a copy of the current DataFrame to modify
+    df_to_edit = st.session_state.participants_df.copy()
+
+    # Apply the edits
+    for row_index, changed_data in edits["edited_rows"].items():
+        # The index in the data editor starts from 1, but pandas index starts from 0
+        # so we need to be careful if we are using iloc. Let's use loc which is safer.
+        # The editor returns the original index, so we can use `loc`.
+        for col_name, new_value in changed_data.items():
+            df_to_edit.loc[row_index + 1, col_name] = new_value
+
+    # Update the master DataFrame in session state with the newly edited one
+    st.session_state.participants_df = df_to_edit
 
 def get_translated_text_from_key(text_key_from_config, translations_dict, default_val_if_missing=""):
     """Helper to get translated text using a known key from DEFAULT_TEXT_KEYS, then from locale files"""
@@ -124,14 +181,7 @@ def initialize_session_state(translations):
         gv["LANDING_SHEET"] = get_translated_text_from_key("LANDING_SHEET", translations) # Assumes sheet names are translated
         gv["MODERATOR_SHEET"] = get_translated_text_from_key("MODERATOR_SHEET", translations) # Assumes sheet names are translated
         gv["SESSION_LANGUAGE"] = get_translated_text_from_key("SESSION_LANGUAGE", translations) # Assumes sheet names are translated
-        gv["PARTICIPANT_SHEET_LANGUAGE"] = [
-            get_translated_text_from_key("SESSION_LANGUAGE", translations),
-            get_translated_text_from_key("SESSION_LANGUAGE", translations),
-            get_translated_text_from_key("SESSION_LANGUAGE", translations),
-            get_translated_text_from_key("SESSION_LANGUAGE", translations),
-            get_translated_text_from_key("SESSION_LANGUAGE", translations),
-            get_translated_text_from_key("SESSION_LANGUAGE", translations)
-        ]
+        gv["PARTICIPANT_SHEET_LANGUAGE"] = [get_translated_text_from_key("SESSION_LANGUAGE", translations) for _ in range(st.session_state.num_participants)]
         gv["TIME_LEFT"] = get_translated_text_from_key("TIME_LEFT", translations)
         gv["TIME_IS_UP"] = get_translated_text_from_key("TIME_IS_UP", translations)
         gv["FOCUS"] = [
@@ -226,7 +276,9 @@ def generate_js_from_state(translations_for_error_msg):
 
     # Sanitize participant names before dumping to JS array
     raw_participant_list = gv.get("PARTICIPANT", [])
+    participant_sheet_language_list = gv.get("PARTICIPANT_SHEET_LANGUAGE", [])
     sanitized_participant_list = [sanitize_sheet_name(name) for name in raw_participant_list]
+
 
     replacements = {
         "{{SESSION_FOCUS_JS_STRING}}": json.dumps(gv.get("SESSION_FOCUS", ""), ensure_ascii=False),
@@ -234,7 +286,7 @@ def generate_js_from_state(translations_for_error_msg):
         "{{PARTICIPANT_LIST_AS_JS_ARRAY}}": json.dumps(sanitized_participant_list, ensure_ascii=False),
         "{{MODERATOR_SHEET_JS_STRING}}": json.dumps(sanitize_sheet_name(gv.get("MODERATOR_SHEET", "Moderator")), ensure_ascii=False),
         "{{SESSION_LANGUAGE_JS_STRING}}": json.dumps(gv.get("SESSION_LANGUAGE", ""), ensure_ascii=False),
-        "{{PARTICIPANT_SHEET_LANGUAGE_LIST_AS_JS_ARRAY}}": json.dumps(gv.get("PARTICIPANT_SHEET_LANGUAGE", []), ensure_ascii=False),
+        "{{PARTICIPANT_SHEET_LANGUAGE_LIST_AS_JS_ARRAY}}": json.dumps(participant_sheet_language_list, ensure_ascii=False),
         "{{TIME_LEFT_JS_STRING}}": json.dumps(gv.get("TIME_LEFT", ""), ensure_ascii=False),
         "{{TIME_IS_UP_JS_STRING}}": json.dumps(gv.get("TIME_IS_UP", ""), ensure_ascii=False),
         "{{MINUTES_INT}}": str(gv.get("MINUTES", 5)),
@@ -298,7 +350,7 @@ def main():
         """,
         unsafe_allow_html=True
     )
-    # --- Language Selection (should happen early) ---
+    # --- Language Selection ---
     # Load translations just for the sidebar elements initially
     sidebar_translations = load_translations(st.session_state.app_lang)
     if not sidebar_translations: # Critical check
@@ -366,52 +418,136 @@ def main():
             st.session_state.GLOBAL_VARIABLES["SESSION_FOCUS"], key="qs_session_focus",
             help=_("help_session_focus", T_UI)
         )
+
         c1, c2 = st.columns(2)
         with c1:
-            # Numeric inputs for counts; these will trigger updates in initialize_session_state if changed
-            # Or, we handle list regeneration directly if these numbers change
-            num_participants_val = st.number_input(
-                _("num_participants_label", T_UI), min_value=1,
-                value=st.session_state.num_participants, step=1, key="qs_num_participants_input",
-                help=_("help_number_participants", T_UI)
-            )
-            if num_participants_val != st.session_state.num_participants:
-                st.session_state.num_participants = num_participants_val
-                # Regenerate participant list if not customized
-                if not st.session_state.get("customize_participant_names", False):
+            if not st.session_state.advanced_settings:
+                # Numeric inputs for counts; these will trigger updates in initialize_session_state if changed
+                # Or, we handle list regeneration directly if these numbers change
+                num_participants_val = st.number_input(
+                    _("num_participants_label", T_UI), min_value=1,
+                    value=st.session_state.num_participants, step=1, key="qs_num_participants_input",
+                    help=_("help_number_participants", T_UI)
+                )
+                if num_participants_val != st.session_state.num_participants:
+                    st.session_state.num_participants = num_participants_val
+                    # Regenerate participant list if not customized
+                    if not st.session_state.get("customize_participant_names", False):
+                        participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", T_UI)
+                        st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
+                    st.rerun() # Rerun to reflect changes, especially if names are generated
+
+                st.session_state.customize_participant_names = st.toggle(
+                    _("customize_participant_names_label", T_UI),
+                    value=st.session_state.customize_participant_names,
+                    key="fc_toggle_customize_names1",
+                    help=_("help_list_participants", T_UI)
+                )
+                st.caption(_("data_editor_info_dict", T_UI))
+                if st.session_state.customize_participant_names:
+                    current_names = list(st.session_state.GLOBAL_VARIABLES["PARTICIPANT"])
+                    num_p_display = st.session_state.num_participants
+
+                    # Adjust list size if num_participants changed from quick setup
+                    if len(current_names) > num_p_display: current_names = current_names[:num_p_display]
+                    elif len(current_names) < num_p_display:
+                        participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", T_UI)
+                        current_names.extend([participant_prefix.format(no=i+1) for i in range(len(current_names), num_p_display)])
+
+                    new_participants = []
+                    for i in range(num_p_display):
+                        new_participants.append(st.text_input(
+                            _("participant_name_label", T_UI, i=i+1),
+                            value=current_names[i] if i < len(current_names) else f"{get_translated_text_from_key('PARTICIPANT_PREFIX', T_UI)}{i+1}",
+                            key=f"fc_p_name_custom_{i}"
+                        ))
+                    sanitized_participant_list = [sanitize_sheet_name(name) for name in new_participants]
+                    st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = sanitized_participant_list
+
+                else: # Show generated, non-editable list
+                    st.write(pd.DataFrame({_("participant_sheet_names", T_UI): st.session_state.GLOBAL_VARIABLES["PARTICIPANT"]}, index=range(1, st.session_state.num_participants+1)))
+            else:
+                # Numeric input for participant count
+                num_participants_val = st.number_input(
+                    _("num_participants_label", T_UI), min_value=1,
+                    value=st.session_state.num_participants, step=1, key="qs_num_participants_input",
+                    help=_("help_number_participants", T_UI)
+                )
+
+                # --- Data Structure Management ---
+                df_exists = "participants_df" in st.session_state
+                if not df_exists or num_participants_val != st.session_state.num_participants:
+                    st.session_state.num_participants = num_participants_val
                     participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", T_UI)
-                    st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
-                st.rerun() # Rerun to reflect changes, especially if names are generated
 
-            st.session_state.customize_participant_names = st.toggle(
-                _("customize_participant_names_label", T_UI),
-                value=st.session_state.customize_participant_names,
-                key="fc_toggle_customize_names1",
-                help=_("help_list_participants", T_UI)
-            )
-            st.caption(_("data_editor_info_dict", T_UI))
-            if st.session_state.customize_participant_names:
-                current_names = list(st.session_state.GLOBAL_VARIABLES["PARTICIPANT"])
-                num_p_display = st.session_state.num_participants
+                    # Create or update the DataFrame
+                    new_names = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
+                    new_langs = [GOOGLE_TRANSLATE_LANGUAGES[get_translated_text_from_key("SESSION_LANGUAGE", T_UI)]] * st.session_state.num_participants
 
-                # Adjust list size if num_participants changed from quick setup
-                if len(current_names) > num_p_display: current_names = current_names[:num_p_display]
-                elif len(current_names) < num_p_display:
-                    participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", T_UI)
-                    current_names.extend([participant_prefix.format(no=i+1) for i in range(len(current_names), num_p_display)])
+                    new_df = pd.DataFrame({
+                        "Name": new_names,
+                        "Language": new_langs
+                    })
 
-                new_participants = []
-                for i in range(num_p_display):
-                    new_participants.append(st.text_input(
-                        _("participant_name_label", T_UI, i=i+1),
-                        value=current_names[i] if i < len(current_names) else f"{get_translated_text_from_key('PARTICIPANT_PREFIX', T_UI)}{i+1}",
-                        key=f"fc_p_name_custom_{i}"
-                    ))
-                sanitized_participant_list = [sanitize_sheet_name(name) for name in new_participants]
-                st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = sanitized_participant_list
+                    if df_exists:
+                        old_df = st.session_state.participants_df
+                        common_rows = min(len(old_df), len(new_df))
+                        new_df.iloc[:common_rows] = old_df.iloc[:common_rows]
 
-            else: # Show generated, non-editable list
-                st.write(pd.DataFrame({"Participant Sheet Names": st.session_state.GLOBAL_VARIABLES["PARTICIPANT"]}, index=range(1, st.session_state.num_participants+1)))
+                    new_df.index = range(1, len(new_df) + 1)
+
+                    st.session_state.participants_df = new_df
+                    st.rerun()
+
+                # Toggle for customizing
+                st.session_state.customize_participant_names = st.toggle(
+                    _("customize_participant_names_label", T_UI),
+                    value=st.session_state.customize_participant_names,
+                    key="fc_toggle_customize_names1",
+                    help=_("help_list_participants", T_UI)
+                )
+
+                if st.session_state.customize_participant_names:
+                    st.caption(_("data_editor_info_dict", T_UI))
+
+                    st.data_editor(
+                        st.session_state.participants_df,
+                        num_rows="fixed",
+                        use_container_width=True,
+                        on_change=apply_participant_edits,
+                        column_config={
+                            "Name": st.column_config.TextColumn(
+                                required=True,
+                                label=_("participant_sheet_names", T_UI)
+                            ),
+                            "Language": st.column_config.SelectboxColumn(
+                                required=True,
+                                label=_("multilingual_sheet_language", T_UI),
+                                options=GOOGLE_TRANSLATE_LANGUAGES.values()
+                            )
+                        },
+                        key="participant_editor"
+                    )
+
+                    participant_names = st.session_state.participants_df["Name"].tolist()
+                    participant_lang_names = st.session_state.participants_df["Language"].tolist()
+
+                    participant_lang_codes = [LANG_NAME_TO_CODE[name] for name in participant_lang_names]
+
+                    st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = [sanitize_sheet_name(name) for name in participant_names]
+                    st.session_state.GLOBAL_VARIABLES["PARTICIPANT_SHEET_LANGUAGE"] = participant_lang_codes
+
+                else:  # Show the non-editable list
+                    display_df = st.session_state.participants_df.copy()
+                    display_df.index = range(1, len(display_df) + 1)
+                    display_df = display_df.rename(columns={'Name': _("participant_sheet_names", T_UI), 'Language': _("multilingual_sheet_language", T_UI)})
+                    st.dataframe(display_df, use_container_width=True)
+
+                    participant_lang_names = st.session_state.participants_df["Language"].tolist()
+                    participant_lang_codes = [LANG_NAME_TO_CODE[name] for name in participant_lang_names]
+
+                    st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = [sanitize_sheet_name(name) for name in st.session_state.participants_df["Name"]]
+                    st.session_state.GLOBAL_VARIABLES["PARTICIPANT_SHEET_LANGUAGE"] = participant_lang_codes
         with c2:
             num_rounds_val = st.number_input(
                 _("num_rounds_label", T_UI), min_value=1,
