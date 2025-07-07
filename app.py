@@ -6,14 +6,14 @@ from copy import deepcopy
 
 # Import all structures from default_js_config.py
 from default_js_config import (
-    DEFAULT_TEXT_KEYS, # This is new and crucial
+    DEFAULT_TEXT_KEYS,
     DEFAULT_GLOBAL_VARIABLES_STRUCTURE,
     DEFAULT_MODERATOR_VARIABLES_STRUCTURE,
     DEFAULT_LANDINGPAGE_VARIABLES_TEXT_KEYS,
     DEFAULT_ANALYSIS_VARIABLES_TEXT_KEYS,
     DEFAULT_IMAGE_URL,
     DEFAULT_COLAB_GITHUB_URL,
-    DEFAULT_NUM_PARTICIPANTS, # Default numbers
+    DEFAULT_NUM_PARTICIPANTS,
     DEFAULT_NUM_ROUNDS,
     DEFAULT_NUM_IDEAS
 )
@@ -183,6 +183,8 @@ def initialize_session_state(translations):
         gv["SESSION_LANGUAGE"] = get_translated_text_from_key("SESSION_LANGUAGE", translations) # Assumes sheet names are translated
         gv["PARTICIPANT_SHEET_LANGUAGE"] = [get_translated_text_from_key("SESSION_LANGUAGE", translations) for _ in range(st.session_state.num_participants)]
         gv["TIME_LEFT"] = get_translated_text_from_key("TIME_LEFT", translations)
+        gv["MINS_LEFT"] = get_translated_text_from_key("MINS_LEFT", translations)
+        gv["ONE_MIN_LEFT"] = get_translated_text_from_key("ONE_MIN_LEFT", translations)
         gv["TIME_IS_UP"] = get_translated_text_from_key("TIME_IS_UP", translations)
         gv["FOCUS"] = [
             get_translated_text_from_key("FOCUS_ITEM_1", translations),
@@ -225,6 +227,7 @@ def initialize_session_state(translations):
         mv["DATA_PREP"]["SessionLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["SessionLanguage"]
         mv["DATA_PREP"]["TranslatedLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["TranslatedLanguage"]
         mv["COLORS"] = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE["COLORS"])
+        mv["START_TIMER"] = get_translated_text_from_key("START_TIMER", translations)
         st.session_state.MODERATOR_VARIABLES = mv
 
         # --- LANDINGPAGE_VARIABLES_TEXTS ---
@@ -288,6 +291,8 @@ def generate_js_from_state(translations_for_error_msg):
         "{{SESSION_LANGUAGE_JS_STRING}}": json.dumps(gv.get("SESSION_LANGUAGE", ""), ensure_ascii=False),
         "{{PARTICIPANT_SHEET_LANGUAGE_LIST_AS_JS_ARRAY}}": json.dumps(participant_sheet_language_list, ensure_ascii=False),
         "{{TIME_LEFT_JS_STRING}}": json.dumps(gv.get("TIME_LEFT", ""), ensure_ascii=False),
+        "{{MINS_LEFT_JS_STRING}}": json.dumps(gv.get("MINS_LEFT", ""), ensure_ascii=False),
+        "{{ONE_MIN_LEFT_JS_STRING}}": json.dumps(gv.get("ONE_MIN_LEFT", ""), ensure_ascii=False),
         "{{TIME_IS_UP_JS_STRING}}": json.dumps(gv.get("TIME_IS_UP", ""), ensure_ascii=False),
         "{{MINUTES_INT}}": str(gv.get("MINUTES", 5)),
         "{{FOCUS_LIST_AS_JS_ARRAY}}": json.dumps(gv.get("FOCUS", []), ensure_ascii=False),
@@ -309,6 +314,7 @@ def generate_js_from_state(translations_for_error_msg):
         "{{DATA_PREP_TranslateColumn_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("TranslateColumn", "Translation"), ensure_ascii=False),
         "{{DATA_PREP_ManualCategorization_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("ManualCategorization", "ManualCategories"), ensure_ascii=False),
         "{{COLORS_OBJECT_AS_JS_OBJECT}}": json.dumps(mv.get("COLORS", {}), ensure_ascii=False),
+        "{{START_TIMER_OBJECT_AS_JS_OBJECT}}": json.dumps(mv.get("START_TIMER", {}), ensure_ascii=False),
 
         "{{IMAGE_URL_JS_STRING}}": json.dumps(st.session_state.imageUrl if st.session_state.get("generate_landing_page", False) and st.session_state.get("use_logo", False) else ""),
         "{{COLAB_GITHUB_URL_JS_STRING}}": json.dumps(st.session_state.get("colabGitHubUrl", ""), ensure_ascii=False),
@@ -639,6 +645,9 @@ def main():
         # GLOBAL_VARIABLES texts
         with st.expander(_("global_vars_texts_header", T_UI)):
             st.session_state.GLOBAL_VARIABLES["TIME_LEFT"] = st.text_input(_("time_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_LEFT"], key="loc_time_left")
+            st.session_state.GLOBAL_VARIABLES["MINS_LEFT"] = st.text_input(_("mins_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["MINS_LEFT"], key="loc_mins_left")
+            st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"] = st.text_input(_("one_min_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"], key="loc_one_min_left")
+
             st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"] = st.text_input(_("time_is_up_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"], key="loc_time_is_up")
             st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"] = st.text_input(_("check_ideas_label", T_UI), st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"], key="loc_check_ideas")
             st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"] = st.text_input(_("session_complete_label", T_UI), st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"], key="loc_session_complete")

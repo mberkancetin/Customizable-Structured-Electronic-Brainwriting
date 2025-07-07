@@ -24,6 +24,8 @@ const GLOBAL_VARIABLES = {
   PARTICIPANT: {{PARTICIPANT_LIST_AS_JS_ARRAY}},
   MODERATOR_SHEET: {{MODERATOR_SHEET_JS_STRING}},
   TIME_LEFT: {{TIME_LEFT_JS_STRING}},
+  MINS_LEFT: {{MINS_LEFT_JS_STRING}},
+  ONE_MIN_LEFT: {{ONE_MIN_LEFT_JS_STRING}},
   TIME_IS_UP: {{TIME_IS_UP_JS_STRING}},
   MINUTES: {{MINUTES_INT}},
   FOCUS: {{FOCUS_LIST_AS_JS_ARRAY}},
@@ -54,7 +56,8 @@ const MODERATOR_VARIABLES = {
     TranslateColumn: {{DATA_PREP_TranslateColumn_JS_STRING}},
     ManualCategorization: {{DATA_PREP_ManualCategorization_JS_STRING}}
   },
-  COLORS : {{COLORS_OBJECT_AS_JS_OBJECT}}
+  COLORS : {{COLORS_OBJECT_AS_JS_OBJECT}},
+  START_TIMER: {{START_TIMER_OBJECT_AS_JS_OBJECT}}
 };
 
 const imageUrl = {{IMAGE_URL_JS_STRING}};
@@ -99,11 +102,39 @@ const ANALYSIS_VARIABLES = {
   `
 };
 
+const TIMER_STR = String(GLOBAL_VARIABLES.MINUTES).padStart(2, '0') + ':00';
+
+
 /*
 The code begins here.
 Feel free to modify, but please review carefully to maintain functionality.
 */
 
+
+function getFormulaSeparatorFromSheet() {
+  // Reads if seperator is comma: min(1,0) returns 1
+  // or if seperator is semicolon: min(1;0) returns 0
+  // in the sheet to detect the separator
+  const ss = spreadsheet.getActiveSheet();
+  const range = ss.getRange(25, 1);
+
+  range.setFormula('=MIN(1,0)');
+  SpreadsheetApp.flush();
+
+  const formula = range.getFormula();
+
+  range.clearContent();
+
+  // Detect which separator is used
+  return formula.includes(1) ? ';' : ',';
+}
+
+const sep = getFormulaSeparatorFromSheet();
+
+
+/*
+----- FUNCTION TO CREATE LANDING PAGE -----
+*/
 function createBrainwritingLandingPage() {
   const allSheets = spreadsheet.getSheets();
 
@@ -173,16 +204,15 @@ function createBrainwritingLandingPage() {
 
   // Add institution logo
   if (imageUrl) {
-  landingSheet.getRange("K18:L19").merge().setHorizontalAlignment("right").setFormula(`=IMAGE("${imageUrl}"; 1)`)
+  landingSheet.getRange("K18:L19").merge().setHorizontalAlignment("right").setFormula(`=IMAGE("${imageUrl}"${sep} 1)`)
   }
-
   SpreadsheetApp.flush(); // Apply all changes
 }
+
 
 /*
 ----- FUNCTION TO CREATE PROGRESS TRACKING AND PARTICIPANT SHEETS -----
 */
-
 function createMultipleWorksheets() {
   // Try to get existing tracking sheet or create new one
   try {
@@ -236,7 +266,17 @@ function createMultipleWorksheets() {
   trackingSheet.getRange((roundCount + 12), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
   trackingSheet.getRange((roundCount + 12), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
 
-  trackingSheet.getRange((roundCount + 10), 2, 1, 1).setValue("0" + GLOBAL_VARIABLES.MINUTES + ":00")
+  trackingSheet.getRange((roundCount + 14), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
+  trackingSheet.getRange((roundCount + 14), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
+  trackingSheet.getRange((roundCount + 14), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
+  trackingSheet.getRange((roundCount + 15), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[1]);
+  trackingSheet.getRange((roundCount + 15), 2, 1, 1).setValue(MODERATOR_VARIABLES.SESSION_START);
+  trackingSheet.getRange((roundCount + 16), 1, 1, 2).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[0]);
+  trackingSheet.getRange((roundCount + 17), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
+  trackingSheet.getRange((roundCount + 17), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
+
+  trackingSheet.getRange((roundCount + 10), 2, 1, 1).setValue(TIMER_STR)
+  trackingSheet.getRange((roundCount + 9), 2, 1, 1).setValue(GLOBAL_VARIABLES.MINUTES)
   trackingSheet.getRange((roundCount + 12), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
 
   // Create 6 sheets
@@ -376,10 +416,10 @@ function createMultipleWorksheets() {
   spreadsheet.moveActiveSheet(sheetCount);
 }
 
+
 /*
 ----- FUNCTION TO ADD UI MENU -----
 */
-
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu(MODERATOR_VARIABLES.MENU.Tools)
@@ -392,48 +432,109 @@ function onOpen() {
       .addToUi();
 }
 
+
 // Round countdown
-function calculateRoundLength() {
-  var minutesAdded = new Date();
-  minutesAdded.setMinutes(minutesAdded.getMinutes() + GLOBAL_VARIABLES.MINUTES);
-  return minutesAdded;
+// in progress
+
+function updateCountdownStatus(secondsLeft) {
+  const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
+  let message = '';
+
+  if (secondsLeft <= 0) {
+    message = GLOBAL_VARIABLES.TIME_IS_UP;
+  } else if (secondsLeft <= 60) {
+    message = GLOBAL_VARIABLES.ONE_MIN_LEFT;
+  } else {
+    message = Math.ceil(secondsLeft / 60) + GLOBAL_VARIABLES.MINS_LEFT;
+  }
+
+  trackingSheet.getRange(roundCount + 10, 2).setValue(message);
 }
-
-function getFormulaSeparatorFromSheet() {
-  // Reads if seperator is comma: min(1,0) returns 1
-  // or if seperator is semicolon: min(1;0) returns 0
-  // in the sheet to detect the separator
-  const ss = spreadsheet.getActiveSheet();
-  const range = ss.getRange(25, 1);
-
-  range.setFormula('=MIN(1,0)');
-  SpreadsheetApp.flush();
-
-  const formula = range.getFormula();
-
-  range.clearContent();
-
-  // Detect which separator is used
-  return formula.includes(1) ? ';' : ',';
-}
-
-const sep = getFormulaSeparatorFromSheet();
 
 function getRoundMinutes() {
   const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-
-
   trackingSheet.getRange(roundCount + 8, 2).setFormula("=NOW()");
-  trackingSheet.getRange(roundCount + 9, 2).setValue(calculateRoundLength());
 
-  const rA = roundCount + 9;
-  const rB = roundCount + 8;
-  const rC = roundCount + 5;
+  let TIMER_INTERVAL = 10;
+  var round_min = trackingSheet.getRange((roundCount + 9), 2, 1, 1).getValue();
+  let TIMER_DURATION = round_min * 60;
+  let TIMER_STR_IF_CHANGED = String(round_min).padStart(2, '0') + ':00';
 
-  const timerFormula = `=IF((B${rA} <= B${rB})${sep} B${rC}${sep} TEXT(QUOTIENT(ROUND((B${rA} - B${rB}) * 86400)${sep} 60)${sep} "00") & ":" & TEXT(MOD(ROUND((B${rA} - B${rB}) * 86400)${sep} 60)${sep} "00"))`;
+  function showTimerSidebar() {
+    const html = HtmlService.createHtmlOutput(`
+      <html>
+        <head>
+          <base target="_top">
+          <style>
+            body {
+              margin: 0;
+              padding: 5px;
+              font-family: Arial, sans-serif;
+              width: 120px;
+              height: 60px;
+              background: #ffffff;
+            }
+            #timerContainer {
+              width: 105px;
+              height: 42.5px;
+              background: #f1f1f1;
+              text-align: center;
+              line-height: 42.5px;
+              font-size: 1.6em;
+              border-radius: 6px;
+              margin: 5px auto;
+            }
+            #startBtn {
+              display: block;
+              margin: 5px auto;
+              padding: 4px 10px;
+              font-size: 0.9em;
+              cursor: pointer;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="timerContainer">${TIMER_STR_IF_CHANGED}</div>
+          <button id="startBtn" onclick="startTimer()">${MODERATOR_VARIABLES.START_TIMER}</button>
+          <script>
+            let duration = ${TIMER_DURATION};
+            let interval = ${TIMER_INTERVAL};
 
-  trackingSheet.getRange(roundCount + 10, 2).setFormula(timerFormula);
+            function startTimer() {
+              document.getElementById('startBtn').style.display = 'none';
+              const display = document.getElementById('timerContainer');
+
+              interval = setInterval(function() {
+                let minutes = Math.floor(duration / 60);
+                let seconds = duration % 60;
+                const timeStr =
+                  String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+                display.textContent = timeStr;
+
+                // Report to Sheets every 10 seconds
+                if (duration % 10 === 0) {
+                  google.script.run.updateCountdownStatus(duration);
+                }
+
+                if (--duration < 0) {
+                  clearInterval(interval);
+                  display.textContent = '00:00';
+                  google.script.run.updateCountdownStatus(0);
+                }
+              }, 1000);
+            }
+          </script>
+        </body>
+      </html>
+    `).setTitle(GLOBAL_VARIABLES.TIME_LEFT).setWidth(130);
+
+    SpreadsheetApp.getUi().showSidebar(html);
+  }
+
+  showTimerSidebar();
 }
+// in progress
+
 
 // Start session with a note in yellow background
 function StartSession() {
@@ -448,12 +549,14 @@ function StartSession() {
   getRoundMinutes();
 }
 
+
 // End session with a note in green background
 function SessionEnd() {
   var trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
   trackingSheet.getRange((roundCount + 12), 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
   trackingSheet.getRange((roundCount + 12), 2).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
 }
+
 
 /*
 ----- FUNCTION TO SUBMIT DATA AND CHANGE ROUND -----
@@ -510,12 +613,11 @@ function SubmitData() {
   getRoundMinutes();
 }
 
+
 /*
 ----- FUNCTION TO PREPARE DATA FOR ANALYSIS -----
 */
-
 function PrepData() {
-
   try {
     prepSheet = spreadsheet.insertSheet(MODERATOR_VARIABLES.DATA_PREP.SheetName);
   } catch (e) {
@@ -559,6 +661,7 @@ function PrepData() {
       prepSheet.getRange("B1").setValue(MODERATOR_VARIABLES.DATA_PREP.ManualCategorization);
   }
 }
+
 
 // Pop-up that guides the moderator for Colab environment
 function completeAutomationAndGuideToColab() {

@@ -145,5 +145,8 @@
   "advanced_settings": "(Deneysel) çok dilli oturum?",
   "help_advanced_settings": "Bu deneysel özellik, GOOGLETRANSLATE fonksiyonu sayesinde oturumların aynı anda birden fazla dilde yürütülmesini sağlar.",
   "participant_sheet_names": "Katılımcı Sayfası İsimleri",
-  "multilingual_sheet_language": "Sayfa Dili"
+  "multilingual_sheet_language": "Sayfa Dili",
+  "default_mins_left": " dakika kaldı",
+  "default_one_min_left": "1 dakika kaldı",
+  "default_mod_start_timer": "Başlat"
 }

@@ -145,5 +145,8 @@
   "advanced_settings": "(Experimental) sesión multilingüe?",
   "help_advanced_settings": "Esta función experimental permite realizar sesiones simultáneamente en varios idiomas, gracias a la función GOOGLETRANSLATE.",
   "participant_sheet_names": "Nombres de hojas de participantes",
-  "multilingual_sheet_language": "Idioma de la hoja"
+  "multilingual_sheet_language": "Idioma de la hoja",
+  "default_mins_left": " minutos restantes",
+  "default_one_min_left": "1 minuto restante",
+  "default_mod_start_timer": "Iniciar"
 }

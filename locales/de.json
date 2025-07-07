@@ -145,5 +145,8 @@
   "advanced_settings": "(Experimentell) mehrsprachige Sitzung?",
   "help_advanced_settings": "Diese experimentelle Funktion ermöglicht es, Sitzungen gleichzeitig in mehreren Sprachen durchzuführen, unterstützt durch die GOOGLETRANSLATE-Funktion.",
   "participant_sheet_names": "Tabellennamen der Teilnehmenden",
-  "multilingual_sheet_language": "Tabellensprache"
+  "multilingual_sheet_language": "Tabellensprache",
+  "default_mins_left": " Minuten verbleiben",
+  "default_one_min_left": "1 Minute verbleibt",
+  "default_mod_start_timer": "Start"
 }

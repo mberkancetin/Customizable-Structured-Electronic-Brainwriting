@@ -8,6 +8,8 @@ DEFAULT_TEXT_KEYS = {
     "MODERATOR_SHEET": "default_moderator_sheet_name",
     "SESSION_LANGUAGE": "default_session_language",
     "TIME_LEFT": "default_time_left",
+    "MINS_LEFT": "default_mins_left",
+    "ONE_MIN_LEFT": "default_one_min_left",
     "TIME_IS_UP": "default_time_is_up",
     "FOCUS_ITEM_1": "default_focus_item_1", # "Focus"
     "FOCUS_ITEM_2": "default_focus_item_2", # "Session Started"
@@ -34,6 +36,7 @@ DEFAULT_TEXT_KEYS = {
     "MOD_DATA_PREP_IDEA_RAW_COL": "default_mod_data_prep_idea_raw_col", # "RawIdea"
     "MOD_DATA_PREP_TRANSLATE_COL": "default_mod_data_prep_translate_col", # "Translation"
     "MOD_DATA_PREP_MANUAL_CAT": "default_mod_data_prep_manual_cat", # "ManualCategories"
+    "MOD_START_TIMER": "default_mod_start_timer",
 
     # Landing Page Texts (content of the variables, not labels)
     "LP_GREETING_MESSAGE_TEMPLATE": "default_lp_greeting_message_template", # The big template string
@@ -64,6 +67,8 @@ DEFAULT_GLOBAL_VARIABLES_STRUCTURE = {
     "MODERATOR_SHEET": DEFAULT_TEXT_KEYS["MODERATOR_SHEET"],
     "SESSION_LANGUAGE": DEFAULT_TEXT_KEYS["SESSION_LANGUAGE"],
     "TIME_LEFT": DEFAULT_TEXT_KEYS["TIME_LEFT"],
+    "MINS_LEFT": DEFAULT_TEXT_KEYS["MINS_LEFT"],
+    "ONE_MIN_LEFT": DEFAULT_TEXT_KEYS["ONE_MIN_LEFT"],
     "TIME_IS_UP": DEFAULT_TEXT_KEYS["TIME_IS_UP"],
     "MINUTES": 5, # Integer, not translated
     "FOCUS": [DEFAULT_TEXT_KEYS["FOCUS_ITEM_1"], DEFAULT_TEXT_KEYS["FOCUS_ITEM_2"], DEFAULT_TEXT_KEYS["FOCUS_ITEM_3"]],
@@ -99,7 +104,8 @@ DEFAULT_MODERATOR_VARIABLES_STRUCTURE = {
         "LightSteelBlue": "LightSteelBlue", "LightBlue": "#cfe2f3", "Gold": "#ffd700",
         "LightGreen": "#d9ead3", "Green": "#90ee90", "Yellow": "yellow",
         "Grey": "grey", "LightGrey": "#efefef"
-    }
+    },
+    "START_TIMER": DEFAULT_TEXT_KEYS["MOD_START_TIMER"]
 }
 
 DEFAULT_LANDINGPAGE_VARIABLES_TEXT_KEYS = { # Keys for the text parts

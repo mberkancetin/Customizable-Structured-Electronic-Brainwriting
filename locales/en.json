@@ -90,6 +90,7 @@
   "default_moderator_sheet_name": "ProgressTracking",
   "default_session_language": "en",
   "default_time_left": "Timer",
+
   "default_time_is_up": "Time's up!",
   "default_focus_item_1": "Focus",
   "default_focus_item_2": "Session Started",
@@ -145,5 +146,8 @@
   "advanced_settings": "(Experimental) multilingual session?",
   "help_advanced_settings": "This experimental feature allows sessions to be conducted concurrently in multiple languages, powered by GOOGLETRANSLATE function.",
   "participant_sheet_names": "Participant Sheet Names",
-  "multilingual_sheet_language": "Language"
+  "multilingual_sheet_language": "Language",
+  "default_mins_left": " minutes left",
+  "default_one_min_left": "1 minute left",
+  "default_mod_start_timer": "Start"
 }
