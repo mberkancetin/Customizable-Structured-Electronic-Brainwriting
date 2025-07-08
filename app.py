@@ -645,8 +645,8 @@ def main():
         # GLOBAL_VARIABLES texts
         with st.expander(_("global_vars_texts_header", T_UI)):
             st.session_state.GLOBAL_VARIABLES["TIME_LEFT"] = st.text_input(_("time_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_LEFT"], key="loc_time_left")
-            st.session_state.GLOBAL_VARIABLES["MINS_LEFT"] = st.text_input(_("mins_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["MINS_LEFT"], key="loc_mins_left")
-            st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"] = st.text_input(_("one_min_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"], key="loc_one_min_left")
+            st.session_state.GLOBAL_VARIABLES["MINS_LEFT"] = st.text_input(_("default_mins_left", T_UI), st.session_state.GLOBAL_VARIABLES["MINS_LEFT"], key="loc_mins_left")
+            st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"] = st.text_input(_("default_one_min_left", T_UI), st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"], key="loc_one_min_left")
 
             st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"] = st.text_input(_("time_is_up_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"], key="loc_time_is_up")
             st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"] = st.text_input(_("check_ideas_label", T_UI), st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"], key="loc_check_ideas")

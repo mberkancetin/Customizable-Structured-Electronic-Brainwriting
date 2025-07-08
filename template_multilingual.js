@@ -122,7 +122,7 @@ function getFormulaSeparatorFromSheet() {
   // or if seperator is semicolon: min(1;0) returns 0
   // in the sheet to detect the separator
   const ss = spreadsheet.getActiveSheet();
-  const range = ss.getRange(25, 1);
+  const range = ss.getRange(45, 1);
 
   range.setFormula('=MIN(1,0)');
   SpreadsheetApp.flush();
@@ -428,7 +428,7 @@ function createMultipleWorksheets() {
       // Columns C to H in participant sheet → columns 6 to 6+roundCount-1 in tracking sheet
       let participantColumnLetter = String.fromCharCode(67 + j); // 'C' is 67 in ASCII
       let formula = `=${sheetName}!${participantColumnLetter}${ideasCount+7}`;
-      trackingSheet.getRange(row, 7 + j).setFormula(formula);
+      trackingSheet.getRange(row, 8 + j).setFormula(formula);
 
       let languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
       let participantLangugageRange = trackingSheet.getRange(row, 6, 1, 1);
