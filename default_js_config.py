@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Mahmut Berkan Çetin <m.berkancetin@gmail.com> & Selim Gündüz <sgunduz@atu.edu.tr>
+#
+# SPDX-License-Identifier: MIT
+
 # KEYS for default text that needs translation
 DEFAULT_TEXT_KEYS = {
     "SESSION_FOCUS": "default_session_focus",

@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2025 Mahmut Berkan Çetin <m.berkancetin@gmail.com> & Selim Gündüz <sgunduz@atu.edu.tr>
+#
+# SPDX-License-Identifier: MIT
+
+
 import streamlit as st
 import json
 import os

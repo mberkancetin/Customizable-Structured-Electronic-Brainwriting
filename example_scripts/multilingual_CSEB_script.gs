@@ -1,24 +1,20 @@
 /*
-EXPERIMENTAL
+ * SPDX-FileCopyrightText: 2025 Mahmut Berkan Çetin <m.berkancetin@gmail.com> & Selim Gündüz <sgunduz@atu.edu.tr>
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
-MIT License
-
-Copyright (c) 2025 Mahmut Berkan Çetin & Selim Gündüz
-
-This software is licensed under the MIT License.
-See the LICENSE file or visit https://opensource.org/licenses/MIT for details.
-*/
 
 /*
-Creator: Mahmut Berkan Çetin and Selim Gündüz
+Creators: Mahmut Berkan Çetin and Selim Gündüz
 Title: Conducting Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script.
 Description: This script automates the customizable structured electronic brainwriting method in Google Sheets.
 How to Cite:
 
 Çetin, Mahmut Berkan & Gündüz, Selim (2025). Protocol for Conducting Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
 
-
 */
+
 
 const GLOBAL_VARIABLES = {
   SESSION_FOCUS: "The effects of local textile companies on your daily life and your community.",
