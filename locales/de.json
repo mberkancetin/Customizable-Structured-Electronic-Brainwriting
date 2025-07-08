@@ -148,5 +148,9 @@
   "multilingual_sheet_language": "Tabellensprache",
   "default_mins_left": " Minuten verbleiben",
   "default_one_min_left": "1 Minute verbleibt",
-  "default_mod_start_timer": "Start"
+  "default_mod_start_timer": "Start",
+
+  "default_mod_data_prep_ideaid_col": "IdeaID",
+  "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
+  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
 }

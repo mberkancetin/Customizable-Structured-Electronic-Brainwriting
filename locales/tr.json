@@ -148,5 +148,9 @@
   "multilingual_sheet_language": "Sayfa Dili",
   "default_mins_left": " dakika kaldı",
   "default_one_min_left": "1 dakika kaldı",
-  "default_mod_start_timer": "Başlat"
+  "default_mod_start_timer": "Başlat",
+
+  "default_mod_data_prep_ideaid_col": "IdeaID",
+  "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
+  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
 }

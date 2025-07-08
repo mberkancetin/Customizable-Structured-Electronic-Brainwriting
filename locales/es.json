@@ -148,5 +148,9 @@
   "multilingual_sheet_language": "Idioma de la hoja",
   "default_mins_left": " minutos restantes",
   "default_one_min_left": "1 minuto restante",
-  "default_mod_start_timer": "Iniciar"
+  "default_mod_start_timer": "Iniciar",
+
+  "default_mod_data_prep_ideaid_col": "IdeaID",
+  "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
+  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
 }

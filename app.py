@@ -222,12 +222,15 @@ def initialize_session_state(translations):
         mv["DATA_PREP"]["SheetName"] = get_translated_text_from_key("MOD_DATA_PREP_SHEET_NAME", translations) # Assumes translated
         mv["DATA_PREP"]["IdeaRawColumn"] = get_translated_text_from_key("MOD_DATA_PREP_IDEA_RAW_COL", translations) # Assumes translated
         mv["DATA_PREP"]["TranslateColumn"] = get_translated_text_from_key("MOD_DATA_PREP_TRANSLATE_COL", translations) # Assumes translated
+        mv["DATA_PREP"]["IdeaID"] = get_translated_text_from_key("MOD_DATA_PREP_IDEAID_COL", translations)
+        mv["DATA_PREP"]["IdeaTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_IDEATIMESTAMP_COL", translations)
+        mv["DATA_PREP"]["IdeaRoundStartTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_ROUNDTIMESTAMP_COL", translations)
         mv["DATA_PREP"]["ManualCategorization"] = get_translated_text_from_key("MOD_DATA_PREP_MANUAL_CAT", translations) # Assumes translated
         # Non-translated parts from structure
         mv["DATA_PREP"]["SessionLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["SessionLanguage"]
         mv["DATA_PREP"]["TranslatedLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["TranslatedLanguage"]
         mv["COLORS"] = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE["COLORS"])
-        mv["START_TIMER"] = get_translated_text_from_key("START_TIMER", translations)
+        mv["START_TIMER"] = get_translated_text_from_key("MOD_START_TIMER", translations)
         st.session_state.MODERATOR_VARIABLES = mv
 
         # --- LANDINGPAGE_VARIABLES_TEXTS ---
@@ -311,6 +314,9 @@ def generate_js_from_state(translations_for_error_msg):
         "{{DATA_PREP_SessionLanguage_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("SessionLanguage", "auto"), ensure_ascii=False),
         "{{DATA_PREP_IdeaRawColumn_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("IdeaRawColumn", "RawIdea"), ensure_ascii=False),
         "{{DATA_PREP_TranslatedLanguage_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("TranslatedLanguage", "en"), ensure_ascii=False),
+        "{{DATA_PREP_IdeaID_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("IdeaID", "IdeaID"), ensure_ascii=False),
+        "{{DATA_PREP_IdeaTimestamp_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("IdeaTimestamp", "IdeaTimestamp"), ensure_ascii=False),
+        "{{DATA_PREP_IdeaRoundStartTimestamp_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("IdeaRoundStartTimestamp", "RoundTimestamp"), ensure_ascii=False),
         "{{DATA_PREP_TranslateColumn_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("TranslateColumn", "Translation"), ensure_ascii=False),
         "{{DATA_PREP_ManualCategorization_JS_STRING}}": json.dumps(mv.get("DATA_PREP", {}).get("ManualCategorization", "ManualCategories"), ensure_ascii=False),
         "{{COLORS_OBJECT_AS_JS_OBJECT}}": json.dumps(mv.get("COLORS", {}), ensure_ascii=False),

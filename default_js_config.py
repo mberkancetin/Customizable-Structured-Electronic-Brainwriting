@@ -35,6 +35,9 @@ DEFAULT_TEXT_KEYS = {
     "MOD_DATA_PREP_SHEET_NAME": "default_mod_data_prep_sheet_name", # Or keep as "PrepData"
     "MOD_DATA_PREP_IDEA_RAW_COL": "default_mod_data_prep_idea_raw_col", # "RawIdea"
     "MOD_DATA_PREP_TRANSLATE_COL": "default_mod_data_prep_translate_col", # "Translation"
+    "MOD_DATA_PREP_IDEAID_COL": "default_mod_data_prep_ideaid_col",
+    "MOD_DATA_PREP_IDEATIMESTAMP_COL": "default_mod_data_prep_ideatimestamp_col",
+    "MOD_DATA_PREP_ROUNDTIMESTAMP_COL": "default_mod_data_prep_roundtimestamp_col",
     "MOD_DATA_PREP_MANUAL_CAT": "default_mod_data_prep_manual_cat", # "ManualCategories"
     "MOD_START_TIMER": "default_mod_start_timer",
 
@@ -98,6 +101,9 @@ DEFAULT_MODERATOR_VARIABLES_STRUCTURE = {
         "IdeaRawColumn": DEFAULT_TEXT_KEYS["MOD_DATA_PREP_IDEA_RAW_COL"],
         "TranslatedLanguage": "en", # Config value
         "TranslateColumn": DEFAULT_TEXT_KEYS["MOD_DATA_PREP_TRANSLATE_COL"],
+        "IdeaID": DEFAULT_TEXT_KEYS["MOD_DATA_PREP_IDEAID_COL"],
+        "IdeaTimestamp": DEFAULT_TEXT_KEYS["MOD_DATA_PREP_IDEATIMESTAMP_COL"],
+        "IdeaRoundStartTimestamp": DEFAULT_TEXT_KEYS["MOD_DATA_PREP_ROUNDTIMESTAMP_COL"],
         "ManualCategorization": DEFAULT_TEXT_KEYS["MOD_DATA_PREP_MANUAL_CAT"]
     },
     "COLORS": { # Not translated
