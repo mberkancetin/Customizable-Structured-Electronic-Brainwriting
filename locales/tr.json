@@ -4,7 +4,7 @@
   "app_language_label": "Uygulama Dili",
   "generate_js_button": "Script Oluştur",
   "download_js_button": "Scripti İndir",
-  "js_generated_success": "💡 Oluşturulan script aşağıda gösterilmektedir. Kopyalamak için kod kutusunun sağ üstündeki pano simgesini kullanın!",
+  "js_generated_success": "💡 Oluşturulan script aşağıda gösterilmektedir. Kopyalamak için kod kutusunun sağ üst köşesindeki pano simgesini kullanın! Ardından [sheets.google.com](https://sheets.google.com) adresine gidin, yeni bir Google E-Tablosu oluşturun ve Uzantılar → Apps Script menüsünden kodu yapıştırın.",
   "error_template_file": "Hata: template.js bulunamadı.",
   "tab_quick_setup": "Temel Oturum Ayarları",
   "tab_js_localization": "Değişken Yerelleştirme",
@@ -97,8 +97,8 @@
   "default_round_prefix": "{no}.Tur",
   "default_idea_prefix": "Fikir {no}",
   "default_check_ideas": "Fikirlerinizi göndermek için kutuyu işaretleyin",
-  "default_round_change_msg1": "Tur Dönüşümlü Sayfa Güncelleniyor",
-  "default_round_change_msg2": "Hataları önlemek için lütfen scriptin tamamlanmasını bekleyin.",
+  "default_round_change_msg1": "Diğer katılımcıların fikirleri sayfanıza ekleniyor...",
+  "default_round_change_msg2": "Hataları önlemek için lütfen otomasyonun tamamlanmasını bekleyin.",
   "default_session_complete": "Değerli katkılarınız için teşekkür ederiz! Cevaplarınız başarıyla kaydedildi.",
 
   "default_mod_menu_tools": "Atölye Araçları",
@@ -111,7 +111,7 @@
   "default_mod_session_start_template": "Lütfen 1. Tur için {ideasCount} fikir yazın. İşlem bittiğinde aşağıdaki kutuyu işaretleyin.",
   "default_mod_round_end_phrase": "Tur Bitiş İfadesi:",
   "default_mod_current_round": "Mevcut Tur:",
-  "default_mod_data_prep_sheet_name": "VeriHazırlık",
+  "default_mod_data_prep_sheet_name": "VeriHazirlik",
   "default_mod_data_prep_idea_raw_col": "HamFikir",
   "default_mod_data_prep_translate_col": "Çeviri",
   "default_mod_data_prep_manual_cat": "ManuelKategoriler",
@@ -150,7 +150,13 @@
   "default_one_min_left": "1 dakika kaldı",
   "default_mod_start_timer": "Başlat",
 
-  "default_mod_data_prep_ideaid_col": "IdeaID",
-  "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
-  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
+  "default_mod_data_prep_ideaid_col": "FikirID",
+  "default_mod_data_prep_ideatimestamp_col": "FikirZamanDamgasi",
+  "default_mod_data_prep_roundtimestamp_col": "TurZamanDamgasi",
+
+  "default_glob_starting": "Başlatılıyor...",
+  "default_glob_stopped": "Durduruldu",
+
+  "starting_label": "Başlatılıyor... metni (GLOBAL_VARIABLES.STARTING)",
+  "stopped_label": "Durduruldu metni (GLOBAL_VARIABLES.STOPPED)"
 }

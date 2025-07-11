@@ -4,7 +4,7 @@
   "app_language_label": "Langue de l'application",
   "generate_js_button": "Générer le script",
   "download_js_button": "Télécharger le script configuré",
-  "js_generated_success": "💡 Le script généré est affiché ci-dessous. Utilisez l’icône de presse-papiers (en haut à droite du cadre de code) pour copier !",
+  "js_generated_success": "💡 Le script généré est affiché ci-dessous. Utilisez l’icône du presse-papiers en haut à droite du cadre de code pour le copier ! Ensuite, rendez-vous sur [sheets.google.com](https://sheets.google.com), créez une nouvelle feuille Google Sheets et sélectionnez Extensions → Apps Script pour coller le code.",
   "error_template_file": "Erreur : template.js introuvable.",
   "tab_quick_setup": "Configuration rapide",
   "tab_js_localization": "Traduction des variables",
@@ -97,7 +97,7 @@
   "default_round_prefix": "Tour {no}",
   "default_idea_prefix": "Idée {no}",
   "default_check_ideas": "Cochez la case pour soumettre vos idées",
-  "default_round_change_msg1": "Mise à jour de la feuille en rotation en cours",
+  "default_round_change_msg1": "De nouvelles idées des autres participants sont ajoutées à votre feuille…",
   "default_round_change_msg2": "Veuillez attendre la fin du script avant de continuer afin d’éviter toute erreur.",
   "default_session_complete": "Merci pour vos précieuses contributions ! Vos réponses ont été enregistrées avec succès.",
 
@@ -111,10 +111,10 @@
   "default_mod_session_start_template": "Veuillez soumettre {ideasCount} idées pour le tour 1. Cochez la case une fois terminé.",
   "default_mod_round_end_phrase": "Fin du tour :",
   "default_mod_current_round": "Tour actuel :",
-  "default_mod_data_prep_sheet_name": "PréparationDonnées",
-  "default_mod_data_prep_idea_raw_col": "IdéeBrute",
+  "default_mod_data_prep_sheet_name": "PreparationDonnees",
+  "default_mod_data_prep_idea_raw_col": "IdeeBrute",
   "default_mod_data_prep_translate_col": "Traduction",
-  "default_mod_data_prep_manual_cat": "CatégoriesManuelles",
+  "default_mod_data_prep_manual_cat": "CategoriesManuelles",
 
   "default_lp_greeting_message_template": "Chères participantes, chers participants, \n\nBienvenue et merci pour votre intérêt pour cette session structurée de brainwriting électronique ! Aujourd’hui, notre objectif est de générer collectivement des idées innovantes sur le sujet suivant : {SESSION_FOCUS}. \n\nCette session se déroule dans un espace sans jugement. Nous vous encourageons à repousser les limites de votre imagination, indépendamment des conventions ou de la faisabilité. Lorsque les idées circulent entre les participant·e·s à chaque tour, cela peut inspirer de nouvelles perspectives. \n\nVous serez guidé·e·s à travers plusieurs tours où vous proposerez vos propres idées et enrichirez celles des autres. Toutes les consignes ont été envoyées par e-mail. Si vous ne les avez pas encore lues, merci de les consulter avant de commencer. \n\nVeuillez vous rendre sur l’onglet de feuille de calcul qui vous a été attribué. Des instructions détaillées y sont également disponibles. Nous vous souhaitons une session stimulante et productive !",
   "default_lp_session_title_suffix": "Session structurée de brainwriting électronique",
@@ -150,7 +150,13 @@
   "default_one_min_left": "1 minute restante",
   "default_mod_start_timer": "Démarrer",
 
-  "default_mod_data_prep_ideaid_col": "IdeaID",
-  "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
-  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
+  "default_mod_data_prep_ideaid_col": "IDIdee",
+  "default_mod_data_prep_ideatimestamp_col": "HorodatageIdee",
+  "default_mod_data_prep_roundtimestamp_col": "HorodatageTour",
+
+  "default_glob_starting": "Démarrage en cours",
+  "default_glob_stopped": "Arrêté",
+
+  "starting_label": "Texte de -Démarrage en cours- (GLOBAL_VARIABLES.STARTING)",
+  "stopped_label": "Texte de -Arrêté- (GLOBAL_VARIABLES.STOPPED)"
 }

@@ -202,6 +202,8 @@ def initialize_session_state(translations):
             get_translated_text_from_key("ROUND_CHANGE_MSG2", translations)
         ]
         gv["SESSION_COMPLETE"] = get_translated_text_from_key("SESSION_COMPLETE", translations)
+        gv["STARTING"] = get_translated_text_from_key("STARTING", translations)
+        gv["STOPPED"] = get_translated_text_from_key("STOPPED", translations)
         gv["MINUTES"] = DEFAULT_GLOBAL_VARIABLES_STRUCTURE["MINUTES"] # Non-translated from structure
 
         participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", translations)
@@ -309,6 +311,8 @@ def generate_js_from_state(translations_for_error_msg):
         "{{CHECK_IDEAS_JS_STRING}}": json.dumps(gv.get("CHECK_IDEAS", ""), ensure_ascii=False),
         "{{ROUND_CHANGE_LIST_AS_JS_ARRAY}}": json.dumps(gv.get("ROUND_CHANGE", []), ensure_ascii=False),
         "{{SESSION_COMPLETE_JS_STRING}}": json.dumps(gv.get("SESSION_COMPLETE", ""), ensure_ascii=False),
+        "{{STARTING_JS_STRING}}": json.dumps(gv.get("STARTING", ""), ensure_ascii=False),
+        "{{STOPPED_JS_STRING}}": json.dumps(gv.get("STOPPED", ""), ensure_ascii=False),
 
         "{{MENU_OBJECT_AS_JS_OBJECT}}": json.dumps(mv.get("MENU", {}), ensure_ascii=False),
         "{{MOD_SESSION_START_TEMPLATE_STRING_PART1}}": json.dumps(mod_session_start_part1, ensure_ascii=False),
@@ -662,6 +666,9 @@ def main():
             st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"] = st.text_input(_("time_is_up_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"], key="loc_time_is_up")
             st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"] = st.text_input(_("check_ideas_label", T_UI), st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"], key="loc_check_ideas")
             st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"] = st.text_input(_("session_complete_label", T_UI), st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"], key="loc_session_complete")
+            st.session_state.GLOBAL_VARIABLES["STARTING"] = st.text_input(_("starting_label", T_UI), st.session_state.GLOBAL_VARIABLES["STARTING"], key="loc_starting")
+            st.session_state.GLOBAL_VARIABLES["STARTING"] = st.text_input(_("stoppped_label", T_UI), st.session_state.GLOBAL_VARIABLES["STARTING"], key="loc_stopped")
+
             st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"] = st.text_area(
                             _("session_start_label", T_UI), st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"], height=100, key="loc_session_start"
                         )

@@ -4,7 +4,7 @@
   "app_language_label": "App-Sprache",
   "generate_js_button": "Skript generieren",
   "download_js_button": "Konfiguriertes Skript herunterladen",
-  "js_generated_success": "💡 Das generierte Skript wird unten angezeigt. Zum Kopieren das Clipboard-Symbol (oben rechts im Code-Feld) verwenden!",
+  "js_generated_success": "💡 Das generierte Skript wird unten angezeigt. Zum Kopieren verwenden Sie das Zwischenablage-Symbol oben rechts im Code-Feld! Gehen Sie anschließend zu [sheets.google.com](https://sheets.google.com), erstellen Sie eine neue Google-Tabelle und wählen Sie Erweiterungen → Apps Script, um den Code einzufügen.",
   "error_template_file": "Fehler: template.js nicht gefunden.",
   "tab_quick_setup": "Schnelle Einrichtung",
   "tab_js_localization": "Variablenübersetzung",
@@ -97,7 +97,7 @@
   "default_round_prefix": "Runde {no}",
   "default_idea_prefix": "Idee {no}",
   "default_check_ideas": "Aktivieren Sie das Kästchen, um Ihre Ideen einzureichen",
-  "default_round_change_msg1": "Blatt wird im Rundlauf aktualisiert",
+  "default_round_change_msg1": "Neue Ideen anderer Teilnehmender werden zu Ihrer Tabelle hinzugefügt …",
   "default_round_change_msg2": "Bitte warten Sie, bis das Skript fertig ist, bevor Sie fortfahren, um Fehler zu vermeiden.",
   "default_session_complete": "Vielen Dank für Ihre wertvollen Beiträge! Ihre Antworten wurden erfolgreich gespeichert.",
 
@@ -150,7 +150,13 @@
   "default_one_min_left": "1 Minute verbleibt",
   "default_mod_start_timer": "Start",
 
-  "default_mod_data_prep_ideaid_col": "IdeaID",
-  "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
-  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
+  "default_mod_data_prep_ideaid_col": "IdeenID",
+  "default_mod_data_prep_ideatimestamp_col": "IdeenZeitstempel",
+  "default_mod_data_prep_roundtimestamp_col": "RundenZeitstempel",
+
+  "default_glob_starting": "Wird gestartet...",
+  "default_glob_stopped": "Gestoppt",
+
+  "starting_label": "Wird gestartet...text (GLOBAL_VARIABLES.STARTING)",
+  "stopped_label": "Gestoppttext (GLOBAL_VARIABLES.STOPPED)"
 }

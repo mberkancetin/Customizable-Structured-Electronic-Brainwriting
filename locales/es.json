@@ -4,7 +4,7 @@
   "app_language_label": "Idioma de la Aplicación",
   "generate_js_button": "Generar script",
   "download_js_button": "Descargar Script Configurado",
-  "js_generated_success": "💡 El script generado se muestra a continuación. ¡Usa el ícono del portapapeles (arriba a la derecha del cuadro de código) para copiar!",
+  "js_generated_success": "💡 El script generado se muestra a continuación. Utiliza el icono del portapapeles en la esquina superior derecha del cuadro de código para copiarlo. Luego, ve a [sheets.google.com](https://sheets.google.com), crea una nueva hoja de cálculo de Google y selecciona Extensiones → Apps Script para pegar el código.",
   "error_template_file": "Error: template.js no encontrado.",
   "tab_quick_setup": "Configuración Rápida",
   "tab_js_localization": "Traducción de Variables",
@@ -97,7 +97,7 @@
   "default_round_prefix": "Ronda {no}",
   "default_idea_prefix": "Idea {no}",
   "default_check_ideas": "Marque la casilla para enviar sus ideas",
-  "default_round_change_msg1": "Actualizando hoja en orden rotativo",
+  "default_round_change_msg1": "Se están añadiendo nuevas ideas de otros participantes a tu hoja…",
   "default_round_change_msg2": "Por favor, espere a que el script finalice antes de continuar para evitar errores.",
   "default_session_complete": "¡Gracias por sus valiosas aportaciones! Sus respuestas han sido guardadas correctamente.",
 
@@ -111,10 +111,10 @@
   "default_mod_session_start_template": "Por favor, escriba {ideasCount} ideas para la Ronda 1. Marque la casilla cuando haya terminado.",
   "default_mod_round_end_phrase": "Frase de fin de ronda:",
   "default_mod_current_round": "Ronda actual:",
-  "default_mod_data_prep_sheet_name": "PreparaciónDatos",
+  "default_mod_data_prep_sheet_name": "PreparacionDatos",
   "default_mod_data_prep_idea_raw_col": "IdeaOriginal",
-  "default_mod_data_prep_translate_col": "Traducción",
-  "default_mod_data_prep_manual_cat": "CategoríasManuales",
+  "default_mod_data_prep_translate_col": "Traduccion",
+  "default_mod_data_prep_manual_cat": "CategoriasManuales",
 
   "default_lp_greeting_message_template": "Estimadas/os participantes, \n\n¡Bienvenidas/os y gracias por su interés en esta sesión estructurada de brainwriting electrónico! Nuestro objetivo hoy es generar de manera colaborativa ideas innovadoras sobre: {SESSION_FOCUS}. \n\nEsta sesión ofrece un espacio libre de juicios. Les animamos a dejar volar su imaginación, sin importar lo convencional o lo factible que parezcan las ideas. Al compartirlas en cada ronda, es posible que una idea de otra persona les inspire a crear algo nuevo. \n\nDurante la sesión, pasarán por varias rondas en las que propondrán ideas y desarrollarán las de otras personas. Las instrucciones completas fueron enviadas por correo electrónico. Si aún no las han revisado, les recomendamos hacerlo antes de comenzar. \n\nVayan a la hoja de trabajo que se les ha asignado. Allí encontrarán más detalles. ¡Les deseamos una sesión creativa y productiva!",
   "default_lp_session_title_suffix": "Sesión estructurada de brainwriting electrónico",
@@ -150,7 +150,13 @@
   "default_one_min_left": "1 minuto restante",
   "default_mod_start_timer": "Iniciar",
 
-  "default_mod_data_prep_ideaid_col": "IdeaID",
-  "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
-  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
+  "default_mod_data_prep_ideaid_col": "IDIdea",
+  "default_mod_data_prep_ideatimestamp_col": "MarcaTiempoIdea",
+  "default_mod_data_prep_roundtimestamp_col": "MarcaTiempoRonda",
+
+  "default_glob_starting": "Iniciando...",
+  "default_glob_stopped": "Detenido",
+
+  "starting_label": "Texto de Iniciando... (GLOBAL_VARIABLES.STARTING)",
+  "stopped_label": "Texto de Detenido (GLOBAL_VARIABLES.STOPPED)"
 }

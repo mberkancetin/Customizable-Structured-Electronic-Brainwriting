@@ -4,7 +4,7 @@
   "app_language_label": "App Language",
   "generate_js_button": "Generate Script",
   "download_js_button": "Download Script",
-  "js_generated_success": "💡 The generated script is shown below. Use the clipboard icon (upper-right of the code box) to copy!",
+  "js_generated_success": "💡 The generated script is shown below. Use the clipboard icon (upper-right of the code box) to copy it! Then, go to [sheets.google.com](https://sheets.google.com), create a new Google Sheet, and select Extensions → Apps Script to paste the code.",
   "error_template_file": "Error: template.js not found.",
   "tab_quick_setup": "Quick Setup",
   "tab_js_localization": "Variable Localization",
@@ -98,7 +98,7 @@
   "default_round_prefix": "Round {no}",
   "default_idea_prefix": "Idea {no}",
   "default_check_ideas": "Check the box to submit your ideas",
-  "default_round_change_msg1": "Round-Robin Sheet Update in Progress",
+  "default_round_change_msg1": "Updating your sheet with new ideas from other participants…",
   "default_round_change_msg2": "Please wait for the script to finish before proceeding to avoid errors.",
   "default_session_complete": "Thank you for your valuable contributions! Your answers have been successfully saved.",
 
@@ -153,5 +153,11 @@
 
   "default_mod_data_prep_ideaid_col": "IdeaID",
   "default_mod_data_prep_ideatimestamp_col": "IdeaTimestamp",
-  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp"
+  "default_mod_data_prep_roundtimestamp_col": "RoundTimestamp",
+
+  "default_glob_starting": "Starting...",
+  "default_glob_stopped": "Stopped",
+
+  "starting_label": "Starting... text (GLOBAL_VARIABLES.STARTING)",
+  "stopped_label": "Stopped text (GLOBAL_VARIABLES.STOPPED)"
 }

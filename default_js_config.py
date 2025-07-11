@@ -24,6 +24,8 @@ DEFAULT_TEXT_KEYS = {
     "ROUND_CHANGE_MSG1": "default_round_change_msg1",
     "ROUND_CHANGE_MSG2": "default_round_change_msg2",
     "SESSION_COMPLETE": "default_session_complete",
+    "STARTING": "default_glob_starting",
+    "STOPPED": "default_glob_stopped",
 
     # Moderator Variables Texts
     "MOD_TOOLS": "default_mod_menu_tools",
@@ -83,7 +85,9 @@ DEFAULT_GLOBAL_VARIABLES_STRUCTURE = {
     "IDEAS": ["Idea1_key", "Idea2_key"],   # Number defined by num_ideas, names generated
     "CHECK_IDEAS": DEFAULT_TEXT_KEYS["CHECK_IDEAS"],
     "ROUND_CHANGE": [DEFAULT_TEXT_KEYS["ROUND_CHANGE_MSG1"], DEFAULT_TEXT_KEYS["ROUND_CHANGE_MSG2"]],
-    "SESSION_COMPLETE": DEFAULT_TEXT_KEYS["SESSION_COMPLETE"]
+    "SESSION_COMPLETE": DEFAULT_TEXT_KEYS["SESSION_COMPLETE"],
+    "STARTING": DEFAULT_TEXT_KEYS["STARTING"],
+    "STOPPED": DEFAULT_TEXT_KEYS["STOPPED"],
 }
 
 DEFAULT_MODERATOR_VARIABLES_STRUCTURE = {

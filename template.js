@@ -30,7 +30,9 @@ const GLOBAL_VARIABLES = {
   IDEAS: {{IDEAS_LIST_AS_JS_ARRAY}},
   CHECK_IDEAS: {{CHECK_IDEAS_JS_STRING}},
   ROUND_CHANGE: {{ROUND_CHANGE_LIST_AS_JS_ARRAY}},
-  SESSION_COMPLETE: {{SESSION_COMPLETE_JS_STRING}}
+  SESSION_COMPLETE: {{SESSION_COMPLETE_JS_STRING}},
+  STARTING: {{STARTING_JS_STRING}},
+  STOPPED: {{STOPPED_JS_STRING}}
 };
 
 const roundCount = GLOBAL_VARIABLES.ROUNDS.length;
@@ -268,27 +270,37 @@ function createMultipleWorksheets() {
   trackingSheet.getRange((roundCount + 4), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
   trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(1);
 
-  trackingSheet.getRange((roundCount + 5), 1, 1, 1).setValue(MODERATOR_VARIABLES.ROUND_END_PHRASE);
-  trackingSheet.getRange((roundCount + 5), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-  trackingSheet.getRange((roundCount + 5), 2, 1, 1).setValue(GLOBAL_VARIABLES.TIME_IS_UP);
+  trackingSheet.getRange((roundCount + 6), 1, 1, 1).setValue(MODERATOR_VARIABLES.ROUND_END_PHRASE);
+  trackingSheet.getRange((roundCount + 6), 2, 1, 1).setValue(GLOBAL_VARIABLES.TIME_IS_UP);
+  trackingSheet.getRange((roundCount + 6), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
+
+  trackingSheet.getRange((roundCount + 7), 1, 1, 1).setValue(GLOBAL_VARIABLES.STARTING);
+  trackingSheet.getRange((roundCount + 7), 2, 1, 1).setValue(GLOBAL_VARIABLES.STARTING);
+
+  trackingSheet.getRange((roundCount + 8), 1, 1, 1).setValue(GLOBAL_VARIABLES.STOPPED);
+  trackingSheet.getRange((roundCount + 8), 2, 1, 1).setValue(GLOBAL_VARIABLES.STOPPED);
+
+  trackingSheet.getRange((roundCount + 9), 1, 1, 1).setValue(GLOBAL_VARIABLES.TIME_LEFT);
+  trackingSheet.getRange((roundCount + 9), 2, 1, 1).setValue(GLOBAL_VARIABLES.MINUTES);
 
   trackingSheet.getRange((roundCount + 10), 1, 1, 1).setValue(GLOBAL_VARIABLES.TIME_LEFT);
-  trackingSheet.getRange((roundCount + 10), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
-  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-
-  trackingSheet.getRange((roundCount + 14), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
-  trackingSheet.getRange((roundCount + 14), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
-  trackingSheet.getRange((roundCount + 14), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-  trackingSheet.getRange((roundCount + 15), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[1]);
-  trackingSheet.getRange((roundCount + 15), 2, 1, 1).setValue(MODERATOR_VARIABLES.SESSION_START);
-  trackingSheet.getRange((roundCount + 16), 1, 1, 2).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[0]);
-  trackingSheet.getRange((roundCount + 17), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
-  trackingSheet.getRange((roundCount + 17), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
-
+  trackingSheet.getRange((roundCount + 10), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Green);
   trackingSheet.getRange((roundCount + 10), 2, 1, 1).setValue(TIMER_STR)
-  trackingSheet.getRange((roundCount + 9), 2, 1, 1).setValue(GLOBAL_VARIABLES.MINUTES)
+
+  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
+  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Green);
   trackingSheet.getRange((roundCount + 12), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
+
+  trackingSheet.getRange((roundCount + 13), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
+  trackingSheet.getRange((roundCount + 13), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
+  trackingSheet.getRange((roundCount + 13), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
+
+  trackingSheet.getRange((roundCount + 14), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[1]);
+  trackingSheet.getRange((roundCount + 14), 2, 1, 1).setValue(MODERATOR_VARIABLES.SESSION_START);
+  trackingSheet.getRange((roundCount + 15), 1, 1, 1).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[0]);
+  trackingSheet.getRange((roundCount + 15), 2, 1, 1).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[1]);
+  trackingSheet.getRange((roundCount + 16), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
+  trackingSheet.getRange((roundCount + 16), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
 
   // Create 6 sheets
   for (let i = 0; i < participantCount; i++) {
@@ -381,22 +393,24 @@ function createMultipleWorksheets() {
       // Define the cell to apply conditional formatting
       var range = sheet.getRange(2, 3, 1, roundCount);
       var rules = sheet.getConditionalFormatRules();
+      const blue_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 13}")`;
+      const green_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 16}")`;
+      const otherwiseFormula = '=TRUE';
 
       // Define the conditional formatting rules
       var newRules = [
         SpreadsheetApp.newConditionalFormatRule()
-          .whenTextEqualTo(GLOBAL_VARIABLES.FOCUS[0]) // Apply rule when the text is "Blue"
+          .whenFormulaSatisfied(blue_formula) // Apply rule when the text is "Blue"
           .setBackground(MODERATOR_VARIABLES.COLORS.LightBlue)
           .setRanges([range])
           .build(),
         SpreadsheetApp.newConditionalFormatRule()
-          .whenTextEqualTo(GLOBAL_VARIABLES.FOCUS[2]) // Apply rule when the text is "Green"
+          .whenFormulaSatisfied(green_formula) // Apply rule when the text is "Green"
           .setBackground(MODERATOR_VARIABLES.COLORS.Green)
           .setRanges([range])
           .build(),
         SpreadsheetApp.newConditionalFormatRule()
-          .whenTextDoesNotContain(GLOBAL_VARIABLES.FOCUS[0]) // Apply rule otherwise
-          .whenTextDoesNotContain(GLOBAL_VARIABLES.FOCUS[2])
+          .whenFormulaSatisfied(otherwiseFormula)
           .setBackground(MODERATOR_VARIABLES.COLORS.Yellow)
           .setRanges([range])
           .build(),
@@ -452,7 +466,8 @@ function updateCountdownStatus(secondsLeft) {
   let message = '';
 
   if (secondsLeft <= 0) {
-    message = GLOBAL_VARIABLES.TIME_IS_UP;
+    var time_is_up_text = trackingSheet.getRange((roundCount + 6), 2, 1, 1).getValue();
+    message = time_is_up_text;
   } else if (secondsLeft <= 60) {
     message = GLOBAL_VARIABLES.ONE_MIN_LEFT;
   } else {
@@ -473,7 +488,6 @@ function roundStartTimestamp() {
 
 function getRoundMinutes() {
   const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  trackingSheet.getRange(roundCount + 8, 2).setFormula("=NOW()");
 
   let TIMER_INTERVAL = 10;
   var round_min = trackingSheet.getRange((roundCount + 9), 2, 1, 1).getValue();
@@ -560,22 +574,29 @@ function getRoundMinutes() {
 // Start session with a note in yellow background
 function StartSession() {
   var trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.FOCUS[1], MODERATOR_VARIABLES.SESSION_START]]);
+  var session_started = trackingSheet.getRange((roundCount + 14), 1, 1, 2).getValues();
+  var starting_text = trackingSheet.getRange((roundCount + 7), 2, 1, 1).getValue();
+
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(session_started);
+  trackingSheet.getRange(roundCount + 10, 2).setValue(starting_text);
 
   SpreadsheetApp.flush();
+  getRoundMinutes();
 
   // wait 10 seconds for participants to read the text
   Utilities.sleep(10000); // 10 seconds waiting time
-  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.FOCUS[0], GLOBAL_VARIABLES.SESSION_FOCUS]]);
-  getRoundMinutes();
+  var focus_if_changed = trackingSheet.getRange((roundCount + 13), 1, 1, 2).getValues();
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(focus_if_changed);
+  SpreadsheetApp.flush();
 }
 
 
 // End session with a note in green background
 function SessionEnd() {
   var trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  trackingSheet.getRange((roundCount + 12), 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
-  trackingSheet.getRange((roundCount + 12), 2).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
+  var session_end = trackingSheet.getRange((roundCount + 16), 1, 1, 2).getValues();
+
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(session_end);
 }
 
 
@@ -590,9 +611,13 @@ function SubmitData() {
 
   var round_robin = x.slice(-1*round_num).concat(x);
   var col_num = round_num + 2
+  var round_change_text = trackingSheet.getRange((roundCount + 15), 1, 1, 2).getValues();
+  var stopped_text = trackingSheet.getRange((roundCount + 8), 2, 1, 1).getValue();
 
-  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.ROUND_CHANGE[0], GLOBAL_VARIABLES.ROUND_CHANGE[1]]]);
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(round_change_text);
+  trackingSheet.getRange(roundCount + 10, 2).setValue(stopped_text);
   SpreadsheetApp.flush();
+  getRoundMinutes();
 
   for (var k=0; k<participantCount; k++) {
     var sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
@@ -628,9 +653,16 @@ function SubmitData() {
       sheet.getRange(6, col_num+1, (ideasCount+1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
     }
   }
-  trackingSheet.getRange((roundCount+4), 2, 1, 1).setValue(trackingSheet.getRange((roundCount+4), 2, 1, 1).getValue() + 1);   // increment round
-  trackingSheet.getRange((roundCount+12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.FOCUS[0], GLOBAL_VARIABLES.SESSION_FOCUS]]);
-  getRoundMinutes();
+  if (round_num == roundCount) {
+    return;
+  } else {
+    trackingSheet.getRange((roundCount+4), 2, 1, 1).setValue(trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue() + 1);   // increment round
+    SpreadsheetApp.flush();
+    var starting_text = trackingSheet.getRange((roundCount + 7), 2, 1, 1).getValue();
+    var focus_if_changed = trackingSheet.getRange((roundCount + 13), 1, 1, 2).getValues();
+    trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(focus_if_changed);
+    trackingSheet.getRange(roundCount + 10, 2).setValue(starting_text);
+  }
 }
 
 
