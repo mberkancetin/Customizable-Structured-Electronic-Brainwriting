@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Streamlit App](https://img.shields.io/badge/Streamlit-App-red?logo=streamlit)]([https://streamlit.app.link/your-app](https://cseb-configuration-generator.streamlit.app/))
 
 ## Structured Electronic Brainwriting Session Configuration Generator
 
