@@ -641,6 +641,8 @@ function SubmitData() {
   SpreadsheetApp.flush();
   getRoundMinutes();
 
+  const allIdeasData = trackingSheet.getRange(2, 1, roundCount, participantCount * ideasCount).getValues();
+
   let allNewIdeas = [];
   for (let k = 0; k < participantCount; k++) {
     const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
@@ -654,17 +656,15 @@ function SubmitData() {
     sheet.getRange((ideasCount+6), col_num, 2, 1).clearFormat().removeCheckboxes();
   }
 
-  const finalIdeasToWrite = [allNewIdeas.flat()];
+  const newIdeasForThisRound = allNewIdeas.flat();
 
-  if (finalIdeasToWrite[0].length > 0) {
-      trackingSheet.getRange(round_num + 1, 1, 1, participantCount * ideasCount).setValues(finalIdeasToWrite);
+  if (newIdeasForThisRound.length > 0) {
+      trackingSheet.getRange(round_num + 1, 1, 1, newIdeasForThisRound.length).setValues([newIdeasForThisRound]);
   }
 
-  SpreadsheetApp.flush();
+  allIdeasData[round_num - 1] = newIdeasForThisRound;
 
   // Perform the "Paper Swap" using the selected algorithm
-  const allIdeasData = trackingSheet.getRange(2, 1, roundCount, participantCount * ideasCount).getValues();
-
   const positiveModulo = (a, n) => ((a % n) + n) % n;
 
   for (let i = 0; i < participantCount; i++) {
