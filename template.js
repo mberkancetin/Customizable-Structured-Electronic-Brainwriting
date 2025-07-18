@@ -15,6 +15,7 @@ How to Cite:
 
 */
 
+
 const GLOBAL_VARIABLES = {
   SESSION_FOCUS: {{SESSION_FOCUS_JS_STRING}},
   LANDING_SHEET: {{LANDING_SHEET_JS_STRING}},
@@ -68,6 +69,13 @@ const colabGitHubUrl = {{COLAB_GITHUB_URL_JS_STRING}};
 const ideas_prefix = {{LP_IDEAS_PREFIX_JS_STRING}}.replace("{ideasCount}", ideasCount);
 const time_prefix = {{LP_TIME_PREFIX_JS_STRING}}.replace("{GLOBAL_VARIABLES.MINUTES}", GLOBAL_VARIABLES.MINUTES);
 const totals_prefix = {{LP_TOTALS_TEXT_INFIX_JS_STRING}}.replace("{totalIdeas}", totalIdeas).replace("{totalTime}", totalTime);
+
+const landing_page_alert_header = {{LP_ALERT_HEADER_JS_STRING}};
+const landing_page_alert = {{LP_ALERT_TEXT_JS_STRING}}.replace("{Welcome}", GLOBAL_VARIABLES.LANDING_SHEET);
+const reset_session_flags_header = {{RESET_SESSION_FLAGS_HEADER_JS_STRING}};
+const reset_session_alert = {{RESET_SESSION_ALERT_TEXT_JS_STRING}}.replace("{CreateLandingPage}", MODERATOR_VARIABLES.MENU.LandingPage).replace("{CreateSession}", MODERATOR_VARIABLES.MENU.SessionElements);
+const create_session_alert_header = {{CREATE_SESSION_ALERT_HEADER_JS_STRING}};
+const create_session_alert_text = {{CREATE_SESSION_ALERT_TEXT_JS_STRING}};
 
 const LANDINGPAGE_VARIABLES = {
   GREETING_MESSAGE: {{LP_GREETING_MESSAGE_JS_STRING}},
@@ -144,21 +152,35 @@ const sep = getFormulaSeparatorFromSheet();
 ----- FUNCTION TO CREATE LANDING PAGE -----
 */
 function createBrainwritingLandingPage() {
-  const allSheets = spreadsheet.getSheets();
+  const ui = SpreadsheetApp.getUi();
+  const properties = PropertiesService.getDocumentProperties();
 
+  if (properties.getProperty('landingPageCreated') === 'true') {
+    const response = ui.alert(
+      landing_page_alert_header,
+      landing_page_alert,
+      ui.ButtonSet.YES_NO);
+
+    if (response !== ui.Button.YES) {
+      return;
+    }
+  }
+
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+  let landingSheet;
+  const allSheets = spreadsheet.getSheets();
   if (allSheets.length > 0) {
     const firstSheet = allSheets[0];
     landingSheet = firstSheet.setName(GLOBAL_VARIABLES.LANDING_SHEET);
   } else {
     landingSheet = spreadsheet.insertSheet(GLOBAL_VARIABLES.LANDING_SHEET);
   }
-
-  // Clear previous content and formatting in the target area
   const clearRange = landingSheet.getRange("A1:R36");
   clearRange.clearContent();
   clearRange.clearFormat();
-  clearRange.breakApart(); // Remove any previous merges
-  landingSheet.setHiddenGridlines(true); // Hide gridlines for a cleaner look
+  clearRange.breakApart();
+  landingSheet.setHiddenGridlines(true);
 
   // Set Column Widths
   landingSheet.setColumnWidth(1, 10); // Column A (Spacer)
@@ -215,6 +237,7 @@ function createBrainwritingLandingPage() {
   landingSheet.getRange("K18:L19").merge().setHorizontalAlignment("right").setFormula(`=IMAGE("${imageUrl}"${sep} 1)`)
   }
   SpreadsheetApp.flush(); // Apply all changes
+  properties.setProperty('landingPageCreated', 'true');
 }
 
 
@@ -222,6 +245,18 @@ function createBrainwritingLandingPage() {
 ----- FUNCTION TO CREATE PROGRESS TRACKING AND PARTICIPANT SHEETS -----
 */
 function createMultipleWorksheets() {
+  const ui = SpreadsheetApp.getUi();
+  const properties = PropertiesService.getDocumentProperties();
+
+  if (properties.getProperty('sessionCreated') === 'true') {
+    const response = ui.alert(
+      create_session_alert_header,
+      create_session_alert_text,
+      ui.ButtonSet.YES_NO);
+    if (response !== ui.Button.YES) {
+      return;
+    }
+  }
   // Try to get existing tracking sheet or create new one
   try {
     trackingSheet = spreadsheet.insertSheet(GLOBAL_VARIABLES.MODERATOR_SHEET);
@@ -440,6 +475,7 @@ function createMultipleWorksheets() {
   // Move "Moderator ProgerssTracking sheet" to the last position (index = sheetCount - 1)
   spreadsheet.setActiveSheet(trackingSheet);
   spreadsheet.moveActiveSheet(sheetCount);
+  properties.setProperty('sessionCreated', 'true');
 }
 
 
@@ -451,17 +487,35 @@ function onOpen() {
   ui.createMenu(MODERATOR_VARIABLES.MENU.Tools)
       .addItem(MODERATOR_VARIABLES.MENU.LandingPage, "createBrainwritingLandingPage")
       .addItem(MODERATOR_VARIABLES.MENU.SessionElements, "createMultipleWorksheets")
+      .addSeparator()
       .addItem(MODERATOR_VARIABLES.MENU.Start, "StartSession")
       .addItem(MODERATOR_VARIABLES.MENU.SubmitNext, "SubmitData")
+      .addSeparator()
       .addItem(MODERATOR_VARIABLES.MENU.PrepareData, "PrepData")
       .addItem(MODERATOR_VARIABLES.MENU.ColabEnvironment, "completeAutomationAndGuideToColab")
+      .addSeparator()
+      .addItem(MODERATOR_VARIABLES.MENU.ResetSessionSetup, "resetSessionFlags")
       .addToUi();
 }
 
 
-// Round countdown
-// in progress
+// Function to reset setup flags and allow re-creation
+function resetSessionFlags() {
+  const ui = SpreadsheetApp.getUi();
+  const response = ui.alert(
+    reset_session_flags_header,
+    reset_session_alert,
+    ui.ButtonSet.YES_NO);
 
+  if (response === ui.Button.YES) {
+    const properties = PropertiesService.getDocumentProperties();
+    properties.deleteProperty('landingPageCreated');
+    properties.deleteProperty('sessionCreated');
+  }
+}
+
+
+// Round countdown
 function updateCountdownStatus(secondsLeft) {
   const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
   let message = '';
@@ -569,7 +623,6 @@ function getRoundMinutes() {
 
   showTimerSidebar();
 }
-// in progress
 
 
 // Start session with a note in yellow background

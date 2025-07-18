@@ -110,6 +110,7 @@
   "default_mod_menu_submit_next": "Enviar y Continuar",
   "default_mod_menu_prepare_data": "Preparar Datos",
   "default_mod_menu_colab_env": "Crear Entorno en Colab",
+  "default_mod_menu_reset_session_setup": "Restablecer configuración de la sesión",
   "default_mod_session_start_template": "Por favor, escriba {ideasCount} ideas para la Ronda 1. Marque la casilla cuando haya terminado.",
   "default_mod_round_end_phrase": "Frase de fin de ronda:",
   "default_mod_current_round": "Ronda actual:",
@@ -160,5 +161,16 @@
   "default_glob_stopped": "Detenido",
 
   "starting_label": "Texto de Iniciando... (GLOBAL_VARIABLES.STARTING)",
-  "stopped_label": "Texto de Detenido (GLOBAL_VARIABLES.STOPPED)"
+  "stopped_label": "Texto de Detenido (GLOBAL_VARIABLES.STOPPED)",
+
+  "landing_page_alert_header": "¿Está seguro?",
+  "landing_page_alert_text": "Esto borrará completamente y volverá a crear la página {Welcome}. ¿Está seguro de que desea continuar?",
+
+  "create_session_alert_header": "ATENCIÓN: ¿ESTÁ SEGURO?",
+  "create_session_alert_text": "Esta acción ELIMINARÁ todas las hojas de los participantes existentes y restablecerá completamente la configuración de la sesión. No se puede deshacer. ¿Está absolutamente seguro de que desea continuar?",
+
+  "reset_session_flags_header": "Confirmar reinicio",
+  "reset_session_flags_text": "Esto permitirá ejecutar de nuevo las funciones {CreateLandingPage} y {CreateSession}. ¿Está seguro de que desea habilitar el reinicio de la sesión?",
+
+  "alerts_options_header": "Alertas"
 }

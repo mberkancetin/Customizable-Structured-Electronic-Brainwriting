@@ -110,6 +110,7 @@
   "default_mod_menu_submit_next": "Einreichen & Weiter",
   "default_mod_menu_prepare_data": "Daten vorbereiten",
   "default_mod_menu_colab_env": "Colab-Umgebung erstellen",
+  "default_mod_menu_reset_session_setup": "Session-Einrichtung zurücksetzen",
   "default_mod_session_start_template": "Bitte reichen Sie {ideasCount} Ideen für Runde 1 ein. Aktivieren Sie das Kästchen, wenn Sie fertig sind.",
   "default_mod_round_end_phrase": "Rundenabschluss:",
   "default_mod_current_round": "Aktuelle Runde:",
@@ -160,5 +161,16 @@
   "default_glob_stopped": "Gestoppt",
 
   "starting_label": "Wird gestartet...text (GLOBAL_VARIABLES.STARTING)",
-  "stopped_label": "Gestoppttext (GLOBAL_VARIABLES.STOPPED)"
+  "stopped_label": "Gestoppttext (GLOBAL_VARIABLES.STOPPED)",
+
+  "landing_page_alert_header": "Sind Sie sicher?",
+  "landing_page_alert_text": "Dadurch wird die Seite {Welcome} vollständig gelöscht und neu erstellt. Möchten Sie wirklich fortfahren?",
+
+  "create_session_alert_header": "ACHTUNG: SIND SIE SICHER?",
+  "create_session_alert_text": "Diese Aktion LÖSCHT alle vorhandenen Teilnehmer-Tabellen und setzt die Session-Einrichtung vollständig zurück. Dies kann nicht rückgängig gemacht werden. Sind Sie absolut sicher, dass Sie fortfahren möchten?",
+
+  "reset_session_flags_header": "Zurücksetzen bestätigen",
+  "reset_session_flags_text": "Damit können die Funktionen {CreateLandingPage} und {CreateSession} erneut ausgeführt werden. Möchten Sie das Zurücksetzen der Session wirklich aktivieren?",
+
+  "alerts_options_header": "Benachrichtigungen"
 }

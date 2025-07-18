@@ -92,7 +92,6 @@
   "default_session_language": "en",
   "default_idea_swap_algorithm": "CascadingRoundRobin",
   "default_time_left": "Timer",
-
   "default_time_is_up": "Time's up!",
   "default_focus_item_1": "Focus",
   "default_focus_item_2": "Session Started",
@@ -111,6 +110,7 @@
   "default_mod_menu_submit_next": "Submit & Next",
   "default_mod_menu_prepare_data": "Prepare Data",
   "default_mod_menu_colab_env": "Create Colab Environment",
+  "default_mod_menu_reset_session_setup": "Reset Session Setup",
   "default_mod_session_start_template": "Please submit {ideasCount} ideas for Round 1. Check the box when done.",
   "default_mod_round_end_phrase": "Round End Phrase:",
   "default_mod_current_round": "Current Round:",
@@ -161,5 +161,16 @@
   "default_glob_stopped": "Stopped",
 
   "starting_label": "Starting... text (GLOBAL_VARIABLES.STARTING)",
-  "stopped_label": "Stopped text (GLOBAL_VARIABLES.STOPPED)"
+  "stopped_label": "Stopped text (GLOBAL_VARIABLES.STOPPED)",
+
+  "landing_page_alert_header": "Are you sure?",
+  "landing_page_alert_text": "This will completely clear and recreate the {Welcome} page. Are you sure you want to proceed?",
+
+  "create_session_alert_header": "DANGER: ARE YOU SURE?",
+  "create_session_alert_text": "This action will DELETE all existing participant sheets and completely reset the session setup. This cannot be undone. Are you absolutely sure you want to proceed?",
+
+  "reset_session_flags_header": "Confirm Reset",
+  "reset_session_flags_text": "This will allow the {CreateLandingPage} and {CreateSession} functions to be run again. Are you sure you want to enable session reset?",
+
+  "alerts_options_header": "Alerts"
 }

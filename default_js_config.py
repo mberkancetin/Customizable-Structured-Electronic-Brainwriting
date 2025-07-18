@@ -7,7 +7,7 @@ DEFAULT_TEXT_KEYS = {
     "SESSION_FOCUS": "default_session_focus",
     "LANDING_SHEET": "default_landing_sheet_name", # Or keep as "Welcome" if sheet names aren't translated
     "PARTICIPANT_PREFIX": "default_participant_prefix", # For generating Participant1, Participant2 etc.
-    "PARTICIPANT_SHEET_LANGUAGE": ["default_session_language", "default_session_language", "default_session_language", "default_session_language", "default_session_language", "default_session_language"],
+    "PARTICIPANT_SHEET_LANGUAGE": ["default_session_language", "default_session_language", "default_session_language", "default_session_language", "default_session_language", "default_session_language", "default_mod_menu_reset_session_setup"],
     "PARTICIPANT_SHEET_FOCUS": ["default_session_focus", "default_session_focus", "default_session_focus", "default_session_focus", "default_session_focus", "default_session_focus"],
     "MODERATOR_SHEET": "default_moderator_sheet_name",
     "SESSION_LANGUAGE": "default_session_language",
@@ -36,6 +36,7 @@ DEFAULT_TEXT_KEYS = {
     "MOD_SUBMIT_NEXT": "default_mod_menu_submit_next",
     "MOD_PREPARE_DATA": "default_mod_menu_prepare_data",
     "MOD_COLAB_ENV": "default_mod_menu_colab_env",
+    "MOD_RESET_SETUP": "default_mod_menu_reset_session_setup",
     "MOD_SESSION_START_TEMPLATE": "default_mod_session_start_template", # e.g., "Please submit {ideasCount} ideas..."
     "MOD_ROUND_END_PHRASE": "default_mod_round_end_phrase",
     "MOD_CURRENT_ROUND": "default_mod_current_round",
@@ -65,6 +66,13 @@ DEFAULT_TEXT_KEYS = {
     "AN_COLAB_STEP1_SMALL_TEXT": "default_an_colab_step1_small_text",
     "AN_COLAB_STEP2": "default_an_colab_step2",
     "AN_COLAB_STEP3": "default_an_colab_step3",
+
+    "ALERT_LANDING_PAGE_HEADER": "landing_page_alert_header",
+    "ALERT_LANDING_PAGE_TEXT": "landing_page_alert_text",
+    "ALERT_CREATE_SESSION_HEADER": "create_session_alert_header",
+    "ALERT_CREATE_SESSION_TEXT": "create_session_alert_text",
+    "ALERT_RESET_SESSION_HEADER": "reset_session_flags_header",
+    "ALERT_RESET_SESSION_TEXT": "reset_session_flags_text",
 }
 
 # Non-translatable defaults or structural defaults
@@ -99,7 +107,8 @@ DEFAULT_MODERATOR_VARIABLES_STRUCTURE = {
         "Start": DEFAULT_TEXT_KEYS["MOD_START"],
         "SubmitNext": DEFAULT_TEXT_KEYS["MOD_SUBMIT_NEXT"],
         "PrepareData": DEFAULT_TEXT_KEYS["MOD_PREPARE_DATA"],
-        "ColabEnvironment": DEFAULT_TEXT_KEYS["MOD_COLAB_ENV"]
+        "ColabEnvironment": DEFAULT_TEXT_KEYS["MOD_COLAB_ENV"],
+        "ResetSessionSetup": DEFAULT_TEXT_KEYS["MOD_RESET_SETUP"],
     },
     "SESSION_START_TEMPLATE": DEFAULT_TEXT_KEYS["MOD_SESSION_START_TEMPLATE"],
     "ROUND_END_PHRASE": DEFAULT_TEXT_KEYS["MOD_ROUND_END_PHRASE"],
@@ -142,6 +151,13 @@ DEFAULT_ANALYSIS_VARIABLES_TEXT_KEYS = {
     "COLAB_POPUP_STEP2": DEFAULT_TEXT_KEYS["AN_COLAB_STEP2"],
     "COLAB_POPUP_STEP3": DEFAULT_TEXT_KEYS["AN_COLAB_STEP3"],
 }
+
+DEFAULT_ALERT_LANDING_PAGE_HEADER = DEFAULT_TEXT_KEYS["ALERT_LANDING_PAGE_HEADER"]
+DEFAULT_ALERT_LANDING_PAGE_TEXT = DEFAULT_TEXT_KEYS["ALERT_LANDING_PAGE_TEXT"]
+DEFAULT_ALERT_CREATE_SESSION_HEADER = DEFAULT_TEXT_KEYS["ALERT_CREATE_SESSION_HEADER"]
+DEFAULT_ALERT_CREATE_SESSION_TEXT = DEFAULT_TEXT_KEYS["ALERT_CREATE_SESSION_TEXT"]
+DEFAULT_ALERT_RESET_SESSION_HEADER = DEFAULT_TEXT_KEYS["ALERT_RESET_SESSION_HEADER"]
+DEFAULT_ALERT_RESET_SESSION_TEXT = DEFAULT_TEXT_KEYS["ALERT_RESET_SESSION_TEXT"]
 
 # Non-translatable defaults
 DEFAULT_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/f/f3/Adana_Alparslan_T%C3%BCrke%C5%9F_%C3%9Cniversitesi_logo.png"

@@ -18,6 +18,12 @@ from default_js_config import (
     DEFAULT_ANALYSIS_VARIABLES_TEXT_KEYS,
     DEFAULT_IMAGE_URL,
     DEFAULT_COLAB_GITHUB_URL,
+    DEFAULT_ALERT_LANDING_PAGE_HEADER,
+    DEFAULT_ALERT_LANDING_PAGE_TEXT,
+    DEFAULT_ALERT_CREATE_SESSION_HEADER,
+    DEFAULT_ALERT_CREATE_SESSION_TEXT,
+    DEFAULT_ALERT_RESET_SESSION_HEADER,
+    DEFAULT_ALERT_RESET_SESSION_TEXT,
     DEFAULT_NUM_PARTICIPANTS,
     DEFAULT_NUM_ROUNDS,
     DEFAULT_NUM_IDEAS
@@ -183,6 +189,12 @@ def initialize_session_state(translations):
             st.session_state.imageUrl = DEFAULT_IMAGE_URL # Non-translatable
             st.session_state.use_logo = True if st.session_state.imageUrl else False
             st.session_state.colabGitHubUrl = DEFAULT_COLAB_GITHUB_URL # Non-translatable
+            st.session_state.lpAlertHeader = DEFAULT_ALERT_LANDING_PAGE_HEADER
+            st.session_state.lpAlertText = DEFAULT_ALERT_LANDING_PAGE_TEXT
+            st.session_state.resetSessionHeader = DEFAULT_ALERT_RESET_SESSION_HEADER
+            st.session_state.resetSessionText = DEFAULT_ALERT_RESET_SESSION_TEXT
+            st.session_state.createSessionHeader = DEFAULT_ALERT_CREATE_SESSION_HEADER
+            st.session_state.createSessionText = DEFAULT_ALERT_CREATE_SESSION_TEXT
             st.session_state.advanced_settings = False
 
         # --- GLOBAL_VARIABLES ---
@@ -229,6 +241,7 @@ def initialize_session_state(translations):
         mv["MENU"]["SubmitNext"] = get_translated_text_from_key("MOD_SUBMIT_NEXT", translations)
         mv["MENU"]["PrepareData"] = get_translated_text_from_key("MOD_PREPARE_DATA", translations)
         mv["MENU"]["ColabEnvironment"] = get_translated_text_from_key("MOD_COLAB_ENV", translations)
+        mv["MENU"]["ResetSessionSetup"] = get_translated_text_from_key("MOD_RESET_SETUP", translations)
         mv["SESSION_START_TEMPLATE"] = get_translated_text_from_key("MOD_SESSION_START_TEMPLATE", translations)
         mv["ROUND_END_PHRASE"] = get_translated_text_from_key("MOD_ROUND_END_PHRASE", translations)
         mv["CURRENT_ROUND"] = get_translated_text_from_key("MOD_CURRENT_ROUND", translations)
@@ -340,6 +353,12 @@ def generate_js_from_state(translations_for_error_msg):
 
         "{{IMAGE_URL_JS_STRING}}": json.dumps(st.session_state.imageUrl if st.session_state.get("generate_landing_page", False) and st.session_state.get("use_logo", False) else ""),
         "{{COLAB_GITHUB_URL_JS_STRING}}": json.dumps(st.session_state.get("colabGitHubUrl", ""), ensure_ascii=False),
+        "{{LP_ALERT_HEADER_JS_STRING}}": json.dumps(st.session_state.get("lpAlertHeader", ""), ensure_ascii=False),
+        "{{LP_ALERT_TEXT_JS_STRING}}": json.dumps(st.session_state.get("lpAlertText", ""), ensure_ascii=False),
+        "{{RESET_SESSION_FLAGS_HEADER_JS_STRING}}": json.dumps(st.session_state.get("resetSessionHeader", ""), ensure_ascii=False),
+        "{{RESET_SESSION_ALERT_TEXT_JS_STRING}}": json.dumps(st.session_state.get("resetSessionText", ""), ensure_ascii=False),
+        "{{CREATE_SESSION_ALERT_HEADER_JS_STRING}}": json.dumps(st.session_state.get("createSessionHeader", ""), ensure_ascii=False),
+        "{{CREATE_SESSION_ALERT_TEXT_JS_STRING}}": json.dumps(st.session_state.get("createSessionText", ""), ensure_ascii=False),
 
         "{{LP_GREETING_MESSAGE_JS_STRING}}": json.dumps(populated_greeting, ensure_ascii=False),
         "{{LP_SESSION_TITLE_SUFFIX_JS_STRING}}": json.dumps(lp_texts.get("SESSION_TITLE_SUFFIX", ""), ensure_ascii=False),
@@ -765,6 +784,25 @@ def main():
             dp_vars["TranslateColumn"] = st.text_input(_("translate_column_label", T_UI), dp_vars["TranslateColumn"], key="fc_trans_col")
             dp_vars["ManualCategorization"] = st.text_input(_("manual_categorization_label", T_UI), dp_vars["ManualCategorization"], key="fc_manual_cat_col")
 
+        with st.expander(_("alerts_options_header", T_UI)):
+            st.session_state.lpAlertHeader = st.text_input(
+                value=_("landing_page_alert_header", T_UI), label="landing_page_alert_header", key="landing_page_alert_header_pop"
+            )
+            st.session_state.lpAlertText = st.text_input(
+                value=_("landing_page_alert_text", T_UI), label="landing_page_alert_text", key="landing_page_alert_text_pop"
+            )
+            st.session_state.resetSessionHeader = st.text_input(
+                value=_("reset_session_flags_header", T_UI), label="reset_session_flags_header", key="reset_session_flags_header_pop"
+            )
+            st.session_state.resetSessionText = st.text_input(
+                value=_("reset_session_flags_text", T_UI), label="reset_session_flags_text", key="reset_session_flags_text_pop"
+            )
+            st.session_state.createSessionHeader = st.text_input(
+                value=_("create_session_alert_header", T_UI), label="create_session_alert_header", key="create_session_alert_header_pop"
+            )
+            st.session_state.createSessionText = st.text_input(
+                value=_("create_session_alert_text", T_UI), label="create_session_alert_text", key="create_session_alert_text_pop"
+            )
 
     # --- Generate and Download GS ---
     st.divider()

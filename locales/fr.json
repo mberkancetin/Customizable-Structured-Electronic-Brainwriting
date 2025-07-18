@@ -110,6 +110,7 @@
   "default_mod_menu_submit_next": "Soumettre et continuer",
   "default_mod_menu_prepare_data": "Préparer les données",
   "default_mod_menu_colab_env": "Créer l’environnement Colab",
+  "default_mod_menu_reset_session_setup": "Réinitialiser la configuration de la session",
   "default_mod_session_start_template": "Veuillez soumettre {ideasCount} idées pour le tour 1. Cochez la case une fois terminé.",
   "default_mod_round_end_phrase": "Fin du tour :",
   "default_mod_current_round": "Tour actuel :",
@@ -160,5 +161,17 @@
   "default_glob_stopped": "Arrêté",
 
   "starting_label": "Texte de -Démarrage en cours- (GLOBAL_VARIABLES.STARTING)",
-  "stopped_label": "Texte de -Arrêté- (GLOBAL_VARIABLES.STOPPED)"
+  "stopped_label": "Texte de -Arrêté- (GLOBAL_VARIABLES.STOPPED)",
+
+  "landing_page_alert_header": "Êtes-vous sûr(e) ?",
+  "landing_page_alert_text": "Cela va entièrement effacer et recréer la page {Welcome}. Êtes-vous certain(e) de vouloir continuer ?",
+
+  "create_session_alert_header": "ATTENTION : ÊTES-VOUS SÛR(E) ?",
+  "create_session_alert_text": "Cette action SUPPRIMERA toutes les feuilles des participants existantes et réinitialisera entièrement la configuration de la session. Cette opération est irréversible. Êtes-vous absolument certain(e) de vouloir continuer ?",
+
+  "reset_session_flags_header": "Confirmer la réinitialisation",
+  "reset_session_flags_text": "Cela permettra d’exécuter à nouveau les fonctions {CreateLandingPage} et {CreateSession}. Êtes-vous sûr(e) de vouloir activer la réinitialisation de la session ?",
+
+  "alerts_options_header": "Alertes"
+
 }

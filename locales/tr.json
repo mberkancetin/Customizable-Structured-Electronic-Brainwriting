@@ -110,6 +110,7 @@
   "default_mod_menu_submit_next": "Gönder ve Devam Et",
   "default_mod_menu_prepare_data": "Veriyi Hazırla",
   "default_mod_menu_colab_env": "Colab Ortamı Oluştur",
+  "default_mod_menu_reset_session_setup": "Oturum Kurulumunu Sıfırla",
   "default_mod_session_start_template": "Lütfen 1. Tur için {ideasCount} fikir yazın. İşlem bittiğinde aşağıdaki kutuyu işaretleyin.",
   "default_mod_round_end_phrase": "Tur Bitiş İfadesi:",
   "default_mod_current_round": "Mevcut Tur:",
@@ -160,5 +161,16 @@
   "default_glob_stopped": "Durduruldu",
 
   "starting_label": "Başlatılıyor... metni (GLOBAL_VARIABLES.STARTING)",
-  "stopped_label": "Durduruldu metni (GLOBAL_VARIABLES.STOPPED)"
+  "stopped_label": "Durduruldu metni (GLOBAL_VARIABLES.STOPPED)",
+
+  "landing_page_alert_header": "Emin misiniz?",
+  "landing_page_alert_text": "Bu işlem {Welcome} sayfasını tamamen temizleyip yeniden oluşturacak. Devam etmek istediğinize emin misiniz?",
+
+  "create_session_alert_header": "DİKKAT: EMİN MİSİNİZ?",
+  "create_session_alert_text": "Bu işlem mevcut tüm katılımcı sayfalarını SİLECEK ve oturum kurulumunu tamamen sıfırlayacak. Bu işlem geri alınamaz. Devam etmek istediğinize gerçekten emin misiniz?",
+
+  "reset_session_flags_header": "Sıfırlamayı Onayla",
+  "reset_session_flags_text": "Bu işlem {CreateLandingPage} ve {CreateSession} işlevlerinin tekrar çalıştırılmasına izin verecek. Oturum sıfırlamayı etkinleştirmek istediğinize emin misiniz?",
+
+  "alerts_options_header": "Uyarılar"
 }
