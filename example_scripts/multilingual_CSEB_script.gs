@@ -19,10 +19,11 @@ How to Cite:
 const GLOBAL_VARIABLES = {
   SESSION_FOCUS: "The effects of local textile companies on your daily life and your community.",
   LANDING_SHEET: "Welcome",
-  PARTICIPANT: ["Participant1", "Participant2", "Participant3", "Participant4", "Participant5", "Participant6"],
-  PARTICIPANT_SHEET_LANGUAGE: ["en", "en", "en", "en", "en", "en"],
+  PARTICIPANT: ["Participant1", "Katilimci2", "Teilnehmer3", "Participante4", "Participant5", "Participant6"],
+  PARTICIPANT_SHEET_LANGUAGE: ["en", "tr", "de", "es", "fr", "en"],
   MODERATOR_SHEET: "ProgressTracking",
   SESSION_LANGUAGE: "en",
+  IDEA_SWAP_ALGORITHM: "InterleavedSweepSwap",
   TIME_LEFT: "Timer",
   MINS_LEFT: " minutes left",
   ONE_MIN_LEFT: "1 minute left",
@@ -32,8 +33,10 @@ const GLOBAL_VARIABLES = {
   ROUNDS: ["Round 1", "Round 2", "Round 3", "Round 4", "Round 5", "Round 6"],
   IDEAS: ["Idea 1", "Idea 2", "Idea 3"],
   CHECK_IDEAS: "Check the box to submit your ideas",
-  ROUND_CHANGE: ["Round-Robin Sheet Update in Progress", "Please wait for the script to finish before proceeding to avoid errors."],
-  SESSION_COMPLETE: "Thank you for your valuable contributions! Your answers have been successfully saved."
+  ROUND_CHANGE: ["Updating your sheet with new ideas from other participants…", "Please wait for the script to finish before proceeding to avoid errors."],
+  SESSION_COMPLETE: "Thank you for your valuable contributions! Your answers have been successfully saved.",
+  STARTING: "Starting...",
+  STOPPED: "Stopped"
 };
 
 const roundCount = GLOBAL_VARIABLES.ROUNDS.length;
@@ -54,14 +57,17 @@ const MODERATOR_VARIABLES = {
     SessionLanguage: "auto",
     IdeaRawColumn: "RawIdea",
     TranslatedLanguage: "en",
+    IdeaID: "IdeaID",
+    IdeaTimestamp: "IdeaTimestamp",
+    IdeaRoundStartTimestamp: "RoundTimestamp",
     TranslateColumn: "Translation",
     ManualCategorization: "ManualCategories"
   },
   COLORS: {"LightSteelBlue": "LightSteelBlue", "LightBlue": "#cfe2f3", "Gold": "#ffd700", "LightGreen": "#d9ead3", "Green": "#90ee90", "Yellow": "yellow", "Grey": "grey", "LightGrey": "#efefef"},
-  START_TIMER: ""
+  START_TIMER: "Start"
 };
 
-const imageUrl = "";
+const imageUrl = "https://upload.wikimedia.org/wikipedia/commons/f/f3/Adana_Alparslan_T%C3%BCrke%C5%9F_%C3%9Cniversitesi_logo.png";
 const colabGitHubUrl = "https://colab.research.google.com/github/mberkancetin/Customizable-Structured-Electronic-Brainwriting/blob/main/DataAnalysis.ipynb";
 const ideas_prefix = "💡 Ideas per Round: \n{ideasCount} per person".replace("{ideasCount}", ideasCount);
 const time_prefix = "⏱️ Time per Round: \n{GLOBAL_VARIABLES.MINUTES} minutes".replace("{GLOBAL_VARIABLES.MINUTES}", GLOBAL_VARIABLES.MINUTES);
@@ -97,8 +103,13 @@ const ANALYSIS_VARIABLES = {
       </li>
         <code><br><b>spreadsheet_id = "${sheetId}"</b>
         <br><b>sheet_name = "${MODERATOR_VARIABLES.DATA_PREP.SheetName}"</b>
+        <br><b>ideaID = "${MODERATOR_VARIABLES.DATA_PREP.IdeaID}"</b>
+        <br><b>idea_timestamp = "${MODERATOR_VARIABLES.DATA_PREP.IdeaTimestamp}"</b>
+        <br><b>round_timestamp = "${MODERATOR_VARIABLES.DATA_PREP.IdeaRoundStartTimestamp}"</b>
         <br><b>original_column = "${MODERATOR_VARIABLES.DATA_PREP.IdeaRawColumn}"</b>
-        <br><b>translate_column = "${MODERATOR_VARIABLES.DATA_PREP.TranslateColumn}"</b></code>
+        <br><b>translate_column = "${MODERATOR_VARIABLES.DATA_PREP.TranslateColumn}"</b>
+        <br><b>category_manual = "${MODERATOR_VARIABLES.DATA_PREP.ManualCategorization}"</b>
+        </code>
     </ol>
   `
 };
@@ -118,7 +129,7 @@ function getFormulaSeparatorFromSheet() {
   // or if seperator is semicolon: min(1;0) returns 0
   // in the sheet to detect the separator
   const ss = spreadsheet.getActiveSheet();
-  const range = ss.getRange(45, 1);
+  const range = ss.getRange((2*roundCount + 42), 1);
 
   range.setFormula('=MIN(1,0)');
   SpreadsheetApp.flush();
@@ -233,6 +244,12 @@ function createMultipleWorksheets() {
   headerRange.setBackground(MODERATOR_VARIABLES.COLORS.LightSteelBlue);
   headerRange.setFontWeight("bold");
 
+  // for timestamps
+  trackingSheet.getRange((roundCount + 26), 1, 1, (participantCount * ideasCount)).setValues([MODERATOR_VARIABLES.IDEAS_TABLE]);
+  const timestampHeaderRange = trackingSheet.getRange((roundCount + 26), 1, 1, (participantCount * ideasCount));
+  timestampHeaderRange.setBackground(MODERATOR_VARIABLES.COLORS.Grey);
+  timestampHeaderRange.setFontWeight("bold");
+
   // Set up progress tracking table
   const roundsRange = trackingSheet.getRange((roundCount + 4), 8, 1, roundCount);
   roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS]);
@@ -260,72 +277,151 @@ function createMultipleWorksheets() {
   trackingSheet.getRange((roundCount + 4), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
   trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(1);
 
-  trackingSheet.getRange((roundCount + 5), 1, 1, 1).setValue(MODERATOR_VARIABLES.ROUND_END_PHRASE);
-  trackingSheet.getRange((roundCount + 5), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-  trackingSheet.getRange((roundCount + 5), 2, 1, 1).setValue(GLOBAL_VARIABLES.TIME_IS_UP);
+  trackingSheet.getRange((roundCount + 6), 1, 1, 1).setValue(MODERATOR_VARIABLES.ROUND_END_PHRASE);
+  trackingSheet.getRange((roundCount + 6), 2, 1, 1).setValue(GLOBAL_VARIABLES.TIME_IS_UP);
+  trackingSheet.getRange((roundCount + 6), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
+
+  trackingSheet.getRange((roundCount + 7), 1, 1, 1).setValue(GLOBAL_VARIABLES.STARTING);
+  trackingSheet.getRange((roundCount + 7), 2, 1, 1).setValue(GLOBAL_VARIABLES.STARTING);
+
+  trackingSheet.getRange((roundCount + 8), 1, 1, 1).setValue(GLOBAL_VARIABLES.STOPPED);
+  trackingSheet.getRange((roundCount + 8), 2, 1, 1).setValue(GLOBAL_VARIABLES.STOPPED);
+
+  trackingSheet.getRange((roundCount + 9), 1, 1, 1).setValue(GLOBAL_VARIABLES.TIME_LEFT);
+  trackingSheet.getRange((roundCount + 9), 2, 1, 1).setValue(GLOBAL_VARIABLES.MINUTES);
 
   trackingSheet.getRange((roundCount + 10), 1, 1, 1).setValue(GLOBAL_VARIABLES.TIME_LEFT);
-  trackingSheet.getRange((roundCount + 10), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
-  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-
-  trackingSheet.getRange((roundCount + 14), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
-  trackingSheet.getRange((roundCount + 14), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
-  trackingSheet.getRange((roundCount + 14), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
-  trackingSheet.getRange((roundCount + 15), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[1]);
-  trackingSheet.getRange((roundCount + 15), 2, 1, 1).setValue(MODERATOR_VARIABLES.SESSION_START);
-  trackingSheet.getRange((roundCount + 16), 1, 1, 2).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[0]);
-  trackingSheet.getRange((roundCount + 17), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
-  trackingSheet.getRange((roundCount + 17), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
-
+  trackingSheet.getRange((roundCount + 10), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Green);
   trackingSheet.getRange((roundCount + 10), 2, 1, 1).setValue(TIMER_STR)
-  trackingSheet.getRange((roundCount + 9), 2, 1, 1).setValue(GLOBAL_VARIABLES.MINUTES)
+
+  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
+  trackingSheet.getRange((roundCount + 12), 1, 1, 1).setBackground(MODERATOR_VARIABLES.COLORS.Green);
   trackingSheet.getRange((roundCount + 12), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
 
+  trackingSheet.getRange((roundCount + 13), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS);
+  trackingSheet.getRange((roundCount + 13), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_FOCUS);
+  trackingSheet.getRange((roundCount + 13), 1, 4, 1).setBackground(MODERATOR_VARIABLES.COLORS.Gold);
+
+  trackingSheet.getRange((roundCount + 14), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[1]);
+  trackingSheet.getRange((roundCount + 14), 2, 1, 1).setValue(MODERATOR_VARIABLES.SESSION_START);
+  trackingSheet.getRange((roundCount + 15), 1, 1, 1).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[0]);
+  trackingSheet.getRange((roundCount + 15), 2, 1, 1).setValue(GLOBAL_VARIABLES.ROUND_CHANGE[1]);
+  trackingSheet.getRange((roundCount + 16), 1, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
+  trackingSheet.getRange((roundCount + 16), 2, 1, 1).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
+
   // Create participant sheets
+  const templateSheetName = "Template_DoNotDelete";
+  let templateSheet = spreadsheet.getSheetByName(templateSheetName);
+  if (templateSheet) {
+    templateSheet.clear(); // Clear if it exists from a previous run
+  } else {
+    templateSheet = spreadsheet.insertSheet(templateSheetName);
+  }
+
+  // Set Column Widths
+  templateSheet.setColumnWidth(1, 10); // Column A (empty)
+
+  // Round Column Widths
+  for (let col = 2; col <= 2 + roundCount; col++) {
+    templateSheet.setColumnWidth(col, col === 2 ? 100 : 180); // B is narrower
+  }
+
+  // Set Row Heights
+  templateSheet.setRowHeight(1, 10); // Row 1 (empty)
+  templateSheet.setRowHeight(2, 20); // Row 2 Round Timer
+  templateSheet.setRowHeight(3, 20); // Row 3
+  templateSheet.setRowHeight(4, 10); // Row 4 (empty)
+  templateSheet.setRowHeight(5, 20); // Row 5 Round Headers
+
+  // Idea Rows Heights set to 70
+  for (let row = 6; row < 6 + ideasCount; row++) {
+    templateSheet.setRowHeight(row, 70);
+  }
+
+  templateSheet.setRowHeight(6 + ideasCount, 40); // GLOBAL_VARIABLES.CHECK_IDEAS
+  templateSheet.setRowHeight(7 + ideasCount, 20); // Checkbox
+
+
+  // Enable text wrapping
+  const formatRange = templateSheet.getRange(2, 2, (ideasCount + 6), (roundCount + 1));
+  formatRange.setWrap(true).setHorizontalAlignment("center").setVerticalAlignment("middle");
+
+  // Set headers
+  const languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
+  templateSheet.getRange("B2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 10}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+  templateSheet.getRange("C2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 12}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+
+  // Set round timer and focus question
+  templateSheet.getRange("B3").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 10}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+  templateSheet.getRange("C3").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+
+  // Set round headers
+  const roundRange = templateSheet.getRange(5, 3, 1, roundCount);
+  roundRange.setValues([GLOBAL_VARIABLES.ROUNDS.map(round => `=GOOGLETRANSLATE("${round}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`)]);
+
+  // Set idea labels
+  templateSheet.getRange(6, 2, ideasCount, 1).setValues(GLOBAL_VARIABLES.IDEAS.map(idea => [`=GOOGLETRANSLATE("${idea}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`]));
+
+  // Add submission text and checkbox
+  templateSheet.getRange((ideasCount + 6), 3, 1, 1).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+  templateSheet.getRange((ideasCount + 7), 3, 1, 1).insertCheckboxes();
+
+  // Merge focus cell
+  templateSheet.getRange(3, 3, 1, roundCount).merge();
+  templateSheet.getRange(2, 3, 1, roundCount).merge();
+
+  // Header styling
+  templateSheet.getRangeList(["B2:C2", `B5:${String.fromCharCode(66 + roundCount)}5`, `B6:B${6 + ideasCount - 1}`]).setBackground(MODERATOR_VARIABLES.COLORS.LightBlue);
+
+  templateSheet.getRange(6, 3, (ideasCount + 1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
+  templateSheet.getRange(5, 2, (ideasCount + 1), (roundCount + 1)).setBorder(true, true, true, true, true, true, MODERATOR_VARIABLES.COLORS.Grey, SpreadsheetApp.BorderStyle.SOLID);
+
+  templateSheet.getRange(2, 2, 2, (roundCount + 1)).setBorder(true, true, true, true, true, true, MODERATOR_VARIABLES.COLORS.Grey, SpreadsheetApp.BorderStyle.SOLID); // Border focus and round timer
+
+  templateSheet.setHiddenGridlines(true) // Hide gridlines
+
+  function addConditionalFormatting() {
+    // Define the cell to apply conditional formatting
+    var range = templateSheet.getRange(2, 3, 1, roundCount);
+    var rules = templateSheet.getConditionalFormatRules();
+    const blue_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 13}")`;
+    const green_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 16}")`;
+    const otherwiseFormula = '=TRUE';
+
+    // Define the conditional formatting rules
+    var newRules = [
+      SpreadsheetApp.newConditionalFormatRule()
+        .whenFormulaSatisfied(blue_formula) // Apply rule when the text is "Blue"
+        .setBackground(MODERATOR_VARIABLES.COLORS.LightBlue)
+        .setRanges([range])
+        .build(),
+      SpreadsheetApp.newConditionalFormatRule()
+        .whenFormulaSatisfied(green_formula) // Apply rule when the text is "Green"
+        .setBackground(MODERATOR_VARIABLES.COLORS.Green)
+        .setRanges([range])
+        .build(),
+      SpreadsheetApp.newConditionalFormatRule()
+        .whenFormulaSatisfied(otherwiseFormula)
+        .setBackground(MODERATOR_VARIABLES.COLORS.Yellow)
+        .setRanges([range])
+        .build(),
+    ];
+    // Add the new rules to the sheet
+    templateSheet.setConditionalFormatRules(rules.concat(newRules));
+  }
+  addConditionalFormatting();
+
   for (let i = 0; i < participantCount; i++) {
-
-    // Create new sheet
     const sheetName = GLOBAL_VARIABLES.PARTICIPANT[i];
-    let sheet;
 
-    // Try to get existing sheet or create new one
-    try {
-      sheet = spreadsheet.insertSheet(sheetName);
-    } catch (e) {
-      // If sheet already exists, get it and clear it
-      sheet = spreadsheet.getSheetByName(sheetName);
-      sheet.clear();
+    // If a sheet with this name already exists, delete it before copying.
+    let existingSheet = spreadsheet.getSheetByName(sheetName);
+    if (existingSheet) {
+      spreadsheet.deleteSheet(existingSheet);
     }
 
-    // Set Column Widths
-    sheet.setColumnWidth(1, 10); // Column A (empty)
-
-    // Round Column Widths
-    for (let col = 2; col <= 2 + roundCount; col++) {
-      sheet.setColumnWidth(col, col === 2 ? 100 : 180); // B is narrower
-    }
-
-    // Set Row Heights
-    sheet.setRowHeight(1, 10); // Row 1 (empty)
-    sheet.setRowHeight(2, 20); // Row 2 Round Timer
-    sheet.setRowHeight(3, 20); // Row 3
-    sheet.setRowHeight(4, 10); // Row 4 (empty)
-    sheet.setRowHeight(5, 20); // Row 5 Round Headers
-
-    // Idea Rows Heights set to 70
-    for (let row = 6; row < 6 + ideasCount; row++) {
-      sheet.setRowHeight(row, 70);
-    }
-
-    sheet.setRowHeight(6 + ideasCount, 40); // GLOBAL_VARIABLES.CHECK_IDEAS
-    sheet.setRowHeight(7 + ideasCount, 20); // Checkbox
-
-
-    // Enable text wrapping
-    sheet.getRange(2, 2, (ideasCount + 6), (roundCount + 1)).setWrap(true);
-    sheet.getRange(2, 2, (ideasCount + 6), (roundCount + 1)).setHorizontalAlignment("center");
-    sheet.getRange(2, 2, (ideasCount + 6), (roundCount + 1)).setVerticalAlignment("middle");
+    // This one call replaces dozens of formatting calls inside the loop.
+    const newSheet = templateSheet.copyTo(spreadsheet).setName(sheetName);
 
     // Set sheet language
     var languages = [
@@ -335,85 +431,13 @@ function createMultipleWorksheets() {
         .requireValueInList(languages)
         .setAllowInvalid(false) // This prevents typing a language not in the list
         .build();
-    var lan_cell = sheet.getRange(2, (roundCount + 3), 1, 1)
+    var lan_cell = newSheet.getRange(2, (roundCount + 3), 1, 1)
     const participantLanguageValue = GLOBAL_VARIABLES.PARTICIPANT_SHEET_LANGUAGE[i];
     lan_cell.setValue(participantLanguageValue);
     lan_cell.setDataValidation(rule);
-
-    // Set headers
-    const languageColumnLetter = String.fromCharCode(67 + roundCount); // 'C' is 67 in ASCII
-    sheet.getRange("B2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 10}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
-    sheet.getRange("C2").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!A${roundCount + 12}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
-
-    // Set round timer and focus question
-    sheet.getRange("B3").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 10}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
-    sheet.getRange("C3").setFormula(`=GOOGLETRANSLATE(${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
-
-    // Set round headers
-    const roundsRange = sheet.getRange(5, 3, 1, roundCount);
-    roundsRange.setValues([GLOBAL_VARIABLES.ROUNDS.map(round => `=GOOGLETRANSLATE("${round}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`)]);
-
-    // Set idea labels
-    sheet.getRange(6, 2, ideasCount, 1).setValues(GLOBAL_VARIABLES.IDEAS.map(idea => [`=GOOGLETRANSLATE("${idea}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`]));
-
-    // Add submission text and checkbox
-    sheet.getRange((ideasCount + 6), 3, 1, 1).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
-    sheet.getRange((ideasCount + 7), 3, 1, 1).insertCheckboxes();
-
-    // Header styling
-    const headerRanges = [
-      sheet.getRange(2, 2),
-      sheet.getRange(2, 3, 1, roundCount),
-      sheet.getRange(5, 2, 1, roundCount + 1),
-      sheet.getRange(6, 2, ideasCount, 1)
-    ];
-
-    headerRanges.forEach(range => {
-      range.setBackground(MODERATOR_VARIABLES.COLORS.LightBlue);
-    });
-
-    sheet.getRange(6, 3, (ideasCount + 1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
-    sheet.getRange(5, 2, (ideasCount + 1), (roundCount + 1)).setBorder(true, true, true, true, true, true, MODERATOR_VARIABLES.COLORS.Grey, SpreadsheetApp.BorderStyle.SOLID); // Border the main table
-
-    // Merge focus cell
-    sheet.getRange(3, 3, 1, roundCount).merge();
-    sheet.getRange(2, 3, 1, roundCount).merge();
-
-    sheet.getRange(2, 2, 2, (roundCount + 1)).setBorder(true, true, true, true, true, true, MODERATOR_VARIABLES.COLORS.Grey, SpreadsheetApp.BorderStyle.SOLID); // Border focus and round timer
-
-    sheet.setHiddenGridlines(true) // Hide gridlines
-
-    function addConditionalFormatting() {
-      // Define the cell to apply conditional formatting
-      var range = sheet.getRange(2, 3, 1, roundCount);
-      var rules = sheet.getConditionalFormatRules();
-      const blue_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 14}")`;
-      const green_formula = `=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 12}")=INDIRECT("${GLOBAL_VARIABLES.MODERATOR_SHEET}!B${roundCount + 17}")`;
-      const otherwiseFormula = '=TRUE';
-
-      // Define the conditional formatting rules
-      var newRules = [
-        SpreadsheetApp.newConditionalFormatRule()
-          .whenFormulaSatisfied(blue_formula) // Apply rule when the text is "Blue"
-          .setBackground(MODERATOR_VARIABLES.COLORS.LightBlue)
-          .setRanges([range])
-          .build(),
-        SpreadsheetApp.newConditionalFormatRule()
-          .whenFormulaSatisfied(green_formula) // Apply rule when the text is "Green"
-          .setBackground(MODERATOR_VARIABLES.COLORS.Green)
-          .setRanges([range])
-          .build(),
-        SpreadsheetApp.newConditionalFormatRule()
-          .whenFormulaSatisfied(otherwiseFormula)
-          .setBackground(MODERATOR_VARIABLES.COLORS.Yellow)
-          .setRanges([range])
-          .build(),
-      ];
-      // Add the new rules to the sheet
-      sheet.setConditionalFormatRules(rules.concat(newRules));
-    }
-    addConditionalFormatting();
   }
+
+  templateSheet.hideSheet();
 
   // Set formulas for participant tracking
   for (let i = 0; i < participantCount; i++) {
@@ -439,6 +463,7 @@ function createMultipleWorksheets() {
   // Move "Moderator ProgerssTracking sheet" to the last position (index = sheetCount - 1)
   spreadsheet.setActiveSheet(trackingSheet);
   spreadsheet.moveActiveSheet(sheetCount);
+  spreadsheet.deleteSheet(templateSheet);
 }
 
 /*
@@ -466,7 +491,8 @@ function updateCountdownStatus(secondsLeft) {
   let message = '';
 
   if (secondsLeft <= 0) {
-    message = GLOBAL_VARIABLES.TIME_IS_UP;
+    var time_is_up_text = trackingSheet.getRange((roundCount + 6), 2, 1, 1).getValue();
+    message = time_is_up_text;
   } else if (secondsLeft <= 60) {
     message = GLOBAL_VARIABLES.ONE_MIN_LEFT;
   } else {
@@ -476,9 +502,18 @@ function updateCountdownStatus(secondsLeft) {
   trackingSheet.getRange(roundCount + 10, 2).setValue(message);
 }
 
+function roundStartTimestamp() {
+  const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
+  const round_num = trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue();
+  const columnRound = round_num + 7;
+  const rowRound = roundCount + participantCount + 5;
+  const timestampNow = new Date();
+  trackingSheet.getRange(rowRound, columnRound).setValue(timestampNow);
+}
+
 function getRoundMinutes() {
   const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  trackingSheet.getRange(roundCount + 8, 2).setFormula("=NOW()");
+  // trackingSheet.getRange(roundCount + 8, 2).setFormula("=NOW()"); // redundant
 
   let TIMER_INTERVAL = 10;
   var round_min = trackingSheet.getRange((roundCount + 9), 2, 1, 1).getValue();
@@ -528,6 +563,7 @@ function getRoundMinutes() {
             function startTimer() {
               document.getElementById('startBtn').style.display = 'none';
               const display = document.getElementById('timerContainer');
+              google.script.run.roundStartTimestamp();
 
               interval = setInterval(function() {
                 let minutes = Math.floor(duration / 60);
@@ -564,78 +600,141 @@ function getRoundMinutes() {
 // Start session with a note in yellow background
 function StartSession() {
   var trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.FOCUS[1], MODERATOR_VARIABLES.SESSION_START]]);
+  var session_started = trackingSheet.getRange((roundCount + 14), 1, 1, 2).getValues();
+  var starting_text = trackingSheet.getRange((roundCount + 7), 2, 1, 1).getValue();
+
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(session_started);
+  trackingSheet.getRange(roundCount + 10, 2).setValue(starting_text);
 
   SpreadsheetApp.flush();
+  getRoundMinutes();
 
   // wait 10 seconds for participants to read the text
   Utilities.sleep(10000); // 10 seconds waiting time
-  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.FOCUS[0], GLOBAL_VARIABLES.SESSION_FOCUS]]);
+  var focus_if_changed = trackingSheet.getRange((roundCount + 13), 1, 1, 2).getValues();
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(focus_if_changed);
   SpreadsheetApp.flush();
-  getRoundMinutes();
 }
 
 
 // End session with a note in green background
 function SessionEnd() {
   var trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  trackingSheet.getRange((roundCount + 12), 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
-  trackingSheet.getRange((roundCount + 12), 2).setValue(GLOBAL_VARIABLES.SESSION_COMPLETE);
+  var session_end = trackingSheet.getRange((roundCount + 16), 1, 1, 2).getValues();
+
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(session_end);
 }
 
 
 /*
------ FUNCTION TO SUBMIT DATA AND CHANGE ROUND -----
+----- FUNCTION TO SUBMIT DATA AND CHANGE ROUND (with Interleaved Logic) -----
 */
 function SubmitData() {
-  var trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  var round_num = trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue();
-  // var x = [1, 4, 7, 10, 13, 16]
-  var x = Array.from({ length: participantCount }, (_, i) => 1 + i * ideasCount);
-
-  var round_robin = x.slice(-1*round_num).concat(x);
+  const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
+  const round_num = trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue();
   var col_num = round_num + 2
 
-  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.ROUND_CHANGE[0], GLOBAL_VARIABLES.ROUND_CHANGE[1]]]);
+  const round_change_text = trackingSheet.getRange((roundCount + 15), 1, 1, 2).getValues();
+  const stopped_text = trackingSheet.getRange((roundCount + 8), 2, 1, 1).getValue();
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(round_change_text);
+  trackingSheet.getRange(roundCount + 10, 2).setValue(stopped_text);
   SpreadsheetApp.flush();
+  getRoundMinutes();
 
-  for (var k=0; k<participantCount; k++) {
-    var sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
-    var values = [
-                  Array.from({ length: ideasCount }, (_, i) => sheet.getRange(6 + i, col_num).getValue())
-                ];
-    trackingSheet.getRange(round_num+1, 1+(ideasCount*k), 1, ideasCount).setValues(values);
+  let allNewIdeas = [];
+  for (let k = 0; k < participantCount; k++) {
+    const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
+    const participantIdeas = sheet.getRange(6, col_num, ideasCount, 1).getValues();
+    allNewIdeas.push(participantIdeas.flat());
 
     for (var i=0; i<(ideasCount+2); i++) {
       sheet.getRange(6+i, col_num).clearContent();
       sheet.getRange(6+i, col_num).setBackground(MODERATOR_VARIABLES.COLORS.LightGrey);
     }
-    sheet.getRange((ideasCount+6), col_num).clearFormat();
-    sheet.getRange((ideasCount+7), col_num).clearFormat();
-    sheet.getRange((ideasCount+7), col_num).removeCheckboxes();
+    sheet.getRange((ideasCount+6), col_num, 2, 1).clearFormat().removeCheckboxes();
   }
 
-  for (var i=0; i<participantCount; i++) {
-    var sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
-    for (var j = 0; j < round_num; j++) {
-      var sourceRange = trackingSheet.getRange(2 + j, round_robin[i + j], 1, ideasCount).getValues(); // Calculate the source range dynamically
-      var columnValues = sourceRange[0].map(v => [`=GOOGLETRANSLATE("${v}"${sep} "auto"${sep} ${languageColumnLetter}2)`]);
+  const finalIdeasToWrite = [allNewIdeas.flat()];
 
-      // Set the values in the corresponding target column
-      sheet.getRange(6, 3 + j, ideasCount, 1).setValues(columnValues);
+  if (finalIdeasToWrite[0].length > 0) {
+      trackingSheet.getRange(round_num + 1, 1, 1, participantCount * ideasCount).setValues(finalIdeasToWrite);
+  }
+
+  SpreadsheetApp.flush();
+
+  // Perform the "Paper Swap" using the selected algorithm
+  const allIdeasData = trackingSheet.getRange(2, 1, roundCount, participantCount * ideasCount).getValues();
+
+  const positiveModulo = (a, n) => ((a % n) + n) % n;
+
+  for (let i = 0; i < participantCount; i++) {
+    const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
+    const languageColumnLetter = String.fromCharCode(67 + roundCount);
+    let formulasForSheet = Array(ideasCount).fill(null).map(() => Array(round_num));
+
+    for (let j = 0; j < round_num; j++) {
+      let usedSources = [];
+
+      for (let k = 0; k < ideasCount; k++) {
+        let finalSourceIndex;
+        if (GLOBAL_VARIABLES.IDEA_SWAP_ALGORITHM === "InterleavedSweepSwap") {
+            const shift = round_num - j;
+            let potentialSourceIndex = positiveModulo(i - shift - k, participantCount);
+            while (potentialSourceIndex === i || usedSources.includes(potentialSourceIndex)) {
+                potentialSourceIndex = positiveModulo(potentialSourceIndex - 1, participantCount);
+            }
+            finalSourceIndex = potentialSourceIndex;
+        } else {
+            const shift = round_num - j;
+            finalSourceIndex = positiveModulo(i - shift, participantCount);
+        }
+        usedSources.push(finalSourceIndex);
+
+        const idea_row_index = j;
+        const idea_col_index = (finalSourceIndex * ideasCount) + k;
+        const ideaValue = allIdeasData[idea_row_index][idea_col_index];
+
+        const cleanIdea = ideaValue ? String(ideaValue).replace(/"/g, '""') : "";
+        const formula = cleanIdea ? `=GOOGLETRANSLATE("${cleanIdea}"${sep} "auto"${sep} ${languageColumnLetter}2)` : "";
+        formulasForSheet[k][j] = formula;
+      }
     }
-    if (round_num == roundCount) {
-      trackingSheet.getRange((roundCount+4), 2, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
-      SessionEnd();
-    } else {
-      sheet.getRange((ideasCount+6), col_num+1).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
-      sheet.getRange((ideasCount+7), col_num+1).insertCheckboxes();
-      sheet.getRange(6, col_num+1, (ideasCount+1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
+
+    if(round_num > 0) {
+      const rangeToUpdate = sheet.getRange(6, 3, ideasCount, round_num);
+      rangeToUpdate.clearContent();
+      rangeToUpdate.setFormulas(formulasForSheet);
     }
   }
-  trackingSheet.getRange((roundCount+4), 2, 1, 1).setValue(trackingSheet.getRange((roundCount+4), 2, 1, 1).getValue() + 1);   // increment round
-  trackingSheet.getRange((roundCount+12), 1, 1, 2).setValues([[GLOBAL_VARIABLES.FOCUS[0], GLOBAL_VARIABLES.SESSION_FOCUS]]);
-  getRoundMinutes();
+
+  const next_input_col = col_num + 1;
+
+  if (round_num == roundCount) {
+    trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
+    SessionEnd();
+    // Clear and format the final input column
+    for (let k = 0; k < participantCount; k++) {
+      const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
+      const lastInputRange = sheet.getRange(6, col_num, ideasCount + 2, 1);
+      lastInputRange.setBackground(MODERATOR_VARIABLES.COLORS.LightGrey);
+      sheet.getRange(ideasCount + 6, col_num, 2, 1).clearFormat().removeCheckboxes();
+    }
+    return;
+  }
+
+  for (let i = 0; i < participantCount; i++) {
+    const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
+    const languageColumnLetter = String.fromCharCode(67 + roundCount);
+    sheet.getRange(6, next_input_col, (ideasCount + 1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
+    sheet.getRange((ideasCount + 6), next_input_col).setFormula(`=GOOGLETRANSLATE("${GLOBAL_VARIABLES.CHECK_IDEAS}"${sep} "${GLOBAL_VARIABLES.SESSION_LANGUAGE}"${sep} ${languageColumnLetter}2)`);
+    sheet.getRange((ideasCount + 7), next_input_col).insertCheckboxes();
+  }
+
+  // Increment round number and reset focus message
+  trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(round_num + 1);
+  const focus_if_changed = trackingSheet.getRange((roundCount + 13), 1, 1, 2).getValues();
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(focus_if_changed);
+  SpreadsheetApp.flush();
 }
 
 
@@ -651,42 +750,54 @@ function PrepData() {
     prepSheet = spreadsheet.getSheetByName(MODERATOR_VARIABLES.DATA_PREP.SheetName);
     prepSheet.clear();
   }
-  prepSheet.getRange("A1").setValue(MODERATOR_VARIABLES.DATA_PREP.IdeaRawColumn);
+  prepSheet.getRange(1, 1).setValue(MODERATOR_VARIABLES.DATA_PREP.IdeaID);
+  prepSheet.getRange(1, 2).setValue(MODERATOR_VARIABLES.DATA_PREP.IdeaTimestamp);
+  prepSheet.getRange(1, 3).setValue(MODERATOR_VARIABLES.DATA_PREP.IdeaRoundStartTimestamp);
+  prepSheet.getRange(1, 4).setValue(MODERATOR_VARIABLES.DATA_PREP.IdeaRawColumn);
+  prepSheet.getRange(1, 5).setValue(MODERATOR_VARIABLES.DATA_PREP.TranslateColumn);
+  prepSheet.getRange(1, 6).setValue(MODERATOR_VARIABLES.DATA_PREP.ManualCategorization);
 
   trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
 
-  var tableRange = trackingSheet.getRange(2, 1, roundCount, participantCount*ideasCount);
-  var tableValues = tableRange.getValues();
+  var ideasTableRange = trackingSheet.getRange(2, 1, roundCount, participantCount*ideasCount);
+  var timestampTableRange = trackingSheet.getRange((roundCount + 27), 1, roundCount, participantCount*ideasCount);
+  var roundStartTimestampTableRange = trackingSheet.getRange((roundCount + participantCount + 5), 8, 1, roundCount);
+  var ideasTableValues = ideasTableRange.getValues();
+  var timestampTableValues = timestampTableRange.getValues();
+  var roundStartTimestampValues = roundStartTimestampTableRange.getValues();
 
   // Create an array to hold the values for the single column
-  var singleColumn = [];
+  var ideasSingleColumn = [];
+  var timestampSingleColumn = [];
+  var participantSingleColumn = [];
+  var roundTimestampSingleColumn = [];
 
   // Loop through rows and columns to extract values
-  for (var row = 0; row < tableValues.length; row++) {
-    for (var col = 0; col < tableValues[row].length; col++) {
-      singleColumn.push([tableValues[row][col]]); // Wrap value in array for single-column format
+  for (var row = 0; row < ideasTableValues.length; row++) {
+    for (var col = 0; col < ideasTableValues[row].length; col++) {
+      participantSingleColumn.push([`${MODERATOR_VARIABLES.IDEAS_TABLE[col]}-Round${row + 1}`]);
+      ideasSingleColumn.push([ideasTableValues[row][col]]); // Wrap value in array for single-column format
+      timestampSingleColumn.push([timestampTableValues[row][col]]);
+      roundTimestampSingleColumn.push([roundStartTimestampValues[0][row]]);
+
     }
   }
 
-  // Output the single column starting at A2 cell
-  var outputRange = prepSheet.getRange("A2");
-  outputRange.offset(0, 0, singleColumn.length, 1).setValues(singleColumn);
+  // Output the single column starting at D2 cell
+  prepSheet.getRange(2, 4).offset(0, 0, ideasSingleColumn.length, 1).setValues(ideasSingleColumn);
+  prepSheet.getRange(2, 3).offset(0, 0, roundTimestampSingleColumn.length, 1).setValues(roundTimestampSingleColumn);
+  prepSheet.getRange(2, 2).offset(0, 0, timestampSingleColumn.length, 1).setValues(timestampSingleColumn);
+  prepSheet.getRange(2, 1).offset(0, 0, participantSingleColumn.length, 1).setValues(participantSingleColumn);
 
-  if (MODERATOR_VARIABLES.DATA_PREP.SessionLanguage == "auto") {
-    prepSheet.getRange("B1").setValue(MODERATOR_VARIABLES.DATA_PREP.TranslateColumn);
-    prepSheet.getRange("C1").setValue(MODERATOR_VARIABLES.DATA_PREP.ManualCategorization);
-
-    // Translate the data
-    for (var row = 2; row < (participantCount*ideasCount*roundCount + 2); row++) { // Start from row 2 to skip the header
-      var sourceCell = "A" + row; // Reference the source cell in column A
-      var targetCell = "B" + row; // Reference the target cell in column B
-      var formula = `=GOOGLETRANSLATE(${sourceCell}${sep}"${MODERATOR_VARIABLES.DATA_PREP.SessionLanguage}"${sep}"${MODERATOR_VARIABLES.DATA_PREP.TranslatedLanguage}")`;
-      prepSheet.getRange(targetCell).setFormula(formula);
-    };
-  } else {
-      prepSheet.getRange("B1").setValue(MODERATOR_VARIABLES.DATA_PREP.ManualCategorization);
-  }
+  // Translate the data
+  for (var row = 2; row < (participantCount*ideasCount*roundCount + 2); row++) { // Start from row 2 to skip the header
+    var sourceCell = "D" + row; // Reference the source cell in column A
+    var targetCell = "E" + row; // Reference the target cell in column B
+    var formula = `=GOOGLETRANSLATE(${sourceCell}${sep}"${MODERATOR_VARIABLES.DATA_PREP.SessionLanguage}"${sep}"${MODERATOR_VARIABLES.DATA_PREP.TranslatedLanguage}")`;
+    prepSheet.getRange(targetCell).setFormula(formula);
+  };
 }
+
 
 // Pop-up that guides the moderator for Colab environment
 function completeAutomationAndGuideToColab() {
@@ -696,4 +807,32 @@ function completeAutomationAndGuideToColab() {
       .setWidth(800)
       .setHeight(450);
   SpreadsheetApp.getUi().showModalDialog(ui, ANALYSIS_VARIABLES.POPUP_TITLE);
+}
+
+
+// Captures the exact time a participant writes an idea
+function onEdit(e) {
+  const ideaTimestamp = new Date()
+  const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
+  const round_num = trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue();
+  const range = e.range;
+  const sheet = range.getSheet();
+  const name = sheet.getName();
+  const parts = GLOBAL_VARIABLES.PARTICIPANT;
+  const pIndex = parts.indexOf(name);
+  if (pIndex < 0) return;
+  const ideaCoordinateCol = range.getColumn()
+  const ideaCoordinateRow = range.getRow()
+
+  if (ideaCoordinateRow >= 6 + ideasCount ||
+      ideaCoordinateRow < 6 ||
+      ideaCoordinateCol < round_num + 2
+      ) {
+    return;
+  }
+
+  const targetRow = roundCount + 26 + (ideaCoordinateCol-2);
+  const startCol = pIndex * ideasCount + (ideaCoordinateRow-5);
+
+  trackingSheet.getRange(targetRow, startCol, 1, 1).setValue(ideaTimestamp);
 }

@@ -20,6 +20,7 @@ const GLOBAL_VARIABLES = {
   LANDING_SHEET: {{LANDING_SHEET_JS_STRING}},
   PARTICIPANT: {{PARTICIPANT_LIST_AS_JS_ARRAY}},
   MODERATOR_SHEET: {{MODERATOR_SHEET_JS_STRING}},
+  IDEA_SWAP_ALGORITHM: {{IDEA_SWAP_ALGORITHM_JS_STRING}},
   TIME_LEFT: {{TIME_LEFT_JS_STRING}},
   MINS_LEFT: {{MINS_LEFT_JS_STRING}},
   ONE_MIN_LEFT: {{ONE_MIN_LEFT_JS_STRING}},
@@ -604,65 +605,110 @@ function SessionEnd() {
 ----- FUNCTION TO SUBMIT DATA AND CHANGE ROUND -----
 */
 function SubmitData() {
-  var trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
-  var round_num = trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue();
-  // var x = [1, 4, 7, 10, 13, 16]
-  var x = Array.from({ length: participantCount }, (_, i) => 1 + i * ideasCount);
+  const trackingSheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.MODERATOR_SHEET);
+  const round_num = trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue();
 
-  var round_robin = x.slice(-1*round_num).concat(x);
   var col_num = round_num + 2
-  var round_change_text = trackingSheet.getRange((roundCount + 15), 1, 1, 2).getValues();
-  var stopped_text = trackingSheet.getRange((roundCount + 8), 2, 1, 1).getValue();
+  const round_change_text = trackingSheet.getRange((roundCount + 15), 1, 1, 2).getValues();
+  const stopped_text = trackingSheet.getRange((roundCount + 8), 2, 1, 1).getValue();
 
   trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(round_change_text);
   trackingSheet.getRange(roundCount + 10, 2).setValue(stopped_text);
   SpreadsheetApp.flush();
   getRoundMinutes();
 
+  let allNewIdeas = [];
   for (var k=0; k<participantCount; k++) {
     var sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
-    var values = [
-                  Array.from({ length: ideasCount }, (_, i) => sheet.getRange(6 + i, col_num).getValue())
-                ];
-    trackingSheet.getRange(round_num+1, 1+(ideasCount*k), 1, ideasCount).setValues(values);
+    const participantIdeas = sheet.getRange(6, input_col, ideasCount, 1).getValues();
+    allNewIdeas.push(participantIdeas.flat());
 
     for (var i=0; i<(ideasCount+2); i++) {
       sheet.getRange(6+i, col_num).clearContent();
       sheet.getRange(6+i, col_num).setBackground(MODERATOR_VARIABLES.COLORS.LightGrey);
     }
-    sheet.getRange((ideasCount+6), col_num).clearFormat();
-    sheet.getRange((ideasCount+7), col_num).clearFormat();
-    sheet.getRange((ideasCount+7), col_num).removeCheckboxes();
+    sheet.getRange((ideasCount+6), col_num, 2, 1).clearFormat().removeCheckboxes();
+  }
+  const finalIdeasToWrite = [allNewIdeas.flat()];
+
+  if (finalIdeasToWrite[0].length > 0) {
+      trackingSheet.getRange(round_num + 1, 1, 1, participantCount * ideasCount).setValues(finalIdeasToWrite);
+  }
+  SpreadsheetApp.flush();
+
+  // Perform the "Paper Swap" using the selected algorithm
+  const allIdeasData = trackingSheet.getRange(2, 1, roundCount, participantCount * ideasCount).getValues();
+  const positiveModulo = (a, n) => ((a % n) + n) % n;
+
+  for (let i = 0; i < participantCount; i++) {
+    const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
+    let columnValues = Array(ideasCount).fill(null).map(() => Array(round_num));
+
+    for (let j = 0; j < round_num; j++) {
+      let usedSources = [];
+      for (let k = 0; k < ideasCount; k++) {
+        let finalSourceIndex;
+        let potentialSourceIndex;
+
+        if (GLOBAL_VARIABLES.IDEA_SWAP_ALGORITHM === "InterleavedSweepSwap") {
+            const shift = round_num - j;
+            potentialSourceIndex = positiveModulo(i - shift - k, participantCount);
+
+            while (potentialSourceIndex === i || usedSources.includes(potentialSourceIndex)) {
+                potentialSourceIndex = positiveModulo(potentialSourceIndex - 1, participantCount);
+            }
+            finalSourceIndex = potentialSourceIndex;
+
+        } else { // Default to "CascadingRoundRobin"
+            const shift = round_num - j;
+            finalSourceIndex = positiveModulo(i - shift, participantCount);
+        }
+
+        usedSources.push(finalSourceIndex);
+
+        const idea_row_index = j;
+        const idea_col_index = (finalSourceIndex * ideasCount) + k;
+        const ideaValue = allIdeasData[idea_row_index][idea_col_index];
+
+        const cleanIdea = ideaValue ? String(ideaValue).replace(/"/g, '""') : "";
+        columnValues[k][j] = cleanIdea;
+      }
+    }
+
+    if(round_num > 0) {
+      const rangeToUpdate = sheet.getRange(6, 3, ideasCount, round_num);
+      rangeToUpdate.clearContent();
+      rangeToUpdate.setValues(columnValues);
+    }
   }
 
-  for (var i=0; i<participantCount; i++) {
-    var sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
-    for (var j = 0; j < round_num; j++) {
-      var sourceRange = trackingSheet.getRange(2 + j, round_robin[i + j], 1, ideasCount).getValues(); // Calculate the source range dynamically
-      var columnValues = sourceRange[0].map(v => [v]);
+  const next_input_col = col_num + 1;
 
-      // Set the values in the corresponding target column
-      sheet.getRange(6, 3 + j, ideasCount, 1).setValues(columnValues);
-    }
-    if (round_num == roundCount) {
-      trackingSheet.getRange((roundCount+4), 2, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
-      SessionEnd();
-    } else {
-      sheet.getRange((ideasCount+6), col_num+1).setValue(GLOBAL_VARIABLES.CHECK_IDEAS);
-      sheet.getRange((ideasCount+7), col_num+1).insertCheckboxes();
-      sheet.getRange(6, col_num+1, (ideasCount+1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
-    }
-  }
   if (round_num == roundCount) {
+    trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
+    SessionEnd();
+    // Clear and format the final input column
+    for (let k = 0; k < participantCount; k++) {
+      const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
+      const lastInputRange = sheet.getRange(6, col_num, ideasCount + 2, 1);
+      lastInputRange.setBackground(MODERATOR_VARIABLES.COLORS.LightGrey);
+      sheet.getRange(ideasCount + 6, col_num, 2, 1).clearFormat().removeCheckboxes();
+    }
     return;
-  } else {
-    trackingSheet.getRange((roundCount+4), 2, 1, 1).setValue(trackingSheet.getRange((roundCount + 4), 2, 1, 1).getValue() + 1);   // increment round
-    SpreadsheetApp.flush();
-    var starting_text = trackingSheet.getRange((roundCount + 7), 2, 1, 1).getValue();
-    var focus_if_changed = trackingSheet.getRange((roundCount + 13), 1, 1, 2).getValues();
-    trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(focus_if_changed);
-    trackingSheet.getRange(roundCount + 10, 2).setValue(starting_text);
   }
+
+  for (let i = 0; i < participantCount; i++) {
+    const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
+    sheet.getRange(6, next_input_col, (ideasCount + 1), 1).setBackground(MODERATOR_VARIABLES.COLORS.LightGreen);
+    sheet.getRange((ideasCount + 6), next_input_col).setValue(GLOBAL_VARIABLES.CHECK_IDEAS);
+    sheet.getRange((ideasCount + 7), next_input_col).insertCheckboxes();
+  }
+
+  // Increment round number and reset focus message
+  trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(round_num + 1);
+  const focus_if_changed = trackingSheet.getRange((roundCount + 13), 1, 1, 2).getValues();
+  trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(focus_if_changed);
+  SpreadsheetApp.flush();
 }
 
 

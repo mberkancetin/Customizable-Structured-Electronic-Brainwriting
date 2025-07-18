@@ -23,6 +23,11 @@ from default_js_config import (
     DEFAULT_NUM_IDEAS
 )
 
+SUPPORTED_SWAP_ALGORITHMS = [
+    "CascadingRoundRobin",
+    "InterleavedSweepSwap"
+]
+
 # --- Configuration for Internationalization (i18n) ---
 LOCALES_DIR = "locales"
 DEFAULT_LANGUAGE_CODE = "en"
@@ -186,6 +191,7 @@ def initialize_session_state(translations):
         gv["LANDING_SHEET"] = get_translated_text_from_key("LANDING_SHEET", translations) # Assumes sheet names are translated
         gv["MODERATOR_SHEET"] = get_translated_text_from_key("MODERATOR_SHEET", translations) # Assumes sheet names are translated
         gv["SESSION_LANGUAGE"] = get_translated_text_from_key("SESSION_LANGUAGE", translations) # Assumes sheet names are translated
+        gv["IDEA_SWAP_ALGORITHM"] = get_translated_text_from_key("IDEA_SWAP_ALGORITHM", translations)
         gv["PARTICIPANT_SHEET_LANGUAGE"] = [get_translated_text_from_key("SESSION_LANGUAGE", translations) for _ in range(st.session_state.num_participants)]
         gv["TIME_LEFT"] = get_translated_text_from_key("TIME_LEFT", translations)
         gv["MINS_LEFT"] = get_translated_text_from_key("MINS_LEFT", translations)
@@ -299,6 +305,7 @@ def generate_js_from_state(translations_for_error_msg):
         "{{PARTICIPANT_LIST_AS_JS_ARRAY}}": json.dumps(sanitized_participant_list, ensure_ascii=False),
         "{{MODERATOR_SHEET_JS_STRING}}": json.dumps(sanitize_sheet_name(gv.get("MODERATOR_SHEET", "Moderator")), ensure_ascii=False),
         "{{SESSION_LANGUAGE_JS_STRING}}": json.dumps(gv.get("SESSION_LANGUAGE", ""), ensure_ascii=False),
+        "{{IDEA_SWAP_ALGORITHM_JS_STRING}}": json.dumps(gv.get("IDEA_SWAP_ALGORITHM", ""), ensure_ascii=False),
         "{{PARTICIPANT_SHEET_LANGUAGE_LIST_AS_JS_ARRAY}}": json.dumps(participant_sheet_language_list, ensure_ascii=False),
         "{{TIME_LEFT_JS_STRING}}": json.dumps(gv.get("TIME_LEFT", ""), ensure_ascii=False),
         "{{MINS_LEFT_JS_STRING}}": json.dumps(gv.get("MINS_LEFT", ""), ensure_ascii=False),
@@ -693,6 +700,12 @@ def main():
         st.header(_("tab_full_customization", T_UI))
 
         with st.expander(_("mod_menu_editor_label", T_UI)):
+            st.session_state.GLOBAL_VARIABLES["IDEA_SWAP_ALGORITHM"] = st.selectbox(
+                label=_("paper_swap_label", T_UI),
+                options=SUPPORTED_SWAP_ALGORITHMS,
+                key="swap_selector_dropdown"
+            )
+
             st.session_state.GLOBAL_VARIABLES["MODERATOR_SHEET"] = st.text_input(
                 _("moderator_sheet_label", T_UI), st.session_state.GLOBAL_VARIABLES["MODERATOR_SHEET"], key="qs_moderator_sheet"
             )

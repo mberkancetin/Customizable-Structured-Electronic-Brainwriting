@@ -11,6 +11,7 @@ DEFAULT_TEXT_KEYS = {
     "PARTICIPANT_SHEET_FOCUS": ["default_session_focus", "default_session_focus", "default_session_focus", "default_session_focus", "default_session_focus", "default_session_focus"],
     "MODERATOR_SHEET": "default_moderator_sheet_name",
     "SESSION_LANGUAGE": "default_session_language",
+    "IDEA_SWAP_ALGORITHM": "default_idea_swap_algorithm",
     "TIME_LEFT": "default_time_left",
     "MINS_LEFT": "default_mins_left",
     "ONE_MIN_LEFT": "default_one_min_left",

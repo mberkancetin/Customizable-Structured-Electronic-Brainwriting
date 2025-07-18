@@ -35,6 +35,7 @@
   "colors_editor_label": "Color Definitions (MODERATOR_VARIABLES.COLORS)",
   "data_prep_options_header": "Data Preparation Options (MODERATOR_VARIABLES.DATA_PREP)",
   "session_language_label": "Idea Translation: Session Language (SessionLanguage)",
+  "paper_swap_label": "Idea distribution algorithm",
   "idea_raw_column_label": "Raw Idea Column Name (IdeaRawColumn)",
   "translated_language_label": "Target Translation Language (TranslatedLanguage)",
   "translate_column_label": "Translation Column Name (TranslateColumn)",
@@ -89,6 +90,7 @@
   "default_participant_prefix": "Participant{no}",
   "default_moderator_sheet_name": "ProgressTracking",
   "default_session_language": "en",
+  "default_idea_swap_algorithm": "CascadingRoundRobin",
   "default_time_left": "Timer",
 
   "default_time_is_up": "Time's up!",
