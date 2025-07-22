@@ -23,7 +23,7 @@ const GLOBAL_VARIABLES = {
   PARTICIPANT_SHEET_LANGUAGE: ["en", "tr", "de", "es", "fr", "en"],
   MODERATOR_SHEET: "ProgressTracking",
   SESSION_LANGUAGE: "en",
-  IDEA_SWAP_ALGORITHM: "InterleavedSweepSwap",
+  IDEA_SWAP_ALGORITHM: "DynamicHarmonicSweep",
   TIME_LEFT: "Timer",
   MINS_LEFT: " minutes left",
   ONE_MIN_LEFT: "1 minute left",
@@ -39,6 +39,7 @@ const GLOBAL_VARIABLES = {
   STOPPED: "Stopped"
 };
 
+const harmonicShift = 3
 const roundCount = GLOBAL_VARIABLES.ROUNDS.length;
 const ideasCount = GLOBAL_VARIABLES.IDEAS.length;
 const participantCount = GLOBAL_VARIABLES.PARTICIPANT.length;
@@ -718,28 +719,41 @@ function SubmitData() {
   // Perform the "Paper Swap" using the selected algorithm
   const positiveModulo = (a, n) => ((a % n) + n) % n;
 
+  // Dynamic Harmonic Sweep Pre-calculation
+  let cumulativePointer = 0;
+  for (let r = 3; r <= round_num; r++) {
+      cumulativePointer = positiveModulo((cumulativePointer + harmonicShift), (participantCount - 1));
+  }
+
   for (let i = 0; i < participantCount; i++) {
     const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
     const languageColumnLetter = String.fromCharCode(67 + roundCount);
     let formulasForSheet = Array(ideasCount).fill(null).map(() => Array(round_num));
 
-    for (let j = 0; j < round_num; j++) {
-      let usedSources = [];
+    const currentParticipantName = GLOBAL_VARIABLES.PARTICIPANT[i];
+    const contributors = GLOBAL_VARIABLES.PARTICIPANT.filter(p => p !== currentParticipantName);
+    const baseOriginatorSequence = [...contributors].reverse();
+    const originatorSequences = [];
+    for(let k = 0; k < ideasCount; k++) {
+        let sequence = [];
+        for(let n = 0; n < participantCount - 1; n++) {
+            sequence.push(baseOriginatorSequence[positiveModulo(n - k, participantCount - 1)]);
+        }
+        originatorSequences.push(sequence);
+    }
 
+    for (let j = 0; j < round_num; j++) {
       for (let k = 0; k < ideasCount; k++) {
-        let finalSourceIndex;
-        if (GLOBAL_VARIABLES.IDEA_SWAP_ALGORITHM === "InterleavedSweepSwap") {
-            const shift = round_num - j;
-            let potentialSourceIndex = positiveModulo(i - shift - k, participantCount);
-            while (potentialSourceIndex === i || usedSources.includes(potentialSourceIndex)) {
-                potentialSourceIndex = positiveModulo(potentialSourceIndex - 1, participantCount);
-            }
-            finalSourceIndex = potentialSourceIndex;
+        let finalSourceParticipantName;
+        if (GLOBAL_VARIABLES.IDEA_SWAP_ALGORITHM === "DynamicHarmonicSweep") {
+            const sourceIndexInSequence = positiveModulo((cumulativePointer + j), (participantCount - 1));
+            finalSourceParticipantName = originatorSequences[k][sourceIndexInSequence];
         } else {
             const shift = round_num - j;
-            finalSourceIndex = positiveModulo(i - shift, participantCount);
+            const sourceParticipantIndex = positiveModulo(i - shift, participantCount);
+            finalSourceParticipantName = GLOBAL_VARIABLES.PARTICIPANT[sourceParticipantIndex];
         }
-        usedSources.push(finalSourceIndex);
+        const finalSourceIndex = GLOBAL_VARIABLES.PARTICIPANT.indexOf(finalSourceParticipantName);
 
         const idea_row_index = j;
         const idea_col_index = (finalSourceIndex * ideasCount) + k;
@@ -763,7 +777,6 @@ function SubmitData() {
   if (round_num == roundCount) {
     trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(GLOBAL_VARIABLES.FOCUS[2]);
     SessionEnd();
-    // Clear and format the final input column
     for (let k = 0; k < participantCount; k++) {
       const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[k]);
       const lastInputRange = sheet.getRange(6, col_num, ideasCount + 2, 1);
@@ -781,7 +794,6 @@ function SubmitData() {
     sheet.getRange((ideasCount + 7), next_input_col).insertCheckboxes();
   }
 
-  // Increment round number and reset focus message
   trackingSheet.getRange((roundCount + 4), 2, 1, 1).setValue(round_num + 1);
   const focus_if_changed = trackingSheet.getRange((roundCount + 13), 1, 1, 2).getValues();
   trackingSheet.getRange((roundCount + 12), 1, 1, 2).setValues(focus_if_changed);

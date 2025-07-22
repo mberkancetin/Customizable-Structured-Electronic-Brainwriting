@@ -31,6 +31,10 @@ The CSEB Session Configuration Generator provides a comprehensive set of feature
     *   Provides automatic formatting of user inputs to prevent errors.
     *   Incorporates interactive elements for enhanced usability.
 
+*   **Advanced Idea Distribution**:
+    *   **Dynamic Harmonic Sweep**: An algorithm to overcome the limitations of traditional round-robin methods.
+    *   Maximizes the diversity of originator exposure in the early stages and ensuring distributional equity over the session's duration.
+
 *   **Output Options**:
     *   Allows downloading the complete App Script configuration file.
     *   Enables direct copying of the generated code to the clipboard.
@@ -61,7 +65,7 @@ This application is built using:
 *   **Apps Script templates**: With placeholder replacement for generating configuration files.
 *   **Pre-defined translation dictionaries**: For internationalization.
 *   **Input validation and sanitization**: To ensure robust and error-free configuration.
-*   The application's backend is primarily Python [19, 20].
+*   The application's backend is primarily Python.
 
 ### Integration
 

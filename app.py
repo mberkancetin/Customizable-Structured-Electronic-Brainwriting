@@ -26,12 +26,13 @@ from default_js_config import (
     DEFAULT_ALERT_RESET_SESSION_TEXT,
     DEFAULT_NUM_PARTICIPANTS,
     DEFAULT_NUM_ROUNDS,
-    DEFAULT_NUM_IDEAS
+    DEFAULT_NUM_IDEAS,
+    DEFAULT_HARMONIC_SHIFT
 )
 
 SUPPORTED_SWAP_ALGORITHMS = [
     "CascadingRoundRobin",
-    "InterleavedSweepSwap"
+    "DynamicHarmonicSweep"
 ]
 
 # --- Configuration for Internationalization (i18n) ---
@@ -170,6 +171,13 @@ def get_image_preview_html(image_url):
     </div>
     """
 
+def gcd_list(num_participants):
+    import math
+    num_contributors = num_participants - 1
+    valid_shifts = [s for s in range(1, num_contributors) if math.gcd(s, num_contributors) == 1]
+    return valid_shifts
+
+
 def initialize_session_state(translations):
     """Initializes or re-initializes session state with translated default values."""
 
@@ -196,6 +204,7 @@ def initialize_session_state(translations):
             st.session_state.createSessionHeader = DEFAULT_ALERT_CREATE_SESSION_HEADER
             st.session_state.createSessionText = DEFAULT_ALERT_CREATE_SESSION_TEXT
             st.session_state.advanced_settings = False
+            st.session_state.harmonicShift = DEFAULT_HARMONIC_SHIFT
 
         # --- GLOBAL_VARIABLES ---
         gv = deepcopy(DEFAULT_GLOBAL_VARIABLES_STRUCTURE) # Start with structure
@@ -319,6 +328,7 @@ def generate_js_from_state(translations_for_error_msg):
         "{{MODERATOR_SHEET_JS_STRING}}": json.dumps(sanitize_sheet_name(gv.get("MODERATOR_SHEET", "Moderator")), ensure_ascii=False),
         "{{SESSION_LANGUAGE_JS_STRING}}": json.dumps(gv.get("SESSION_LANGUAGE", ""), ensure_ascii=False),
         "{{IDEA_SWAP_ALGORITHM_JS_STRING}}": json.dumps(gv.get("IDEA_SWAP_ALGORITHM", ""), ensure_ascii=False),
+        "{{ALGORITHM_SHIFT_JS_STRING}}": json.dumps(st.session_state.get("harmonicShift", 1), ensure_ascii=False),
         "{{PARTICIPANT_SHEET_LANGUAGE_LIST_AS_JS_ARRAY}}": json.dumps(participant_sheet_language_list, ensure_ascii=False),
         "{{TIME_LEFT_JS_STRING}}": json.dumps(gv.get("TIME_LEFT", ""), ensure_ascii=False),
         "{{MINS_LEFT_JS_STRING}}": json.dumps(gv.get("MINS_LEFT", ""), ensure_ascii=False),
@@ -624,6 +634,18 @@ def main():
                 help=_("help_minutes_round", T_UI)
             )
 
+            st.session_state.GLOBAL_VARIABLES["IDEA_SWAP_ALGORITHM"] = st.selectbox(
+                label=_("paper_swap_label", T_UI),
+                options=SUPPORTED_SWAP_ALGORITHMS,
+                key="swap_selector_dropdown"
+            )
+            if st.session_state.GLOBAL_VARIABLES["IDEA_SWAP_ALGORITHM"] == "DynamicHarmonicSweep":
+                st.session_state.harmonicShift = st.selectbox(
+                    label=_("paper_shift_label", T_UI),
+                    options=gcd_list(st.session_state.num_participants),
+                    key="shift_selector_dropdown"
+                )
+
             st.session_state.generate_landing_page = st.checkbox(
                 _("generate_landing_page_label", T_UI), value=st.session_state.generate_landing_page, key="qs_gen_lp"
             )
@@ -719,12 +741,6 @@ def main():
         st.header(_("tab_full_customization", T_UI))
 
         with st.expander(_("mod_menu_editor_label", T_UI)):
-            st.session_state.GLOBAL_VARIABLES["IDEA_SWAP_ALGORITHM"] = st.selectbox(
-                label=_("paper_swap_label", T_UI),
-                options=SUPPORTED_SWAP_ALGORITHMS,
-                key="swap_selector_dropdown"
-            )
-
             st.session_state.GLOBAL_VARIABLES["MODERATOR_SHEET"] = st.text_input(
                 _("moderator_sheet_label", T_UI), st.session_state.GLOBAL_VARIABLES["MODERATOR_SHEET"], key="qs_moderator_sheet"
             )

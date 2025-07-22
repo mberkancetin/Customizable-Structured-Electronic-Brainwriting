@@ -36,6 +36,7 @@
   "data_prep_options_header": "Data Preparation Options (MODERATOR_VARIABLES.DATA_PREP)",
   "session_language_label": "Idea Translation: Session Language (SessionLanguage)",
   "paper_swap_label": "Idea distribution algorithm",
+  "paper_shift_label": "Valid shifts for the algorithm",
   "idea_raw_column_label": "Raw Idea Column Name (IdeaRawColumn)",
   "translated_language_label": "Target Translation Language (TranslatedLanguage)",
   "translate_column_label": "Translation Column Name (TranslateColumn)",

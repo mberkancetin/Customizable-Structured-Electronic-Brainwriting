@@ -36,6 +36,7 @@
   "data_prep_options_header": "Options de préparation des données (MODERATOR_VARIABLES.DATA_PREP)",
   "session_language_label": "Langue de la session pour la traduction des idées (SessionLanguage)",
   "paper_swap_label": "Algorithme de distribution d'idées",
+  "paper_shift_label": "Décalages valides pour l’algorithme",
   "idea_raw_column_label": "Nom de la colonne d’idée brute (IdeaRawColumn)",
   "translated_language_label": "Langue de traduction cible (TranslatedLanguage)",
   "translate_column_label": "Nom de la colonne de traduction (TranslateColumn)",

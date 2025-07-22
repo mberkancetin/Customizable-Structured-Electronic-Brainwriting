@@ -36,6 +36,7 @@
   "data_prep_options_header": "Veri Hazırlama Seçenekleri (MODERATOR_VARIABLES.DATA_PREP)",
   "session_language_label": "Fikir Çevirisi: Oturum Dili (SessionLanguage)",
   "paper_swap_label": "Fikir dağıtım algoritması",
+  "paper_shift_label": "Algoritma için geçerli kaydırma sayıları",
   "idea_raw_column_label": "Ham Fikir Sütun Adı (IdeaRawColumn)",
   "translated_language_label": "Hedef Çeviri Dili (TranslatedLanguage)",
   "translate_column_label": "Çeviri Sütun Adı (TranslateColumn)",

@@ -36,6 +36,7 @@
   "data_prep_options_header": "Opciones de Preparación de Datos (MODERATOR_VARIABLES.DATA_PREP)",
   "session_language_label": "Idioma de la Sesión para la Traducción de Ideas (SessionLanguage)",
   "paper_swap_label": "Algoritmo de distribución de ideas",
+  "paper_shift_label": "Desplazamientos válidos para el algoritmo",
   "idea_raw_column_label": "Nombre de la Columna de Ideas Originales (IdeaRawColumn)",
   "translated_language_label": "Idioma de Traducción Objetivo (TranslatedLanguage)",
   "translate_column_label": "Nombre de la Columna de Traducción (TranslateColumn)",
