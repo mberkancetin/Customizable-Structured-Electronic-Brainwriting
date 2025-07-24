@@ -697,39 +697,34 @@ function SubmitData() {
   const positiveModulo = (a, n) => ((a % n) + n) % n;
 
   // Dynamic Harmonic Sweep Pre-calculation
-  let cumulativePointer = 0;
-  for (let r = 3; r <= round_num; r++) {
-      cumulativePointer = positiveModulo((cumulativePointer + harmonicShift), (participantCount - 1));
+  const cumulativePointer = (round_num > 1) ? positiveModulo((round_num - 1) * harmonicShift, (participantCount - 1)) : 0;
+  const universalContributors = [participantCount - 1].concat(Array.from({ length: participantCount - 2 }, (_, idx) => idx + 1));
+
+  const universalIdeaChains = [];
+  for (let k = 0; k < ideasCount; k++) {
+      const chain = [];
+      for(let n = 0; n < participantCount - 1; n++) {
+          chain.push(universalContributors[positiveModulo(n - k, participantCount - 1)]);
+      }
+      universalIdeaChains.push(chain);
   }
 
   for (let i = 0; i < participantCount; i++) {
     const sheet = spreadsheet.getSheetByName(GLOBAL_VARIABLES.PARTICIPANT[i]);
     let columnValues = Array(ideasCount).fill(null).map(() => Array(round_num));
 
-    const currentParticipantName = GLOBAL_VARIABLES.PARTICIPANT[i];
-    const contributors = GLOBAL_VARIABLES.PARTICIPANT.filter(p => p !== currentParticipantName);
-    const baseOriginatorSequence = [...contributors].reverse();
-    const originatorSequences = [];
-    for(let k = 0; k < ideasCount; k++) {
-        let sequence = [];
-        for(let n = 0; n < participantCount - 1; n++) {
-            sequence.push(baseOriginatorSequence[positiveModulo(n - k, participantCount - 1)]);
-        }
-        originatorSequences.push(sequence);
-    }
-
     for (let j = 0; j < round_num; j++) {
       for (let k = 0; k < ideasCount; k++) {
-        let finalSourceParticipantName;
+        let finalSourceIndex;
+
         if (GLOBAL_VARIABLES.IDEA_SWAP_ALGORITHM === "DynamicHarmonicSweep") {
-            const sourceIndexInSequence = positiveModulo((cumulativePointer + j), (participantCount - 1));
-            finalSourceParticipantName = originatorSequences[k][sourceIndexInSequence];
-        } else { // Default to "CascadingRoundRobin"
-            const shift = round_num - j;
-            const sourceParticipantIndex = positiveModulo(i - shift, participantCount);
-            finalSourceParticipantName = GLOBAL_VARIABLES.PARTICIPANT[sourceParticipantIndex];
+          const viewPointer = positiveModulo(cumulativePointer + j, (participantCount - 1));
+          const baseSourceIndex = universalIdeaChains[k][viewPointer];
+          finalSourceIndex = positiveModulo(baseSourceIndex + i, participantCount);
+        } else { // Fallback to "CascadingRoundRobin"
+          const shift = round_num - j;
+          finalSourceIndex = positiveModulo(i - shift, participantCount);
         }
-        const finalSourceIndex = GLOBAL_VARIABLES.PARTICIPANT.indexOf(finalSourceParticipantName);
 
         const idea_row_index = j;
         const idea_col_index = (finalSourceIndex * ideasCount) + k;

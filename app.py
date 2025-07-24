@@ -35,7 +35,6 @@ SUPPORTED_SWAP_ALGORITHMS = [
     "DynamicHarmonicSweep"
 ]
 
-# --- Configuration for Internationalization (i18n) ---
 LOCALES_DIR = "locales"
 DEFAULT_LANGUAGE_CODE = "en"
 SUPPORTED_LANGUAGES = {
@@ -80,8 +79,7 @@ GOOGLE_TRANSLATE_LANGUAGES = {
 
 LANG_NAME_TO_CODE = {v: k for k, v in GOOGLE_TRANSLATE_LANGUAGES.items()}
 
-# --- Translation Loading Function ---
-@st.cache_data # Cache the loaded translations
+@st.cache_data
 def load_translations(lang_code):
     filepath = os.path.join(LOCALES_DIR, f"{lang_code}.json")
     try:
@@ -92,7 +90,6 @@ def load_translations(lang_code):
         st.warning(f"Translation file for '{lang_code}' not found. Falling back to default ({DEFAULT_LANGUAGE_CODE}).")
         if lang_code != DEFAULT_LANGUAGE_CODE:
             return load_translations(DEFAULT_LANGUAGE_CODE)
-        # If default also not found, return empty dict, error will be shown in main
         return {}
     except json.JSONDecodeError:
         st.error(f"Error decoding JSON from translation file for '{lang_code}'. Please check its format.")
@@ -106,13 +103,12 @@ def _(key, translations_dict, **kwargs):
     """
     raw_string = translations_dict.get(key)
     if raw_string is None:
-        # st.warning(_("error_missing_key_format", translations_dict, key=key)) # Avoid recursion if translations_dict is bad
         return f"<{key}_MISSING_IN_LOCALE>"
 
     try:
-        if kwargs: # Only format if arguments are provided
+        if kwargs:
             return raw_string.format(**kwargs)
-        return raw_string # Return raw string if no kwargs (e.g. if string contains {} not meant for formatting here)
+        return raw_string
     except KeyError as e:
         st.warning(_("error_generic_format", translations_dict, key=key, e=e, raw_string=raw_string, args=kwargs))
         return raw_string # Fallback in case of formatting error
@@ -120,7 +116,7 @@ def _(key, translations_dict, **kwargs):
         st.warning(f"General formatting error for key '{key}': {e}. Raw: '{raw_string}'")
         return raw_string
 
-# --- Helper Functions ---
+# Helper Functions
 def sanitize_sheet_name(name_str):
     if not isinstance(name_str, str): name_str = str(name_str)
     name_str = name_str.replace(" ", "_")
@@ -133,21 +129,13 @@ def apply_participant_edits():
     from st.session_state.participant_editor and applies them to the
     master DataFrame in st.session_state.participants_df.
     """
-    # Get the dictionary of edits from the session state
     edits = st.session_state.participant_editor
-
-    # Make a copy of the current DataFrame to modify
     df_to_edit = st.session_state.participants_df.copy()
 
-    # Apply the edits
     for row_index, changed_data in edits["edited_rows"].items():
-        # The index in the data editor starts from 1, but pandas index starts from 0
-        # so we need to be careful if we are using iloc. Let's use loc which is safer.
-        # The editor returns the original index, so we can use `loc`.
         for col_name, new_value in changed_data.items():
             df_to_edit.loc[row_index + 1, col_name] = new_value
 
-    # Update the master DataFrame in session state with the newly edited one
     st.session_state.participants_df = df_to_edit
 
 def get_translated_text_from_key(text_key_from_config, translations_dict, default_val_if_missing=""):
@@ -158,7 +146,7 @@ def get_translated_text_from_key(text_key_from_config, translations_dict, defaul
 def is_valid_image_url(url):
     """Basic validation for image URLs."""
     if not url:
-        return True  # Empty URL is valid (no image)
+        return True
     return url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))
 
 def get_image_preview_html(image_url):
@@ -180,14 +168,10 @@ def gcd_list(num_participants):
 
 def initialize_session_state(translations):
     """Initializes or re-initializes session state with translated default values."""
-
-    # Flag to ensure this logic runs only once per language load or on first app load
-    # It compares current app language with the language for which defaults were last loaded
     last_loaded_lang = st.session_state.get("last_loaded_lang_for_defaults", None)
     is_first_app_load = "initial_config_set" not in st.session_state
 
     if is_first_app_load or last_loaded_lang != st.session_state.app_lang:
-        # --- Set numeric/structural defaults first if it's the very first load ---
         if is_first_app_load:
             st.session_state.num_participants = DEFAULT_NUM_PARTICIPANTS
             st.session_state.num_rounds = DEFAULT_NUM_ROUNDS
@@ -206,7 +190,6 @@ def initialize_session_state(translations):
             st.session_state.advanced_settings = False
             st.session_state.harmonicShift = DEFAULT_HARMONIC_SHIFT
 
-        # --- GLOBAL_VARIABLES ---
         gv = deepcopy(DEFAULT_GLOBAL_VARIABLES_STRUCTURE) # Start with structure
         gv["SESSION_FOCUS"] = get_translated_text_from_key("SESSION_FOCUS", translations)
         gv["LANDING_SHEET"] = get_translated_text_from_key("LANDING_SHEET", translations) # Assumes sheet names are translated
@@ -241,7 +224,6 @@ def initialize_session_state(translations):
         gv["IDEAS"] = [idea_prefix.format(no=i+1) for i in range(st.session_state.num_ideas)]
         st.session_state.GLOBAL_VARIABLES = gv
 
-        # --- MODERATOR_VARIABLES ---
         mv = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE)
         mv["MENU"]["Tools"] = get_translated_text_from_key("MOD_TOOLS", translations)
         mv["MENU"]["LandingPage"] = get_translated_text_from_key("MOD_LANDING_PAGE", translations)
@@ -261,23 +243,17 @@ def initialize_session_state(translations):
         mv["DATA_PREP"]["IdeaTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_IDEATIMESTAMP_COL", translations)
         mv["DATA_PREP"]["IdeaRoundStartTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_ROUNDTIMESTAMP_COL", translations)
         mv["DATA_PREP"]["ManualCategorization"] = get_translated_text_from_key("MOD_DATA_PREP_MANUAL_CAT", translations) # Assumes translated
-        # Non-translated parts from structure
         mv["DATA_PREP"]["SessionLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["SessionLanguage"]
         mv["DATA_PREP"]["TranslatedLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["TranslatedLanguage"]
         mv["COLORS"] = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE["COLORS"])
         mv["START_TIMER"] = get_translated_text_from_key("MOD_START_TIMER", translations)
         st.session_state.MODERATOR_VARIABLES = mv
 
-        # --- LANDINGPAGE_VARIABLES_TEXTS ---
         lp_texts = {}
         for key_in_code, text_key_for_translation_lookup in DEFAULT_LANDINGPAGE_VARIABLES_TEXT_KEYS.items():
-            # text_key_for_translation_lookup is like "LP_GREETING_MESSAGE_TEMPLATE"
-            # This key is then used in get_translated_text_from_key to find "default_lp_greeting_message_template" in DEFAULT_TEXT_KEYS
-            # and then "default_lp_greeting_message_template" is used to get the actual text from `translations`
             lp_texts[key_in_code] = get_translated_text_from_key(text_key_for_translation_lookup, translations)
         st.session_state.LANDINGPAGE_VARIABLES_TEXTS = lp_texts
 
-        # --- ANALYSIS_VARIABLES_TEXTS ---
         an_texts = {}
         for key_in_code, text_key_for_translation_lookup in DEFAULT_ANALYSIS_VARIABLES_TEXT_KEYS.items():
             an_texts[key_in_code] = get_translated_text_from_key(text_key_for_translation_lookup, translations)
@@ -285,7 +261,7 @@ def initialize_session_state(translations):
 
         st.session_state.initial_config_set = True
         st.session_state.last_loaded_lang_for_defaults = st.session_state.app_lang
-        if not is_first_app_load: # If it's a language change, not first load
+        if not is_first_app_load:
              st.toast(_("default_config_loaded_msg", translations))
 
 
@@ -311,11 +287,9 @@ def generate_js_from_state(translations_for_error_msg):
     mod_session_start_part1 = parts[0]
     mod_session_start_part2 = parts[1] if len(parts) > 1 else ""
 
-    # Prepare greeting message with session focus interpolated
     greeting_template = lp_texts.get("GREETING_MESSAGE_TEMPLATE", "")
     populated_greeting = greeting_template.replace("{SESSION_FOCUS}", gv.get("SESSION_FOCUS", ""))
 
-    # Sanitize participant names before dumping to JS array
     raw_participant_list = gv.get("PARTICIPANT", [])
     participant_sheet_language_list = gv.get("PARTICIPANT_SHEET_LANGUAGE", [])
     sanitized_participant_list = [sanitize_sheet_name(name) for name in raw_participant_list]
@@ -391,9 +365,8 @@ def generate_js_from_state(translations_for_error_msg):
         template_str = template_str.replace(placeholder, value)
     return template_str
 
-# --- Main Application ---
+# Main Application
 def main():
-    # Initialize app_lang first if not set, done before loading any translations
     if "app_lang" not in st.session_state:
         st.session_state.app_lang = DEFAULT_LANGUAGE_CODE
 
@@ -407,10 +380,9 @@ def main():
         """,
         unsafe_allow_html=True
     )
-    # --- Language Selection ---
-    # Load translations just for the sidebar elements initially
+    # Language Selection
     sidebar_translations = load_translations(st.session_state.app_lang)
-    if not sidebar_translations: # Critical check
+    if not sidebar_translations:
         st.error(f"Failed to load translations for '{st.session_state.app_lang}'. App cannot start.")
         return
 
@@ -418,7 +390,7 @@ def main():
     current_lang_index = 0
     try:
         current_lang_index = list(SUPPORTED_LANGUAGES.keys()).index(st.session_state.app_lang)
-    except ValueError: pass # Default to 0 if somehow current lang not in keys
+    except ValueError: pass
 
     selected_lang_display_name = st.sidebar.selectbox(
         label=_("app_language_label", sidebar_translations),
@@ -432,7 +404,6 @@ def main():
     if language_has_changed:
         st.session_state.app_lang = new_lang_code
 
-    # Load full T_UI for the selected (or new) language
     T_UI = load_translations(st.session_state.app_lang)
     if not T_UI:
         error_message_key = "critical_error_no_translations"
@@ -447,27 +418,22 @@ def main():
                 help=_("help_advanced_settings", T_UI)
             )
 
-    # Instructions and tips
     st.sidebar.markdown(_("instructions_and_tips", T_UI))
 
-
-    # Initialize or Re-initialize session state with translated defaults
-    # This is where default values for input fields get set based on T_UI
     initialize_session_state(T_UI)
 
     if language_has_changed:
-        st.rerun() # Rerun NOW to apply new language defaults to all widgets and redraw UI
+        st.rerun()
 
-    # --- Start of the main page UI, using T_UI for all text ---
     st.title(_("app_title", T_UI))
     # st.info(_("author_info", T_UI))
 
-    # --- Configuration Tabs ---
+    # Configuration Tabs
     tab_keys = ["tab_quick_setup", "tab_js_localization", "tab_full_customization"]
     tab_labels = [_(key, T_UI) for key in tab_keys]
     tab_quick, tab_localize, tab_full_customize = st.tabs(tab_labels)
 
-    # --- Quick Setup Tab ---
+    # Quick Setup Tab
     with tab_quick:
         st.header(_("tab_quick_setup", T_UI))
         st.session_state.GLOBAL_VARIABLES["SESSION_FOCUS"] = st.text_area(
@@ -479,8 +445,6 @@ def main():
         c1, c2 = st.columns(2)
         with c1:
             if not st.session_state.advanced_settings:
-                # Numeric inputs for counts; these will trigger updates in initialize_session_state if changed
-                # Or, we handle list regeneration directly if these numbers change
                 num_participants_val = st.number_input(
                     _("num_participants_label", T_UI), min_value=1,
                     value=st.session_state.num_participants, step=1, key="qs_num_participants_input",
@@ -488,11 +452,10 @@ def main():
                 )
                 if num_participants_val != st.session_state.num_participants:
                     st.session_state.num_participants = num_participants_val
-                    # Regenerate participant list if not customized
                     if not st.session_state.get("customize_participant_names", False):
                         participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", T_UI)
                         st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
-                    st.rerun() # Rerun to reflect changes, especially if names are generated
+                    st.rerun()
 
                 st.session_state.customize_participant_names = st.toggle(
                     _("customize_participant_names_label", T_UI),
@@ -505,7 +468,6 @@ def main():
                     current_names = list(st.session_state.GLOBAL_VARIABLES["PARTICIPANT"])
                     num_p_display = st.session_state.num_participants
 
-                    # Adjust list size if num_participants changed from quick setup
                     if len(current_names) > num_p_display: current_names = current_names[:num_p_display]
                     elif len(current_names) < num_p_display:
                         participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", T_UI)
@@ -521,23 +483,21 @@ def main():
                     sanitized_participant_list = [sanitize_sheet_name(name) for name in new_participants]
                     st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = sanitized_participant_list
 
-                else: # Show generated, non-editable list
+                else:
                     st.write(pd.DataFrame({_("participant_sheet_names", T_UI): st.session_state.GLOBAL_VARIABLES["PARTICIPANT"]}, index=range(1, st.session_state.num_participants+1)))
             else:
-                # Numeric input for participant count
                 num_participants_val = st.number_input(
                     _("num_participants_label", T_UI), min_value=1,
                     value=st.session_state.num_participants, step=1, key="qs_num_participants_input",
                     help=_("help_number_participants", T_UI)
                 )
 
-                # --- Data Structure Management ---
+                # Data Structure Management
                 df_exists = "participants_df" in st.session_state
                 if not df_exists or num_participants_val != st.session_state.num_participants:
                     st.session_state.num_participants = num_participants_val
                     participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", T_UI)
 
-                    # Create or update the DataFrame
                     new_names = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
                     new_langs = [GOOGLE_TRANSLATE_LANGUAGES[get_translated_text_from_key("SESSION_LANGUAGE", T_UI)]] * st.session_state.num_participants
 
@@ -556,7 +516,6 @@ def main():
                     st.session_state.participants_df = new_df
                     st.rerun()
 
-                # Toggle for customizing
                 st.session_state.customize_participant_names = st.toggle(
                     _("customize_participant_names_label", T_UI),
                     value=st.session_state.customize_participant_names,
@@ -594,7 +553,7 @@ def main():
                     st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = [sanitize_sheet_name(name) for name in participant_names]
                     st.session_state.GLOBAL_VARIABLES["PARTICIPANT_SHEET_LANGUAGE"] = participant_lang_codes
 
-                else:  # Show the non-editable list
+                else:
                     display_df = st.session_state.participants_df.copy()
                     display_df.index = range(1, len(display_df) + 1)
                     display_df = display_df.rename(columns={'Name': _("participant_sheet_names", T_UI), 'Language': _("multilingual_sheet_language", T_UI)})
@@ -658,22 +617,20 @@ def main():
                         _("logo_url_label", T_UI), st.session_state.imageUrl, key="qs_logo_url"
                     )
 
-                    if new_image_url != st.session_state.imageUrl: # Only update if changed
+                    if new_image_url != st.session_state.imageUrl:
                         st.session_state.imageUrl = new_image_url
-                        # No need for st.rerun() just for text input change unless preview depends on it immediately
 
-                    if st.session_state.imageUrl: # Only try to validate/preview if URL is not empty
+                    if st.session_state.imageUrl:
                         if not is_valid_image_url(st.session_state.imageUrl):
                             st.warning(_("help_logo_landing_page", T_UI))
                         else:
-                            # Display image preview
                             preview_html = get_image_preview_html(st.session_state.imageUrl)
                             if preview_html:
                                 st.markdown(preview_html, unsafe_allow_html=True)
-                    elif new_image_url and not st.session_state.imageUrl: # if user just cleared the URL
-                        pass # No warning if URL is empty
+                    elif new_image_url and not st.session_state.imageUrl:
+                        pass
 
-    # --- JS Variable Localization Tab ---
+    # JS Variable Localization Tab
     with tab_localize:
         st.header(_("tab_js_localization", T_UI))
         with st.expander(_("rounds_list_header", T_UI)):
@@ -682,7 +639,6 @@ def main():
                 pd.DataFrame({"Round Names": st.session_state.GLOBAL_VARIABLES["ROUNDS"]}),
                 num_rows="dynamic", hide_index=True, key="fc_rounds_editor"
             )["Round Names"].tolist()
-
 
         with st.expander(_("ideas_list_header", T_UI)):
             st.caption(_("data_editor_info_list", T_UI))
@@ -705,7 +661,6 @@ def main():
                 num_rows="dynamic", hide_index=True, key="fc_round_change_editor"
             )["Messages"].tolist()
 
-        # GLOBAL_VARIABLES texts
         with st.expander(_("global_vars_texts_header", T_UI)):
             st.session_state.GLOBAL_VARIABLES["TIME_LEFT"] = st.text_input(_("time_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_LEFT"], key="loc_time_left")
             st.session_state.GLOBAL_VARIABLES["MINS_LEFT"] = st.text_input(_("default_mins_left", T_UI), st.session_state.GLOBAL_VARIABLES["MINS_LEFT"], key="loc_mins_left")
@@ -721,7 +676,6 @@ def main():
                             _("session_start_label", T_UI), st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"], height=100, key="loc_session_start"
                         )
 
-        # LANDINGPAGE_VARIABLES_TEXTS
         with st.expander(_("lp_texts_header", T_UI)):
             st.session_state.GLOBAL_VARIABLES["LANDING_SHEET"] = st.text_input(
                 _("landing_sheet_label", T_UI), st.session_state.GLOBAL_VARIABLES["LANDING_SHEET"], key="qs_landing_sheet"
@@ -736,7 +690,7 @@ def main():
             st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TIME_PREFIX"] = st.text_input(_("lp_time_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TIME_PREFIX"], key="loc_lp_time_prefix")
             st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TOTALS_TEXT_INFIX"] = st.text_input(_("lp_totals_infix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TOTALS_TEXT_INFIX"], key="loc_lp_totals_infix")
 
-    # --- Advanced Customization Tab ---
+    # Advanced Customization Tab
     with tab_full_customize:
         st.header(_("tab_full_customization", T_UI))
 
@@ -820,7 +774,7 @@ def main():
                 value=_("create_session_alert_text", T_UI), label="create_session_alert_text", key="create_session_alert_text_pop"
             )
 
-    # --- Generate and Download GS ---
+    # Generate and Download GS
     st.divider()
     if st.button(_("generate_js_button", T_UI), type="primary", key="download_button_main"):
         generated_js = generate_js_from_state(T_UI)
@@ -837,7 +791,6 @@ def main():
             st.code(generated_js, language="javascript")
 
 if __name__ == "__main__":
-    # Need to import pandas for st.data_editor with DataFrame
     try:
         import pandas as pd
     except ImportError:
