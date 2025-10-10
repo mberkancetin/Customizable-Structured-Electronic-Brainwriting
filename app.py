@@ -1,3 +1,4 @@
+
 # SPDX-FileCopyrightText: 2025 Mahmut Berkan Çetin <m.berkancetin@gmail.com> & Selim Gündüz <sgunduz@atu.edu.tr>
 #
 # SPDX-License-Identifier: MIT
@@ -168,100 +169,99 @@ def gcd_list(num_participants):
 
 def initialize_session_state(translations):
     """Initializes or re-initializes session state with translated default values."""
+
     is_first_app_load = "initial_config_set" not in st.session_state
-    language_changed = st.session_state.get("last_loaded_lang_for_defaults", None) != st.session_state.app_lang
-    if is_first_app_load or language_changed:
-        if is_first_app_load:
-            st.session_state.num_participants = DEFAULT_NUM_PARTICIPANTS
-            st.session_state.num_rounds = DEFAULT_NUM_ROUNDS
-            st.session_state.num_ideas = DEFAULT_NUM_IDEAS
-            st.session_state.customize_participant_names = False
-            st.session_state.generate_landing_page = True
-            st.session_state.imageUrl = DEFAULT_IMAGE_URL
-            st.session_state.use_logo = True if st.session_state.imageUrl else False
-            st.session_state.colabGitHubUrl = DEFAULT_COLAB_GITHUB_URL
-            st.session_state.lpAlertHeader = DEFAULT_ALERT_LANDING_PAGE_HEADER
-            st.session_state.lpAlertText = DEFAULT_ALERT_LANDING_PAGE_TEXT
-            st.session_state.resetSessionHeader = DEFAULT_ALERT_RESET_SESSION_HEADER
-            st.session_state.resetSessionText = DEFAULT_ALERT_RESET_SESSION_TEXT
-            st.session_state.createSessionHeader = DEFAULT_ALERT_CREATE_SESSION_HEADER
-            st.session_state.createSessionText = DEFAULT_ALERT_CREATE_SESSION_TEXT
-            st.session_state.advanced_settings = False
-            st.session_state.harmonicShift = DEFAULT_HARMONIC_SHIFT
+    if is_first_app_load:
+        st.session_state.num_participants = DEFAULT_NUM_PARTICIPANTS
+        st.session_state.num_rounds = DEFAULT_NUM_ROUNDS
+        st.session_state.num_ideas = DEFAULT_NUM_IDEAS
+        st.session_state.customize_participant_names = False
+        st.session_state.generate_landing_page = True
+        st.session_state.imageUrl = DEFAULT_IMAGE_URL
+        st.session_state.use_logo = True if st.session_state.imageUrl else False
+        st.session_state.colabGitHubUrl = DEFAULT_COLAB_GITHUB_URL
+        st.session_state.lpAlertHeader = DEFAULT_ALERT_LANDING_PAGE_HEADER
+        st.session_state.lpAlertText = DEFAULT_ALERT_LANDING_PAGE_TEXT
+        st.session_state.resetSessionHeader = DEFAULT_ALERT_RESET_SESSION_HEADER
+        st.session_state.resetSessionText = DEFAULT_ALERT_RESET_SESSION_TEXT
+        st.session_state.createSessionHeader = DEFAULT_ALERT_CREATE_SESSION_HEADER
+        st.session_state.createSessionText = DEFAULT_ALERT_CREATE_SESSION_TEXT
+        st.session_state.advanced_settings = False
+        st.session_state.harmonicShift = DEFAULT_HARMONIC_SHIFT
 
-        gv = deepcopy(DEFAULT_GLOBAL_VARIABLES_STRUCTURE)
-        gv["SESSION_FOCUS"] = get_translated_text_from_key("SESSION_FOCUS", translations)
-        gv["LANDING_SHEET"] = get_translated_text_from_key("LANDING_SHEET", translations)
-        gv["MODERATOR_SHEET"] = get_translated_text_from_key("MODERATOR_SHEET", translations)
-        gv["SESSION_LANGUAGE"] = get_translated_text_from_key("SESSION_LANGUAGE", translations)
-        gv["IDEA_SWAP_ALGORITHM"] = get_translated_text_from_key("IDEA_SWAP_ALGORITHM", translations)
-        gv["PARTICIPANT_SHEET_LANGUAGE"] = [get_translated_text_from_key("SESSION_LANGUAGE", translations) for _ in range(st.session_state.num_participants)]
-        gv["TIME_LEFT"] = get_translated_text_from_key("TIME_LEFT", translations)
-        gv["MINS_LEFT"] = get_translated_text_from_key("MINS_LEFT", translations)
-        gv["ONE_MIN_LEFT"] = get_translated_text_from_key("ONE_MIN_LEFT", translations)
-        gv["TIME_IS_UP"] = get_translated_text_from_key("TIME_IS_UP", translations)
-        gv["FOCUS"] = [
-            get_translated_text_from_key("FOCUS_ITEM_1", translations),
-            get_translated_text_from_key("FOCUS_ITEM_2", translations),
-            get_translated_text_from_key("FOCUS_ITEM_3", translations)
-        ]
-        gv["CHECK_IDEAS"] = get_translated_text_from_key("CHECK_IDEAS", translations)
-        gv["ROUND_CHANGE"] = [
-            get_translated_text_from_key("ROUND_CHANGE_MSG1", translations),
-            get_translated_text_from_key("ROUND_CHANGE_MSG2", translations)
-        ]
-        gv["SESSION_COMPLETE"] = get_translated_text_from_key("SESSION_COMPLETE", translations)
-        gv["STARTING"] = get_translated_text_from_key("STARTING", translations)
-        gv["STOPPED"] = get_translated_text_from_key("STOPPED", translations)
-        gv["MINUTES"] = DEFAULT_GLOBAL_VARIABLES_STRUCTURE["MINUTES"]
+    gv = deepcopy(DEFAULT_GLOBAL_VARIABLES_STRUCTURE)
+    gv["SESSION_FOCUS"] = get_translated_text_from_key("SESSION_FOCUS", translations)
+    gv["LANDING_SHEET"] = get_translated_text_from_key("LANDING_SHEET", translations)
+    gv["MODERATOR_SHEET"] = get_translated_text_from_key("MODERATOR_SHEET", translations)
+    gv["SESSION_LANGUAGE"] = get_translated_text_from_key("SESSION_LANGUAGE", translations)
+    gv["IDEA_SWAP_ALGORITHM"] = get_translated_text_from_key("IDEA_SWAP_ALGORITHM", translations)
+    gv["PARTICIPANT_SHEET_LANGUAGE"] = [get_translated_text_from_key("SESSION_LANGUAGE", translations) for _ in range(st.session_state.num_participants)]
+    gv["TIME_LEFT"] = get_translated_text_from_key("TIME_LEFT", translations)
+    gv["MINS_LEFT"] = get_translated_text_from_key("MINS_LEFT", translations)
+    gv["ONE_MIN_LEFT"] = get_translated_text_from_key("ONE_MIN_LEFT", translations)
+    gv["TIME_IS_UP"] = get_translated_text_from_key("TIME_IS_UP", translations)
+    gv["FOCUS"] = [
+        get_translated_text_from_key("FOCUS_ITEM_1", translations),
+        get_translated_text_from_key("FOCUS_ITEM_2", translations),
+        get_translated_text_from_key("FOCUS_ITEM_3", translations)
+    ]
+    gv["CHECK_IDEAS"] = get_translated_text_from_key("CHECK_IDEAS", translations)
+    gv["ROUND_CHANGE"] = [
+        get_translated_text_from_key("ROUND_CHANGE_MSG1", translations),
+        get_translated_text_from_key("ROUND_CHANGE_MSG2", translations)
+    ]
+    gv["SESSION_COMPLETE"] = get_translated_text_from_key("SESSION_COMPLETE", translations)
+    gv["STARTING"] = get_translated_text_from_key("STARTING", translations)
+    gv["STOPPED"] = get_translated_text_from_key("STOPPED", translations)
+    gv["MINUTES"] = DEFAULT_GLOBAL_VARIABLES_STRUCTURE["MINUTES"]
 
-        participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", translations)
-        gv["PARTICIPANT"] = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
-        round_prefix = get_translated_text_from_key("ROUND_PREFIX", translations)
-        gv["ROUNDS"] = [round_prefix.format(no=i+1) for i in range(st.session_state.num_rounds)]
-        idea_prefix = get_translated_text_from_key("IDEA_PREFIX", translations)
-        gv["IDEAS"] = [idea_prefix.format(no=i+1) for i in range(st.session_state.num_ideas)]
-        st.session_state.GLOBAL_VARIABLES = gv
+    participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", translations)
+    gv["PARTICIPANT"] = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
+    round_prefix = get_translated_text_from_key("ROUND_PREFIX", translations)
+    gv["ROUNDS"] = [round_prefix.format(no=i+1) for i in range(st.session_state.num_rounds)]
+    idea_prefix = get_translated_text_from_key("IDEA_PREFIX", translations)
+    gv["IDEAS"] = [idea_prefix.format(no=i+1) for i in range(st.session_state.num_ideas)]
+    st.session_state.GLOBAL_VARIABLES = gv
 
-        mv = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE)
-        mv["MENU"]["Tools"] = get_translated_text_from_key("MOD_TOOLS", translations)
-        mv["MENU"]["LandingPage"] = get_translated_text_from_key("MOD_LANDING_PAGE", translations)
-        mv["MENU"]["SessionElements"] = get_translated_text_from_key("MOD_SESSION_ELEMENTS", translations)
-        mv["MENU"]["Start"] = get_translated_text_from_key("MOD_START", translations)
-        mv["MENU"]["SubmitNext"] = get_translated_text_from_key("MOD_SUBMIT_NEXT", translations)
-        mv["MENU"]["PrepareData"] = get_translated_text_from_key("MOD_PREPARE_DATA", translations)
-        mv["MENU"]["ColabEnvironment"] = get_translated_text_from_key("MOD_COLAB_ENV", translations)
-        mv["MENU"]["ResetSessionSetup"] = get_translated_text_from_key("MOD_RESET_SETUP", translations)
-        mv["SESSION_START_TEMPLATE"] = get_translated_text_from_key("MOD_SESSION_START_TEMPLATE", translations)
-        mv["ROUND_END_PHRASE"] = get_translated_text_from_key("MOD_ROUND_END_PHRASE", translations)
-        mv["CURRENT_ROUND"] = get_translated_text_from_key("MOD_CURRENT_ROUND", translations)
-        mv["DATA_PREP"]["SheetName"] = get_translated_text_from_key("MOD_DATA_PREP_SHEET_NAME", translations)
-        mv["DATA_PREP"]["IdeaRawColumn"] = get_translated_text_from_key("MOD_DATA_PREP_IDEA_RAW_COL", translations)
-        mv["DATA_PREP"]["TranslateColumn"] = get_translated_text_from_key("MOD_DATA_PREP_TRANSLATE_COL", translations)
-        mv["DATA_PREP"]["IdeaID"] = get_translated_text_from_key("MOD_DATA_PREP_IDEAID_COL", translations)
-        mv["DATA_PREP"]["IdeaTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_IDEATIMESTAMP_COL", translations)
-        mv["DATA_PREP"]["IdeaRoundStartTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_ROUNDTIMESTAMP_COL", translations)
-        mv["DATA_PREP"]["ManualCategorization"] = get_translated_text_from_key("MOD_DATA_PREP_MANUAL_CAT", translations)
-        mv["DATA_PREP"]["SessionLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["SessionLanguage"]
-        mv["DATA_PREP"]["TranslatedLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["TranslatedLanguage"]
-        mv["COLORS"] = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE["COLORS"])
-        mv["START_TIMER"] = get_translated_text_from_key("MOD_START_TIMER", translations)
-        st.session_state.MODERATOR_VARIABLES = mv
+    mv = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE)
+    mv["MENU"]["Tools"] = get_translated_text_from_key("MOD_TOOLS", translations)
+    mv["MENU"]["LandingPage"] = get_translated_text_from_key("MOD_LANDING_PAGE", translations)
+    mv["MENU"]["SessionElements"] = get_translated_text_from_key("MOD_SESSION_ELEMENTS", translations)
+    mv["MENU"]["Start"] = get_translated_text_from_key("MOD_START", translations)
+    mv["MENU"]["SubmitNext"] = get_translated_text_from_key("MOD_SUBMIT_NEXT", translations)
+    mv["MENU"]["PrepareData"] = get_translated_text_from_key("MOD_PREPARE_DATA", translations)
+    mv["MENU"]["ColabEnvironment"] = get_translated_text_from_key("MOD_COLAB_ENV", translations)
+    mv["MENU"]["ResetSessionSetup"] = get_translated_text_from_key("MOD_RESET_SETUP", translations)
+    mv["SESSION_START_TEMPLATE"] = get_translated_text_from_key("MOD_SESSION_START_TEMPLATE", translations)
+    mv["ROUND_END_PHRASE"] = get_translated_text_from_key("MOD_ROUND_END_PHRASE", translations)
+    mv["CURRENT_ROUND"] = get_translated_text_from_key("MOD_CURRENT_ROUND", translations)
+    mv["DATA_PREP"]["SheetName"] = get_translated_text_from_key("MOD_DATA_PREP_SHEET_NAME", translations)
+    mv["DATA_PREP"]["IdeaRawColumn"] = get_translated_text_from_key("MOD_DATA_PREP_IDEA_RAW_COL", translations)
+    mv["DATA_PREP"]["TranslateColumn"] = get_translated_text_from_key("MOD_DATA_PREP_TRANSLATE_COL", translations)
+    mv["DATA_PREP"]["IdeaID"] = get_translated_text_from_key("MOD_DATA_PREP_IDEAID_COL", translations)
+    mv["DATA_PREP"]["IdeaTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_IDEATIMESTAMP_COL", translations)
+    mv["DATA_PREP"]["IdeaRoundStartTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_ROUNDTIMESTAMP_COL", translations)
+    mv["DATA_PREP"]["ManualCategorization"] = get_translated_text_from_key("MOD_DATA_PREP_MANUAL_CAT", translations)
+    mv["DATA_PREP"]["SessionLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["SessionLanguage"]
+    mv["DATA_PREP"]["TranslatedLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["TranslatedLanguage"]
+    mv["COLORS"] = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE["COLORS"])
+    mv["START_TIMER"] = get_translated_text_from_key("MOD_START_TIMER", translations)
+    st.session_state.MODERATOR_VARIABLES = mv
 
-        lp_texts = {}
-        for key_in_code, text_key_for_translation_lookup in DEFAULT_LANDINGPAGE_VARIABLES_TEXT_KEYS.items():
-            lp_texts[key_in_code] = get_translated_text_from_key(text_key_for_translation_lookup, translations)
-        st.session_state.LANDINGPAGE_VARIABLES_TEXTS = lp_texts
+    lp_texts = {}
+    for key_in_code, text_key_for_translation_lookup in DEFAULT_LANDINGPAGE_VARIABLES_TEXT_KEYS.items():
+        lp_texts[key_in_code] = get_translated_text_from_key(text_key_for_translation_lookup, translations)
+    st.session_state.LANDINGPAGE_VARIABLES_TEXTS = lp_texts
 
-        an_texts = {}
-        for key_in_code, text_key_for_translation_lookup in DEFAULT_ANALYSIS_VARIABLES_TEXT_KEYS.items():
-            an_texts[key_in_code] = get_translated_text_from_key(text_key_for_translation_lookup, translations)
-        st.session_state.ANALYSIS_VARIABLES_TEXTS = an_texts
+    an_texts = {}
+    for key_in_code, text_key_for_translation_lookup in DEFAULT_ANALYSIS_VARIABLES_TEXT_KEYS.items():
+        an_texts[key_in_code] = get_translated_text_from_key(text_key_for_translation_lookup, translations)
+    st.session_state.ANALYSIS_VARIABLES_TEXTS = an_texts
 
-        st.session_state.initial_config_set = True
-        st.session_state.last_loaded_lang_for_defaults = st.session_state.app_lang 
-        if not is_first_app_load:
-             st.toast(_("default_config_loaded_msg", translations))
+    st.session_state.initial_config_set = True
+    st.session_state.last_loaded_lang_for_defaults = st.session_state.app_lang 
+    if not is_first_app_load:
+         st.toast(_("default_config_loaded_msg", translations))
 
 
 def generate_js_from_state(translations_for_error_msg):
