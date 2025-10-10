@@ -130,6 +130,8 @@ def apply_participant_edits():
     from st.session_state.participant_editor and applies them to the
     master DataFrame in st.session_state.participants_df.
     """
+    if "participant_editor" not in st.session_state:
+        return  
     edits = st.session_state.participant_editor
     df_to_edit = st.session_state.participants_df.copy()
 
