@@ -364,7 +364,7 @@ def generate_js_from_state(translations_for_error_msg):
         template_str = template_str.replace(placeholder, value)
     return template_str
 
-# Main Application
+
 def main():
     if "app_lang" not in st.session_state:
         st.session_state.app_lang = DEFAULT_LANGUAGE_CODE
@@ -379,8 +379,8 @@ def main():
         """,
         unsafe_allow_html=True
     )
-    # Language Selection
-    sidebar_translations = load_translations(st.session_state.app_lang)
+    sidebar_translations = load_translations(st.session_state.app_lang) 
+
     if not sidebar_translations:
         st.error(f"Failed to load translations for '{st.session_state.app_lang}'. App cannot start.")
         return
@@ -402,13 +402,25 @@ def main():
     language_has_changed = st.session_state.app_lang != new_lang_code
     if language_has_changed:
         st.session_state.app_lang = new_lang_code
+        T_UI = load_translations(st.session_state.app_lang)
+        if not T_UI:
+            error_message_key = "critical_error_no_translations"
+            error_message = sidebar_translations.get(error_message_key, f"<{error_message_key}_MISSING_IN_LOCALE> Critical error: Main UI translations could not be loaded.")
+            st.error(error_message)
+            return
+        initialize_session_state(T_UI)
+        st.rerun() 
 
-    T_UI = load_translations(st.session_state.app_lang)
-    if not T_UI:
-        error_message_key = "critical_error_no_translations"
-        error_message = sidebar_translations.get(error_message_key, f"<{error_message_key}_MISSING_IN_LOCALE> Critical error: Main UI translations could not be loaded.")
-        st.error(error_message)
-        return
+    else:
+        T_UI = load_translations(st.session_state.app_lang)
+        if not T_UI:
+            error_message_key = "critical_error_no_translations"
+            error_message = sidebar_translations.get(error_message_key, f"<{error_message_key}_MISSING_IN_LOCALE> Critical error: Main UI translations could not be loaded.")
+            st.error(error_message)
+            return
+        if "initial_config_set" not in st.session_state:
+            initialize_session_state(T_UI)
+
 
     st.session_state.advanced_settings = st.sidebar.toggle(
                 _("advanced_settings", T_UI),
