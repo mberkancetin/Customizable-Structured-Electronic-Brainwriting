@@ -681,7 +681,7 @@ def main():
             st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"] = st.text_input(_("check_ideas_label", T_UI), st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"], key="loc_check_ideas")
             st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"] = st.text_input(_("session_complete_label", T_UI), st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"], key="loc_session_complete")
             st.session_state.GLOBAL_VARIABLES["STARTING"] = st.text_input(_("starting_label", T_UI), st.session_state.GLOBAL_VARIABLES["STARTING"], key="loc_starting")
-            st.session_state.GLOBAL_VARIABLES["STARTING"] = st.text_input(_("stoppped_label", T_UI), st.session_state.GLOBAL_VARIABLES["STARTING"], key="loc_stopped")
+            st.session_state.GLOBAL_VARIABLES["STOPPED"] = st.text_input(_("stopped_label", T_UI), st.session_state.GLOBAL_VARIABLES["STOPPED"], key="loc_stopped")
 
             st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"] = st.text_area(
                             _("session_start_label", T_UI), st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"], height=100, key="loc_session_start"
