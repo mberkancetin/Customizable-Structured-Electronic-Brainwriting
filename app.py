@@ -395,7 +395,7 @@ def main():
         label=_("app_language_label", sidebar_translations),
         options=list(SUPPORTED_LANGUAGES.values()),
         index=current_lang_index,
-        key="lang_selector_widget"
+        key=f"lang_selector_widget_{st.session_state.app_lang}"
     )
     new_lang_code = next(code for code, name in SUPPORTED_LANGUAGES.items() if name == selected_lang_display_name)
 
@@ -425,7 +425,7 @@ def main():
     st.session_state.advanced_settings = st.sidebar.toggle(
                 _("advanced_settings", T_UI),
                 value=False,
-                key="fc_toggle_advanced_settings",
+                key=f"fc_toggle_advanced_settings_{st.session_state.app_lang}",
                 help=_("help_advanced_settings", T_UI)
             )
 
@@ -447,7 +447,7 @@ def main():
         st.header(_("tab_quick_setup", T_UI))
         st.session_state.GLOBAL_VARIABLES["SESSION_FOCUS"] = st.text_area(
             _("session_focus_label", T_UI),
-            st.session_state.GLOBAL_VARIABLES["SESSION_FOCUS"], key="qs_session_focus",
+            st.session_state.GLOBAL_VARIABLES["SESSION_FOCUS"], key=f"qs_session_focus_{st.session_state.app_lang}",
             help=_("help_session_focus", T_UI)
         )
 
@@ -456,7 +456,7 @@ def main():
             if not st.session_state.advanced_settings:
                 num_participants_val = st.number_input(
                     _("num_participants_label", T_UI), min_value=1,
-                    value=st.session_state.num_participants, step=1, key="qs_num_participants_input",
+                    value=st.session_state.num_participants, step=1, key=f"qs_num_participants_input_{st.session_state.app_lang}",
                     help=_("help_number_participants", T_UI)
                 )
                 if num_participants_val != st.session_state.num_participants:
@@ -469,7 +469,7 @@ def main():
                 st.session_state.customize_participant_names = st.toggle(
                     _("customize_participant_names_label", T_UI),
                     value=st.session_state.customize_participant_names,
-                    key="fc_toggle_customize_names1",
+                    key=f"fc_toggle_customize_names1_{st.session_state.app_lang}",
                     help=_("help_list_participants", T_UI)
                 )
                 st.caption(_("data_editor_info_dict", T_UI))
@@ -487,7 +487,7 @@ def main():
                         new_participants.append(st.text_input(
                             _("participant_name_label", T_UI, i=i+1),
                             value=current_names[i] if i < len(current_names) else f"{get_translated_text_from_key('PARTICIPANT_PREFIX', T_UI)}{i+1}",
-                            key=f"fc_p_name_custom_{i}"
+                            key=f"fc_p_name_custom_{i}_{st.session_state.app_lang}"
                         ))
                     sanitized_participant_list = [sanitize_sheet_name(name) for name in new_participants]
                     st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = sanitized_participant_list
@@ -497,7 +497,7 @@ def main():
             else:
                 num_participants_val = st.number_input(
                     _("num_participants_label", T_UI), min_value=1,
-                    value=st.session_state.num_participants, step=1, key="qs_num_participants_input",
+                    value=st.session_state.num_participants, step=1, key=f"qs_num_participants_input_{st.session_state.app_lang}",
                     help=_("help_number_participants", T_UI)
                 )
 
@@ -528,7 +528,7 @@ def main():
                 st.session_state.customize_participant_names = st.toggle(
                     _("customize_participant_names_label", T_UI),
                     value=st.session_state.customize_participant_names,
-                    key="fc_toggle_customize_names1",
+                    key=f"fc_toggle_customize_names1_{st.session_state.app_lang}",
                     help=_("help_list_participants", T_UI)
                 )
 
@@ -551,7 +551,7 @@ def main():
                                 options=GOOGLE_TRANSLATE_LANGUAGES.values()
                             )
                         },
-                        key="participant_editor"
+                        key=f"participant_editor_{st.session_state.app_lang}"
                     )
 
                     participant_names = st.session_state.participants_df["Name"].tolist()
@@ -576,7 +576,7 @@ def main():
         with c2:
             num_rounds_val = st.number_input(
                 _("num_rounds_label", T_UI), min_value=1,
-                value=st.session_state.num_rounds, step=1, key="qs_num_rounds_input",
+                value=st.session_state.num_rounds, step=1, key=f"qs_num_rounds_input_{st.session_state.app_lang}",
                 help=_("help_number_rounds", T_UI)
             )
             if num_rounds_val != st.session_state.num_rounds:
@@ -587,7 +587,7 @@ def main():
 
             num_ideas_val = st.number_input(
                 _("num_ideas_label", T_UI), min_value=1,
-                value=st.session_state.num_ideas, step=1, key="qs_num_ideas_input",
+                value=st.session_state.num_ideas, step=1, key=f"qs_num_ideas_input_{st.session_state.app_lang}",
                 help=_("help_number_ideas", T_UI)
             )
             if num_ideas_val != st.session_state.num_ideas:
@@ -598,32 +598,32 @@ def main():
 
             st.session_state.GLOBAL_VARIABLES["MINUTES"] = st.number_input(
                 _("minutes_per_round_label", T_UI), min_value=1,
-                value=st.session_state.GLOBAL_VARIABLES["MINUTES"], step=1, key="qs_minutes",
+                value=st.session_state.GLOBAL_VARIABLES["MINUTES"], step=1, key=f"qs_minutes_{st.session_state.app_lang}",
                 help=_("help_minutes_round", T_UI)
             )
 
             st.session_state.GLOBAL_VARIABLES["IDEA_SWAP_ALGORITHM"] = st.selectbox(
                 label=_("paper_swap_label", T_UI),
                 options=SUPPORTED_SWAP_ALGORITHMS,
-                key="swap_selector_dropdown"
+                key=f"swap_selector_dropdown_{st.session_state.app_lang}"
             )
             if st.session_state.GLOBAL_VARIABLES["IDEA_SWAP_ALGORITHM"] == "DynamicHarmonicSweep":
                 st.session_state.harmonicShift = st.selectbox(
                     label=_("paper_shift_label", T_UI),
                     options=gcd_list(st.session_state.num_participants),
-                    key="shift_selector_dropdown"
+                    key=f"shift_selector_dropdown_{st.session_state.app_lang}"
                 )
 
             st.session_state.generate_landing_page = st.checkbox(
-                _("generate_landing_page_label", T_UI), value=st.session_state.generate_landing_page, key="qs_gen_lp"
+                _("generate_landing_page_label", T_UI), value=st.session_state.generate_landing_page, key=f"qs_gen_lp_{st.session_state.app_lang}"
             )
             if st.session_state.generate_landing_page:
                 st.session_state.use_logo = st.checkbox(
-                    _("use_logo_label", T_UI), value=False, key="qs_use_logo"
+                    _("use_logo_label", T_UI), value=False, key=f"qs_use_logo_{st.session_state.app_lang}"
                 )
                 if st.session_state.use_logo:
                     new_image_url = st.text_input(
-                        _("logo_url_label", T_UI), st.session_state.imageUrl, key="qs_logo_url"
+                        _("logo_url_label", T_UI), st.session_state.imageUrl, key=f"qs_logo_url_{st.session_state.app_lang}"
                     )
 
                     if new_image_url != st.session_state.imageUrl:
@@ -646,58 +646,58 @@ def main():
             st.caption(_("data_editor_info_list", T_UI))
             st.session_state.GLOBAL_VARIABLES["ROUNDS"] = st.data_editor(
                 pd.DataFrame({"Round Names": st.session_state.GLOBAL_VARIABLES["ROUNDS"]}),
-                num_rows="dynamic", hide_index=True, key="fc_rounds_editor"
+                num_rows="dynamic", hide_index=True, key=f"fc_rounds_editor_{st.session_state.app_lang}"
             )["Round Names"].tolist()
 
         with st.expander(_("ideas_list_header", T_UI)):
             st.caption(_("data_editor_info_list", T_UI))
             st.session_state.GLOBAL_VARIABLES["IDEAS"] = st.data_editor(
                  pd.DataFrame({"Idea Names": st.session_state.GLOBAL_VARIABLES["IDEAS"]}),
-                num_rows="dynamic", hide_index=True, key="fc_ideas_editor"
+                num_rows="dynamic", hide_index=True, key=f"fc_ideas_editor_{st.session_state.app_lang}"
             )["Idea Names"].tolist()
 
         with st.expander(_("focus_list_label", T_UI)):
              st.caption(_("data_editor_info_list", T_UI))
              st.session_state.GLOBAL_VARIABLES["FOCUS"] = st.data_editor(
                  pd.DataFrame({"Focus Items": st.session_state.GLOBAL_VARIABLES["FOCUS"]}),
-                num_rows="dynamic", hide_index=True, key="fc_focus_editor"
+                num_rows="dynamic", hide_index=True, key=f"fc_focus_editor_{st.session_state.app_lang}"
             )["Focus Items"].tolist()
 
         with st.expander(_("round_change_list_label", T_UI)):
              st.caption(_("data_editor_info_list", T_UI))
              st.session_state.GLOBAL_VARIABLES["ROUND_CHANGE"] = st.data_editor(
                  pd.DataFrame({"Messages": st.session_state.GLOBAL_VARIABLES["ROUND_CHANGE"]}),
-                num_rows="dynamic", hide_index=True, key="fc_round_change_editor"
+                num_rows="dynamic", hide_index=True, key=f"fc_round_change_editor_{st.session_state.app_lang}"
             )["Messages"].tolist()
 
         with st.expander(_("global_vars_texts_header", T_UI)):
-            st.session_state.GLOBAL_VARIABLES["TIME_LEFT"] = st.text_input(_("time_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_LEFT"], key="loc_time_left")
-            st.session_state.GLOBAL_VARIABLES["MINS_LEFT"] = st.text_input(_("default_mins_left", T_UI), st.session_state.GLOBAL_VARIABLES["MINS_LEFT"], key="loc_mins_left")
-            st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"] = st.text_input(_("default_one_min_left", T_UI), st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"], key="loc_one_min_left")
+            st.session_state.GLOBAL_VARIABLES["TIME_LEFT"] = st.text_input(_("time_left_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_LEFT"], key=f"loc_time_left_{st.session_state.app_lang}")
+            st.session_state.GLOBAL_VARIABLES["MINS_LEFT"] = st.text_input(_("default_mins_left", T_UI), st.session_state.GLOBAL_VARIABLES["MINS_LEFT"], key=f"loc_mins_left_{st.session_state.app_lang}")
+            st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"] = st.text_input(_("default_one_min_left", T_UI), st.session_state.GLOBAL_VARIABLES["ONE_MIN_LEFT"], key=f"loc_one_min_left_{st.session_state.app_lang}")
 
-            st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"] = st.text_input(_("time_is_up_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"], key="loc_time_is_up")
-            st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"] = st.text_input(_("check_ideas_label", T_UI), st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"], key="loc_check_ideas")
-            st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"] = st.text_input(_("session_complete_label", T_UI), st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"], key="loc_session_complete")
-            st.session_state.GLOBAL_VARIABLES["STARTING"] = st.text_input(_("starting_label", T_UI), st.session_state.GLOBAL_VARIABLES["STARTING"], key="loc_starting")
-            st.session_state.GLOBAL_VARIABLES["STOPPED"] = st.text_input(_("stopped_label", T_UI), st.session_state.GLOBAL_VARIABLES["STOPPED"], key="loc_stopped")
+            st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"] = st.text_input(_("time_is_up_label", T_UI), st.session_state.GLOBAL_VARIABLES["TIME_IS_UP"], key=f"loc_time_is_up_{st.session_state.app_lang}")
+            st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"] = st.text_input(_("check_ideas_label", T_UI), st.session_state.GLOBAL_VARIABLES["CHECK_IDEAS"], key=f"loc_check_ideas_{st.session_state.app_lang}")
+            st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"] = st.text_input(_("session_complete_label", T_UI), st.session_state.GLOBAL_VARIABLES["SESSION_COMPLETE"], key=f"loc_session_complete_{st.session_state.app_lang}")
+            st.session_state.GLOBAL_VARIABLES["STARTING"] = st.text_input(_("starting_label", T_UI), st.session_state.GLOBAL_VARIABLES["STARTING"], key=f"loc_starting_{st.session_state.app_lang}")
+            st.session_state.GLOBAL_VARIABLES["STOPPED"] = st.text_input(_("stopped_label", T_UI), st.session_state.GLOBAL_VARIABLES["STOPPED"], key=f"loc_stopped_{st.session_state.app_lang}")
 
             st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"] = st.text_area(
-                            _("session_start_label", T_UI), st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"], height=100, key="loc_session_start"
+                            _("session_start_label", T_UI), st.session_state.MODERATOR_VARIABLES["SESSION_START_TEMPLATE"], height=100, key=f"loc_session_start_{st.session_state.app_lang}"
                         )
 
         with st.expander(_("lp_texts_header", T_UI)):
             st.session_state.GLOBAL_VARIABLES["LANDING_SHEET"] = st.text_input(
-                _("landing_sheet_label", T_UI), st.session_state.GLOBAL_VARIABLES["LANDING_SHEET"], key="qs_landing_sheet"
+                _("landing_sheet_label", T_UI), st.session_state.GLOBAL_VARIABLES["LANDING_SHEET"], key=f"qs_landing_sheet_{st.session_state.app_lang}"
             )
             st.session_state.LANDINGPAGE_VARIABLES_TEXTS["GREETING_MESSAGE_TEMPLATE"] = st.text_area(
-                _("greeting_msg_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["GREETING_MESSAGE_TEMPLATE"], height=300, key="loc_lp_greeting"
+                _("greeting_msg_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["GREETING_MESSAGE_TEMPLATE"], height=300, key=f"loc_lp_greeting_{st.session_state.app_lang}"
             )
-            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["SESSION_TITLE_SUFFIX"] = st.text_input(_("lp_session_title_suffix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["SESSION_TITLE_SUFFIX"], key="loc_lp_title_suffix")
-            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["PARTICIPANTS_PREFIX"] = st.text_input(_("lp_participants_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["PARTICIPANTS_PREFIX"], key="loc_lp_part_prefix")
-            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["ROUNDS_PREFIX"] = st.text_input(_("lp_rounds_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["ROUNDS_PREFIX"], key="loc_lp_rounds_prefix")
-            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["IDEAS_PREFIX"] = st.text_input(_("lp_ideas_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["IDEAS_PREFIX"], key="loc_lp_ideas_prefix")
-            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TIME_PREFIX"] = st.text_input(_("lp_time_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TIME_PREFIX"], key="loc_lp_time_prefix")
-            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TOTALS_TEXT_INFIX"] = st.text_input(_("lp_totals_infix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TOTALS_TEXT_INFIX"], key="loc_lp_totals_infix")
+            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["SESSION_TITLE_SUFFIX"] = st.text_input(_("lp_session_title_suffix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["SESSION_TITLE_SUFFIX"], key=f"loc_lp_title_suffix_{st.session_state.app_lang}")
+            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["PARTICIPANTS_PREFIX"] = st.text_input(_("lp_participants_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["PARTICIPANTS_PREFIX"], key=f"loc_lp_part_prefix_{st.session_state.app_lang}")
+            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["ROUNDS_PREFIX"] = st.text_input(_("lp_rounds_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["ROUNDS_PREFIX"], key=f"loc_lp_rounds_prefix_{st.session_state.app_lang}")
+            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["IDEAS_PREFIX"] = st.text_input(_("lp_ideas_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["IDEAS_PREFIX"], key=f"loc_lp_ideas_prefix_{st.session_state.app_lang}")
+            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TIME_PREFIX"] = st.text_input(_("lp_time_prefix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TIME_PREFIX"], key=f"loc_lp_time_prefix_{st.session_state.app_lang}")
+            st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TOTALS_TEXT_INFIX"] = st.text_input(_("lp_totals_infix_label", T_UI), st.session_state.LANDINGPAGE_VARIABLES_TEXTS["TOTALS_TEXT_INFIX"], key=f"loc_lp_totals_infix_{st.session_state.app_lang}")
 
     # Advanced Customization Tab
     with tab_full_customize:
@@ -705,38 +705,38 @@ def main():
 
         with st.expander(_("mod_menu_editor_label", T_UI)):
             st.session_state.GLOBAL_VARIABLES["MODERATOR_SHEET"] = st.text_input(
-                _("moderator_sheet_label", T_UI), st.session_state.GLOBAL_VARIABLES["MODERATOR_SHEET"], key="qs_moderator_sheet"
+                _("moderator_sheet_label", T_UI), st.session_state.GLOBAL_VARIABLES["MODERATOR_SHEET"], key=f"qs_moderator_sheet_{st.session_state.app_lang}"
             )
             st.caption(_("data_editor_info_dict", T_UI))
             if isinstance(st.session_state.MODERATOR_VARIABLES["MENU"], dict):
                 st.session_state.MODERATOR_VARIABLES["MENU"] = st.data_editor(
-                    st.session_state.MODERATOR_VARIABLES["MENU"], key="fc_menu_editor"
+                    st.session_state.MODERATOR_VARIABLES["MENU"], key=f"fc_menu_editor_{st.session_state.app_lang}"
                 )
             else: st.warning(_("warning_not_dict", T_UI, variable_name="MODERATOR_VARIABLES.MENU"))
-            st.session_state.MODERATOR_VARIABLES["ROUND_END_PHRASE"] = st.text_input(_("round_end_phrase_label", T_UI), st.session_state.MODERATOR_VARIABLES["ROUND_END_PHRASE"], key="loc_round_end_phrase")
-            st.session_state.MODERATOR_VARIABLES["CURRENT_ROUND"] = st.text_input(_("current_round_label", T_UI), st.session_state.MODERATOR_VARIABLES["CURRENT_ROUND"], key="loc_current_round")
-            st.session_state.ANALYSIS_VARIABLES_TEXTS["POPUP_TITLE"] = st.text_input(_("an_popup_title_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["POPUP_TITLE"], key="loc_an_title")
-            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_NEXT_STEPS"] = st.text_input(_("an_colab_next_steps_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_NEXT_STEPS"], key="loc_an_next_steps")
-            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_PART1"] = st.text_input(_("an_colab_step1_part1_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_PART1"], key="loc_an_s1p1")
-            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_LINK_TEXT"] = st.text_input(_("an_colab_step1_link_text_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_LINK_TEXT"], key="loc_an_s1link")
-            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_SMALL_TEXT"] = st.text_area(_("an_colab_step1_small_text_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_SMALL_TEXT"], key="loc_an_s1small")
-            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP2"] = st.text_input(_("an_colab_step2_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP2"], key="loc_an_s2")
-            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP3"] = st.text_input(_("an_colab_step3_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP3"], key="loc_an_s3")
+            st.session_state.MODERATOR_VARIABLES["ROUND_END_PHRASE"] = st.text_input(_("round_end_phrase_label", T_UI), st.session_state.MODERATOR_VARIABLES["ROUND_END_PHRASE"], key=f"loc_round_end_phrase_{st.session_state.app_lang}")
+            st.session_state.MODERATOR_VARIABLES["CURRENT_ROUND"] = st.text_input(_("current_round_label", T_UI), st.session_state.MODERATOR_VARIABLES["CURRENT_ROUND"], key=f"loc_current_round_{st.session_state.app_lang}")
+            st.session_state.ANALYSIS_VARIABLES_TEXTS["POPUP_TITLE"] = st.text_input(_("an_popup_title_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["POPUP_TITLE"], key=f"loc_an_title_{st.session_state.app_lang}")
+            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_NEXT_STEPS"] = st.text_input(_("an_colab_next_steps_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_NEXT_STEPS"], key=f"loc_an_next_steps_{st.session_state.app_lang}")
+            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_PART1"] = st.text_input(_("an_colab_step1_part1_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_PART1"], key=f"loc_an_s1p1_{st.session_state.app_lang}")
+            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_LINK_TEXT"] = st.text_input(_("an_colab_step1_link_text_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_LINK_TEXT"], key=f"loc_an_s1link_{st.session_state.app_lang}")
+            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_SMALL_TEXT"] = st.text_area(_("an_colab_step1_small_text_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP1_SMALL_TEXT"], key=f"loc_an_s1small_{st.session_state.app_lang}")
+            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP2"] = st.text_input(_("an_colab_step2_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP2"], key=f"loc_an_s2_{st.session_state.app_lang}")
+            st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP3"] = st.text_input(_("an_colab_step3_label", T_UI), st.session_state.ANALYSIS_VARIABLES_TEXTS["COLAB_POPUP_STEP3"], key=f"loc_an_s3_{st.session_state.app_lang}")
 
         with st.expander(_("colors_editor_label", T_UI)):
             st.caption(_("data_editor_info_dict", T_UI))
             if isinstance(st.session_state.MODERATOR_VARIABLES["COLORS"], dict):
                 st.session_state.MODERATOR_VARIABLES["COLORS"] = st.data_editor(
-                    st.session_state.MODERATOR_VARIABLES["COLORS"], key="fc_colors_editor"
+                    st.session_state.MODERATOR_VARIABLES["COLORS"], key=f"fc_colors_editor_{st.session_state.app_lang}"
                 )
             else: st.warning(_("warning_not_dict", T_UI, variable_name="MODERATOR_VARIABLES.COLORS"))
 
         with st.expander(_("data_prep_options_header", T_UI)):
             st.session_state.MODERATOR_VARIABLES["DATA_PREP"]["SheetName"] = st.text_input(
-                _("prepdata_sheet_label", T_UI), st.session_state.MODERATOR_VARIABLES["DATA_PREP"]["SheetName"], key="qs_prepdata_sheet"
+                _("prepdata_sheet_label", T_UI), st.session_state.MODERATOR_VARIABLES["DATA_PREP"]["SheetName"], key=f"qs_prepdata_sheet_{st.session_state.app_lang}"
             )
             st.session_state.colabGitHubUrl = st.text_input(
-                _("colab_url_label", T_UI), st.session_state.colabGitHubUrl, key="qs_colab_url"
+                _("colab_url_label", T_UI), st.session_state.colabGitHubUrl, key=f"qs_colab_url_{st.session_state.app_lang}"
             )
             dp_vars = st.session_state.MODERATOR_VARIABLES["DATA_PREP"]
             lang_options_map = { "English (no translation)": "", "Auto-detect (Google Translate)": "auto",
@@ -746,7 +746,7 @@ def main():
             current_s_disp_lang = next((k for k, v in lang_options_map.items() if v == current_s_lang_val), list(lang_options_map.keys())[0])
             selected_s_disp_lang = st.selectbox(
                 _("session_language_label", T_UI), options=list(lang_options_map.keys()),
-                index=list(lang_options_map.keys()).index(current_s_disp_lang), key="fc_session_lang"
+                index=list(lang_options_map.keys()).index(current_s_disp_lang), key=f"fc_session_lang_{st.session_state.app_lang}"
             )
             dp_vars["SessionLanguage"] = lang_options_map[selected_s_disp_lang]
 
@@ -755,37 +755,37 @@ def main():
             current_t_disp_lang = next((k for k, v in target_lang_options.items() if v == current_t_lang_val), "English")
             selected_t_disp_lang = st.selectbox(
                 _("translated_language_label", T_UI), options=list(target_lang_options.keys()),
-                index=list(target_lang_options.keys()).index(current_t_disp_lang), key="fc_target_lang"
+                index=list(target_lang_options.keys()).index(current_t_disp_lang), key=f"fc_target_lang_{st.session_state.app_lang}"
             )
             dp_vars["TranslatedLanguage"] = target_lang_options[selected_t_disp_lang]
 
-            dp_vars["IdeaRawColumn"] = st.text_input(_("idea_raw_column_label", T_UI), dp_vars["IdeaRawColumn"], key="fc_raw_col")
-            dp_vars["TranslateColumn"] = st.text_input(_("translate_column_label", T_UI), dp_vars["TranslateColumn"], key="fc_trans_col")
-            dp_vars["ManualCategorization"] = st.text_input(_("manual_categorization_label", T_UI), dp_vars["ManualCategorization"], key="fc_manual_cat_col")
+            dp_vars["IdeaRawColumn"] = st.text_input(_("idea_raw_column_label", T_UI), dp_vars["IdeaRawColumn"], key=f"fc_raw_col_{st.session_state.app_lang}")
+            dp_vars["TranslateColumn"] = st.text_input(_("translate_column_label", T_UI), dp_vars["TranslateColumn"], key=f"fc_trans_col_{st.session_state.app_lang}")
+            dp_vars["ManualCategorization"] = st.text_input(_("manual_categorization_label", T_UI), dp_vars["ManualCategorization"], key=f"fc_manual_cat_col_{st.session_state.app_lang}")
 
         with st.expander(_("alerts_options_header", T_UI)):
             st.session_state.lpAlertHeader = st.text_input(
-                value=_("landing_page_alert_header", T_UI), label="landing_page_alert_header", key="landing_page_alert_header_pop"
+                value=_("landing_page_alert_header", T_UI), label="landing_page_alert_header", key=f"landing_page_alert_header_pop_{st.session_state.app_lang}"
             )
             st.session_state.lpAlertText = st.text_input(
-                value=_("landing_page_alert_text", T_UI), label="landing_page_alert_text", key="landing_page_alert_text_pop"
+                value=_("landing_page_alert_text", T_UI), label="landing_page_alert_text", key=f"landing_page_alert_text_pop_{st.session_state.app_lang}"
             )
             st.session_state.resetSessionHeader = st.text_input(
-                value=_("reset_session_flags_header", T_UI), label="reset_session_flags_header", key="reset_session_flags_header_pop"
+                value=_("reset_session_flags_header", T_UI), label="reset_session_flags_header", key=f"reset_session_flags_header_pop_{st.session_state.app_lang}"
             )
             st.session_state.resetSessionText = st.text_input(
-                value=_("reset_session_flags_text", T_UI), label="reset_session_flags_text", key="reset_session_flags_text_pop"
+                value=_("reset_session_flags_text", T_UI), label="reset_session_flags_text", key=f"reset_session_flags_text_pop_{st.session_state.app_lang}"
             )
             st.session_state.createSessionHeader = st.text_input(
-                value=_("create_session_alert_header", T_UI), label="create_session_alert_header", key="create_session_alert_header_pop"
+                value=_("create_session_alert_header", T_UI), label="create_session_alert_header", key=f"create_session_alert_header_pop_{st.session_state.app_lang}"
             )
             st.session_state.createSessionText = st.text_input(
-                value=_("create_session_alert_text", T_UI), label="create_session_alert_text", key="create_session_alert_text_pop"
+                value=_("create_session_alert_text", T_UI), label="create_session_alert_text", key=f"create_session_alert_text_pop_{st.session_state.app_lang}"
             )
 
     # Generate and Download GS
     st.divider()
-    if st.button(_("generate_js_button", T_UI), type="primary", key="download_button_main"):
+    if st.button(_("generate_js_button", T_UI), type="primary", key=f"download_button_main_{st.session_state.app_lang}"):
         generated_js = generate_js_from_state(T_UI)
         if generated_js:
 
@@ -794,7 +794,7 @@ def main():
                 data=generated_js.encode("utf-8").decode("utf-8"),
                 file_name="configured_brainwriting_script.gs",
                 mime="application/javascript",
-                key="download_action_button"
+                key=f"download_action_button_{st.session_state.app_lang}"
             )
             st.success(_("js_generated_success", T_UI))
             st.code(generated_js, language="javascript")
