@@ -168,19 +168,18 @@ def gcd_list(num_participants):
 
 def initialize_session_state(translations):
     """Initializes or re-initializes session state with translated default values."""
-    last_loaded_lang = st.session_state.get("last_loaded_lang_for_defaults", None)
     is_first_app_load = "initial_config_set" not in st.session_state
-
-    if is_first_app_load or last_loaded_lang != st.session_state.app_lang:
+    language_changed = st.session_state.get("last_loaded_lang_for_defaults", None) != st.session_state.app_lang
+    if is_first_app_load or language_changed:
         if is_first_app_load:
             st.session_state.num_participants = DEFAULT_NUM_PARTICIPANTS
             st.session_state.num_rounds = DEFAULT_NUM_ROUNDS
             st.session_state.num_ideas = DEFAULT_NUM_IDEAS
             st.session_state.customize_participant_names = False
             st.session_state.generate_landing_page = True
-            st.session_state.imageUrl = DEFAULT_IMAGE_URL # Non-translatable
+            st.session_state.imageUrl = DEFAULT_IMAGE_URL
             st.session_state.use_logo = True if st.session_state.imageUrl else False
-            st.session_state.colabGitHubUrl = DEFAULT_COLAB_GITHUB_URL # Non-translatable
+            st.session_state.colabGitHubUrl = DEFAULT_COLAB_GITHUB_URL
             st.session_state.lpAlertHeader = DEFAULT_ALERT_LANDING_PAGE_HEADER
             st.session_state.lpAlertText = DEFAULT_ALERT_LANDING_PAGE_TEXT
             st.session_state.resetSessionHeader = DEFAULT_ALERT_RESET_SESSION_HEADER
@@ -190,11 +189,11 @@ def initialize_session_state(translations):
             st.session_state.advanced_settings = False
             st.session_state.harmonicShift = DEFAULT_HARMONIC_SHIFT
 
-        gv = deepcopy(DEFAULT_GLOBAL_VARIABLES_STRUCTURE) # Start with structure
+        gv = deepcopy(DEFAULT_GLOBAL_VARIABLES_STRUCTURE)
         gv["SESSION_FOCUS"] = get_translated_text_from_key("SESSION_FOCUS", translations)
-        gv["LANDING_SHEET"] = get_translated_text_from_key("LANDING_SHEET", translations) # Assumes sheet names are translated
-        gv["MODERATOR_SHEET"] = get_translated_text_from_key("MODERATOR_SHEET", translations) # Assumes sheet names are translated
-        gv["SESSION_LANGUAGE"] = get_translated_text_from_key("SESSION_LANGUAGE", translations) # Assumes sheet names are translated
+        gv["LANDING_SHEET"] = get_translated_text_from_key("LANDING_SHEET", translations)
+        gv["MODERATOR_SHEET"] = get_translated_text_from_key("MODERATOR_SHEET", translations)
+        gv["SESSION_LANGUAGE"] = get_translated_text_from_key("SESSION_LANGUAGE", translations)
         gv["IDEA_SWAP_ALGORITHM"] = get_translated_text_from_key("IDEA_SWAP_ALGORITHM", translations)
         gv["PARTICIPANT_SHEET_LANGUAGE"] = [get_translated_text_from_key("SESSION_LANGUAGE", translations) for _ in range(st.session_state.num_participants)]
         gv["TIME_LEFT"] = get_translated_text_from_key("TIME_LEFT", translations)
@@ -214,7 +213,7 @@ def initialize_session_state(translations):
         gv["SESSION_COMPLETE"] = get_translated_text_from_key("SESSION_COMPLETE", translations)
         gv["STARTING"] = get_translated_text_from_key("STARTING", translations)
         gv["STOPPED"] = get_translated_text_from_key("STOPPED", translations)
-        gv["MINUTES"] = DEFAULT_GLOBAL_VARIABLES_STRUCTURE["MINUTES"] # Non-translated from structure
+        gv["MINUTES"] = DEFAULT_GLOBAL_VARIABLES_STRUCTURE["MINUTES"]
 
         participant_prefix = get_translated_text_from_key("PARTICIPANT_PREFIX", translations)
         gv["PARTICIPANT"] = [participant_prefix.format(no=i+1) for i in range(st.session_state.num_participants)]
@@ -236,13 +235,13 @@ def initialize_session_state(translations):
         mv["SESSION_START_TEMPLATE"] = get_translated_text_from_key("MOD_SESSION_START_TEMPLATE", translations)
         mv["ROUND_END_PHRASE"] = get_translated_text_from_key("MOD_ROUND_END_PHRASE", translations)
         mv["CURRENT_ROUND"] = get_translated_text_from_key("MOD_CURRENT_ROUND", translations)
-        mv["DATA_PREP"]["SheetName"] = get_translated_text_from_key("MOD_DATA_PREP_SHEET_NAME", translations) # Assumes translated
-        mv["DATA_PREP"]["IdeaRawColumn"] = get_translated_text_from_key("MOD_DATA_PREP_IDEA_RAW_COL", translations) # Assumes translated
-        mv["DATA_PREP"]["TranslateColumn"] = get_translated_text_from_key("MOD_DATA_PREP_TRANSLATE_COL", translations) # Assumes translated
+        mv["DATA_PREP"]["SheetName"] = get_translated_text_from_key("MOD_DATA_PREP_SHEET_NAME", translations)
+        mv["DATA_PREP"]["IdeaRawColumn"] = get_translated_text_from_key("MOD_DATA_PREP_IDEA_RAW_COL", translations)
+        mv["DATA_PREP"]["TranslateColumn"] = get_translated_text_from_key("MOD_DATA_PREP_TRANSLATE_COL", translations)
         mv["DATA_PREP"]["IdeaID"] = get_translated_text_from_key("MOD_DATA_PREP_IDEAID_COL", translations)
         mv["DATA_PREP"]["IdeaTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_IDEATIMESTAMP_COL", translations)
         mv["DATA_PREP"]["IdeaRoundStartTimestamp"] = get_translated_text_from_key("MOD_DATA_PREP_ROUNDTIMESTAMP_COL", translations)
-        mv["DATA_PREP"]["ManualCategorization"] = get_translated_text_from_key("MOD_DATA_PREP_MANUAL_CAT", translations) # Assumes translated
+        mv["DATA_PREP"]["ManualCategorization"] = get_translated_text_from_key("MOD_DATA_PREP_MANUAL_CAT", translations)
         mv["DATA_PREP"]["SessionLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["SessionLanguage"]
         mv["DATA_PREP"]["TranslatedLanguage"] = DEFAULT_MODERATOR_VARIABLES_STRUCTURE["DATA_PREP"]["TranslatedLanguage"]
         mv["COLORS"] = deepcopy(DEFAULT_MODERATOR_VARIABLES_STRUCTURE["COLORS"])
@@ -260,7 +259,7 @@ def initialize_session_state(translations):
         st.session_state.ANALYSIS_VARIABLES_TEXTS = an_texts
 
         st.session_state.initial_config_set = True
-        st.session_state.last_loaded_lang_for_defaults = st.session_state.app_lang
+        st.session_state.last_loaded_lang_for_defaults = st.session_state.app_lang 
         if not is_first_app_load:
              st.toast(_("default_config_loaded_msg", translations))
 
