@@ -431,8 +431,6 @@ def main():
 
     st.sidebar.markdown(_("instructions_and_tips", T_UI))
 
-    initialize_session_state(T_UI)
-
     if language_has_changed:
         st.rerun()
 
