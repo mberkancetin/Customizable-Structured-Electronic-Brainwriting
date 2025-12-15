@@ -7,11 +7,11 @@
 
 /*
 Creators: Mahmut Berkan Çetin and Selim Gündüz
-Title: Conducting Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script.
-Description: This script automates the customizable structured electronic brainwriting method in Google Sheets.
+Title: Conducting Customizable Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script.
+Description: This script automates the CSEB method in Google Sheets.
 How to Cite:
 
-Çetin, Mahmut Berkan & Gündüz, Selim (2025). Protocol for Conducting Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
+Çetin, Mahmut Berkan & Gündüz, Selim (2025). Protocol for Conducting Multilingual Customizable Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
 
 */
 
