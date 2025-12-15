@@ -557,7 +557,7 @@ def main():
                         st.session_state.GLOBAL_VARIABLES["PARTICIPANT"] = [sanitize_sheet_name(name) for name in participant_names]
                         st.session_state.GLOBAL_VARIABLES["PARTICIPANT_SHEET_LANGUAGE"] = participant_lang_codes
 
-                        st.rerun()
+                        # st.rerun() # Removed to prevent infinite loop. The app will naturally rerun after the widget interaction.
 
                 else:
                     display_df = st.session_state.participants_df.copy()
