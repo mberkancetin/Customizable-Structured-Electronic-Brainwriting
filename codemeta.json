@@ -1,7 +1,7 @@
 {
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
-  "name": "Customizable Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script",
+  "name": "Customizable Structured Electronic Brainwriting (CSEB) and Multilingual CSEB (mCSEB) System: Utilizing Google Sheets with Google Apps Script",
   "identifier": "https://github.com/mberkancetin/Customizable-Structured-Electronic-Brainwriting",
   "description": "A powerful Streamlit application that generates JavaScript configuration files for customizable structured electronic brainwriting (CSEB) and multilingual CSEB sessions, simplifying the customization process for facilitators running structured electronic brainstorming sessions with support for multiple languages and advanced configuration options. The underlying Google Apps Script automates the CSEB method in Google Sheets for remote collaborative idea generation.",
   "authors": [
