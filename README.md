@@ -1,4 +1,4 @@
-# Customizable Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script
+# Customizable Structured Electronic Brainwriting (CSEB) and Multilingual CSEB (mCSEB) System: Utilizing Google Sheets with Google Apps Script
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -6,7 +6,7 @@
 
 ## Structured Electronic Brainwriting Session Configuration Generator
 
-A powerful Streamlit application that generates JavaScript configuration files for customizable structured electronic brainwriting (CSEB) and multilingual CSEB sessions. This tool simplifies the customization process for facilitators running structured electronic brainstorming sessions, with support for multiple languages and advanced configuration options.
+A powerful Streamlit application that generates JavaScript configuration files for customizable structured electronic brainwriting (CSEB) and multilingual CSEB (mCSEB) sessions. This tool simplifies the customization process for facilitators running structured electronic brainstorming sessions, with support for multiple languages and advanced configuration options.
 
 ### Features
 
@@ -94,6 +94,6 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 **For a detailed academic protocol and step-by-step implementation guide on how to conduct a Structured Electronic Brainwriting Session utilizing Google Sheets with Google Apps Script, please refer to the following publication on protocols.io**:
 
-Çetin, Mahmut Berkan & Gündüz, Selim (2025). Protocol for Conducting Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
+Çetin, Mahmut Berkan & Gündüz, Selim (2025). Protocol for Conducting Multilingual Structured Electronic Brainwriting Session: Utilizing Google Sheets with Google Apps Script. protocols.io, https://dx.doi.org/10.17504/protocols.io.x54v9r3xzv3e/v1
 
-This protocol outlines the process and structure for setting up and managing an online 6-3-5 brainwriting session, enabling remote collaborative idea generation. The technique automates traditional brainwriting, where six participants each generate three ideas per round and pass their contributions to the next person, building upon previous ideas over six rounds. Google Sheets serves as a versatile platform for real-time input collection and documentation, allowing participants to easily browse and contribute to idea development. This approach empowers moderators to efficiently guide and document brainstorming sessions, both in-person and virtually. The online 6-3-5 brainwriting system automatically tracks progress, organizes participant contributions, and can gather a total of 108 ideas (from 6 participants collaborating through 6 rounds, with 3 ideas per round), all neatly organized in a structured worksheet.
+This protocol outlines the process and structure for setting up and managing an online 6-3-5 brainwriting session, enabling remote collaborative idea generation. The technique automates traditional brainwriting, where six participants each generate three ideas per round and pass their contributions to the next person, building upon previous ideas over six rounds. Google Sheets serves as a versatile platform for real-time input collection and documentation, allowing participants to easily browse and contribute to idea development. This approach empowers moderators to efficiently guide and document brainstorming sessions, both in-person and virtually. The online 6-3-5 brainwriting system automatically tracks progress, organizes participant contributions, and can gather a total of 108 ideas (from 6 participants collaborating through 6 rounds, with 3 ideas per round), all neatly organized in a structured worksheet. At the last stage, the protocol explains the downstream data analysis using Python with the Colab integration.
