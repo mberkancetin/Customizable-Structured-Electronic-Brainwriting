@@ -137,7 +137,7 @@ function getFormulaSeparatorFromSheet() {
   // or if seperator is semicolon: min(1;0) returns 0
   // in the sheet to detect the separator
   const ss = spreadsheet.getActiveSheet();
-  const range = ss.getRange((2*roundCount + 42), 1);
+  const range = ss.getRange((600), 25);
 
   range.setFormula('=MIN(1,0)');
   SpreadsheetApp.flush();
